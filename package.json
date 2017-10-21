@@ -1,0 +1,57 @@
+{
+  "name": "copilote",
+  "version": "0.0.1",
+  "description": "wip",
+  "private": true,
+  "scripts": {
+    "analyze": "cross-env NODE_ENV=production webpack -p --config config/webpack.config.prod.js --profile --json > stats.json && echo \"→ Stats.json created\" && echo \"→ Drop your file to https://chrisbateman.github.io/webpack-visualizer/\"",
+    "start": "cross-env NODE_ENV=development node scripts/serve.js",
+    "build": "cross-env NODE_ENV=production node scripts/build.js",
+    "build:preprod": "cross-env APP_ENV=preprod npm run build",
+    "deploy": "cross-env APP_ENV=ghpages npm run build && ghp build",
+    "lint": "npm run lint:js",
+    "lint:js": "eslint --ext .js ./config ./scripts ./src --cache",
+    "test": "npm run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brocessing/bro-start"
+  },
+  "author": "Brocessing",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brocessing/bro-start/issues"
+  },
+  "homepage": "https://github.com/brocessing/bro-start#readme",
+  "devDependencies": {
+    "autoprefixer": "^7.1.5",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
+    "browser-sync": "^2.18.13",
+    "copy-webpack-plugin": "^4.2.0",
+    "cross-env": "^5.1.0",
+    "css-loader": "^0.28.7",
+    "eslint": "^4.9.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.0",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "extract-text-webpack-plugin": "^3.0.1",
+    "ghp": "^1.1.4",
+    "handlebars": "^4.0.11",
+    "kool-shell": "^1.5.0",
+    "node-sass": "^4.5.3",
+    "postcss-loader": "^2.0.8",
+    "progress-bar-webpack-plugin": "^1.10.0",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.19.0",
+    "webpack": "^3.8.1",
+    "webpack-dev-middleware": "^1.12.0",
+    "webpack-hot-middleware": "^2.20.0",
+    "webpack-merge": "^4.1.0"
+  },
+  "dependencies": {}
+}
