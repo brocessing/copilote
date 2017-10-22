@@ -15,7 +15,7 @@ function reloadHelpers () {
 
 function render (page) {
   return new Promise((resolve, reject) => {
-    const layoutPath = path.join(paths.src, page.layout)
+    const layoutPath = path.join(paths.layouts, page.template)
     const content = Object.assign({}, page.content)
     fs.readFile(layoutPath, 'utf8', (err, data) => {
       if (err) return reject(err)

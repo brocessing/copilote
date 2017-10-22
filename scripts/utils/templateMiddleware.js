@@ -39,8 +39,8 @@ function processTemplate (page, middleware) {
 }
 
 function templateMiddleware (req, res, next) {
-  delete require.cache[require.resolve(path.join(paths.src, 'pages'))]
-  pages = require(path.join(paths.src, 'pages'))
+  delete require.cache[require.resolve(path.join(paths.layouts, 'generator'))]
+  pages = require(path.join(paths.layouts, 'generator'))
 
   // parse url - append index.html to / if needed
   let fileUrl = url.parse(req.url).pathname

@@ -1,6 +1,6 @@
 const path = require('path')
 const paths = require('../../config/paths.config')
-const pages = require(path.join(paths.src, 'pages'))
+const pages = require(path.join(paths.layouts, 'generator'))
 const renderPage = require('./renderPage')
 
 function renderPages () {

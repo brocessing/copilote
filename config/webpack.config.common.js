@@ -1,10 +1,11 @@
 const path = require('path')
 const paths = require('./paths.config')
+const DirectoryNamedWebpackPlugin = require('directory-named-webpack-plugin')
 
 module.exports = {
   entry: [
-    path.join(paths.src, 'app.js'),
-    path.join(paths.src, 'app.scss')
+    path.join(paths.src, 'entry.js'),
+    path.join(paths.src, 'entry.scss')
   ],
   output: {
     publicPath: paths.public,
@@ -12,9 +13,21 @@ module.exports = {
     chunkFilename: '[hash].[id].chunk.js'
   },
   resolve: {
+    plugins: [
+      new DirectoryNamedWebpackPlugin({
+        include: [
+          path.join(paths.src, 'components'),
+          path.join(paths.src, 'abstractions'),
+          path.join(paths.src, 'controllers')
+        ]
+      })
+    ],
     alias: {
-      components: paths.components,
-      utils: paths.utils
+      components: path.join(paths.src, 'components'),
+      abstractions: path.join(paths.src, 'abstractions'),
+      controllers: path.join(paths.src, 'controllers'),
+      utils: path.join(paths.src, 'utils'),
+      style: path.join(paths.src, 'style')
     }
   },
   module: {
