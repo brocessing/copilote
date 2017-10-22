@@ -87,7 +87,6 @@ function start (lang) {
 
     if (lang) setLang(lang)
 
-
     function onStart () {
       emitter.off('error', onError)
       emitter.off('start', onStart)

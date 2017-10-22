@@ -1,22 +1,84 @@
 <!DOCTYPE html>
-<html>
+<html class="no-js">
 <head>
-  <meta charset="utf-8">
   <base href="{{compiler.publicPath}}">
+  <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <script src="vendors/modernizr.min.js"></script>
+  <script src="vendors/detectizr.min.js"></script>
 
   <title>copilote</title>
   <meta name="description" content="">
   <link rel="shortcut icon" href="favicon.ico">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" />
-  {{#if compiler.isProduction}}
-  <link rel="stylesheet" href="{{compiler.hash}}.css">
-  {{/if}}
+  <style>
+    /* Fallback style */
+    html, body {
+      top: 0; right: 0; bottom: 0; left: 0;
+      width: 100%; height: 100%;
+      margin: 0; padding: 0;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, Helvetica, sans-serif;
+      font-size: 20px;
+      line-height: 150%;
+    }
+    html {
+      position: relative;
+    }
+    body {
+      position: absolute;
+      background: white;
+    }
+    .preloader {
+      z-index: 100;
+      position: fixed;
+      top: 0; right: 0; bottom: 0; left: 0;
+      width: 100%; height: 100%;
+      margin: 0; padding: 0;
+      color: white;
+      background: black;
+    }
+    .no-js .preloader,
+    .no-js .experience {
+      display: none;
+    }
+    .fallback {
+      color: black;
+      position: absolute;
+      top: 50%; left: 0; right: 0;
+      margin: 0; padding: 0 20px;
+      box-sizing: border-box;
+      width: 100%;
+      text-align: center;
+      transform: translateY(-50%);
+    }
+  </style>
 </head>
 <body>
-  <main>
+  <div class="preloader">loader</div>
+  <main class="experience">
+    <section class="homescreen">
+      homescreen
+      <button>démarer en FR</button>
+    </section>
+    <section class="game-canvas"></section>
+    <section class="game-three"></section>
   </main>
-  <script src="{{compiler.hash}}.js"></script>
+  <noscript><div class="fallback">This experience requires javascript!</div></noscript>
+  <script>
+    window.appconfig = {};
+    window.loadjs = function(){function e(e,n){var t,r,i,c=[],o=(e=e.push?e:[e]).length,f=o;for(t=function(e,t){t.length&&c.push(e),--f||n(c)};o--;)r=e[o],(i=s[r])?t(r,i):(u[r]=u[r]||[]).push(t)}function n(e,n){if(e){var t=u[e];if(s[e]=n,t)for(;t.length;)t[0](e,n),t.splice(0,1)}}function t(e,n,r,i){var o,s,u=document,f=r.async,a=(r.numRetries||0)+1,h=r.before||c;i=i||0,/(^css!|\.css$)/.test(e)?(o=!0,(s=u.createElement("link")).rel="stylesheet",s.href=e.replace(/^css!/,"")):((s=u.createElement("script")).src=e,s.async=void 0===f||f),s.onload=s.onerror=s.onbeforeload=function(c){var u=c.type[0];if(o&&"hideFocus"in s)try{s.sheet.cssText.length||(u="e")}catch(e){u="e"}if("e"==u&&(i+=1)<a)return t(e,n,r,i);n(e,u,c.defaultPrevented)},!1!==h(e,s)&&u.head.appendChild(s)}function r(e,n,r){var i,c,o=(e=e.push?e:[e]).length,s=o,u=[];for(i=function(e,t,r){if("e"==t&&u.push(e),"b"==t){if(!r)return;u.push(e)}--o||n(u)},c=0;c<s;c++)t(e[c],i,r)}function i(e,t,i){var s,u;if(t&&t.trim&&(s=t),u=(s?i:t)||{},s){if(s in o)throw"LoadJS";o[s]=!0}r(e,function(e){e.length?(u.error||c)(e):(u.success||c)(),n(s,e)},u)}var c=function(){},o={},s={},u={};return i.ready=function(n,t){return e(n,function(e){e.length?(t.error||c)(e):(t.success||c)()}),i},i.done=function(e){n(e,[])},i.reset=function(){o={},s={},u={}},i.isDefined=function(e){return e in o},i}();
+    (function () {
+      var preloadfiles = ['https://cdn.polyfill.io/v2/polyfill.min.js'];
+      {{#if compiler.isProduction}}preloadfiles.push('{{compiler.hash}}.css');{{/if}}
+      preloadfiles.push('{{compiler.hash}}.js');
+      window.loadjs(preloadfiles, {
+        success: function () {},
+        error: function () {}
+      });
+    })();
+  </script>
 </body>
 </html>

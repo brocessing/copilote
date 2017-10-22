@@ -13,16 +13,16 @@ french.order('goLeft')
   .add('tourner à gauche|tourne à gauche|à gauche|gauche')
 
 french.order('goRight')
-  .add('tourner à droite|tourne à droite|à droite|droite')
+  .add('tourner à droite|tourne à droite|à droite|droite|20 droites')
 
 french.order('goStraight')
-  .add('vas tout droit|tout droit|tous droit|droit devant|avance')
+  .add('tous droits|vas tout droit|tout droit|tous droit|droit devant|avance|tu dois|toulon')
 
 french.order('speedUp')
   .add('à vence|accéléré|auxerre|fonce|foncer|va plus vite|plus vite|accélère|augmente la vitesse')
 
 french.order('speedDown')
-  .add('ralenti|ralentis|ralentir|moins vite|décélérer|décélére')
+  .add('ralenti|ralentis|ralentir|moins vite|décélérer|décélére|en entier')
 
 french.order('stop')
   .add('stop toi|stop|arrête|arrêter|freine')

@@ -27,7 +27,8 @@ module.exports = {
       abstractions: path.join(paths.src, 'abstractions'),
       controllers: path.join(paths.src, 'controllers'),
       utils: path.join(paths.src, 'utils'),
-      style: path.join(paths.src, 'style')
+      style: path.join(paths.src, 'style'),
+      config: path.join(paths.src, 'config.js')
     }
   },
   module: {

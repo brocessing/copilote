@@ -1,22 +1,67 @@
+import throttle from 'lodash/throttle'
+import store from 'utils/store'
+
+import preloader from 'controllers/preloader'
 import speech from 'controllers/speech'
 import orders from 'controllers/orders'
+import three from 'controllers/three'
+import canvas from 'controllers/canvas'
 
-speech
-  .start('fr')
-  .then(orders.listen)
+import Homescreen from 'components/dom/Homescreen'
+import Main from 'components/three/Main'
 
-const log = document.createElement('pre')
-document.body.appendChild(log)
+const home = new Homescreen(document.querySelector('.homescreen'))
+home.onstart = startExperience
 
-orders.on(':all', ({order}) => {
-  if (order === 'radioOn') return
-  log.innerHTML = log.innerHTML + order + '\n'
-})
+// Listen the resize
+const throttledResize = throttle(() => {
+  store.set('size', { w: window.innerWidth, h: window.innerHeight })
+}, 50)
+window.addEventListener('resize', throttledResize)
+store.set('size', { w: window.innerWidth, h: window.innerHeight })
 
-orders.on('radioOn', ({order, match}) => {
-  console.log(match)
-  log.innerHTML = log.innerHTML + '🎶🎶 ' + match[1].toUpperCase() + ' 🎶🎶' + '\n'
-})
+Promise.resolve()
+  .then(() => preloader.bindDom(document.querySelector('.preloader')))
+  .then(preloader.loadJS)
+  .then(threeSetup)
+  .then(() => canvas.setup())
+  .then(speech.start)
+  .then(home.show)
+  .then(preloader.hide)
+
+function threeSetup () {
+  three.setup(document.querySelector('.game-three'))
+  three.addComponent(new Main())
+}
+
+function startExperience (lang = 'fr') {
+  // TODO: Order setlang method?
+  Promise.resolve()
+    .then(() => speech.setLang(lang))
+    .then(orders.listen)
+    .then(three.start)
+    .then(home.hide)
+}
+
+// import speech from 'controllers/speech'
+// import orders from 'controllers/orders'
+
+// speech
+//   .start('fr')
+//   .then(orders.listen)
+
+// const log = document.createElement('pre')
+// document.body.appendChild(log)
+
+// orders.on(':all', ({order}) => {
+//   if (order === 'radioOn') return
+//   log.innerHTML = log.innerHTML + order + '\n'
+// })
+
+// orders.on('radioOn', ({order, match}) => {
+//   console.log(match)
+//   log.innerHTML = log.innerHTML + '🎶🎶 ' + match[1].toUpperCase() + ' 🎶🎶' + '\n'
+// })
 // let transcript = ''
 
 // speech.on('result', event => {

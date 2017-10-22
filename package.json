@@ -55,6 +55,8 @@
     "webpack-merge": "^4.1.0"
   },
   "dependencies": {
-    "mitt": "^1.1.2"
+    "lodash": "^4.17.4",
+    "mitt": "^1.1.2",
+    "raf": "pqml/raf"
   }
 }
