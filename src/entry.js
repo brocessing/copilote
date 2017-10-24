@@ -1,14 +1,14 @@
 import throttle from 'lodash/throttle'
 import store from 'utils/store'
 
-import preloader from 'controllers/preloader'
-import speech from 'controllers/speech'
-import orders from 'controllers/orders'
-import three from 'controllers/three'
-import canvas from 'controllers/canvas'
+import preloader from 'controllers/preloader/preloader'
+import speech from 'controllers/speech/speech'
+import orders from 'controllers/orders/orders'
+import three from 'controllers/three/three'
+import canvas from 'controllers/canvas/canvas'
 
-import Homescreen from 'components/dom/Homescreen'
-import Main from 'components/three/Main'
+import Homescreen from 'components/dom/Homescreen/Homescreen'
+import Main from 'components/three/Main/Main'
 
 const home = new Homescreen(document.querySelector('.homescreen'))
 home.onstart = startExperience

@@ -1,6 +1,6 @@
 /* global THREE */
 
-import ThreeComponent from 'abstractions/ThreeComponent'
+import ThreeComponent from 'abstractions/ThreeComponent/ThreeComponent'
 
 export default class Main extends ThreeComponent {
   setup () {

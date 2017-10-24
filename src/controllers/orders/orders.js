@@ -1,4 +1,4 @@
-import speech from 'controllers/speech'
+import speech from 'controllers/speech/speech'
 import french from './lang.fr'
 import mitt from 'mitt'
 

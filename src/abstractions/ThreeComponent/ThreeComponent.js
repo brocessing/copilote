@@ -1,5 +1,5 @@
 /* global THREE */
-import three from 'controllers/three'
+import three from 'controllers/three/three'
 
 export default class ThreeComponent {
   constructor (...args) {

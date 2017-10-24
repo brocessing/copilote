@@ -1,6 +1,5 @@
 const path = require('path')
 const paths = require('./paths.config')
-const DirectoryNamedWebpackPlugin = require('directory-named-webpack-plugin')
 
 module.exports = {
   entry: [
@@ -13,15 +12,6 @@ module.exports = {
     chunkFilename: '[hash].[id].chunk.js'
   },
   resolve: {
-    plugins: [
-      new DirectoryNamedWebpackPlugin({
-        include: [
-          path.join(paths.src, 'components'),
-          path.join(paths.src, 'abstractions'),
-          path.join(paths.src, 'controllers')
-        ]
-      })
-    ],
     alias: {
       components: path.join(paths.src, 'components'),
       abstractions: path.join(paths.src, 'abstractions'),
