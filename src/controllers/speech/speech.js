@@ -13,7 +13,7 @@ const languages = {
 }
 
 const DEBUG = true
-const REBOOTDELAY = 10000
+const REBOOTDELAY = 20000
 // const DEFAULT_LANGUAGE = 'fr'
 
 let recognizing = false

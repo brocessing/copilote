@@ -2,12 +2,30 @@ import speech from 'controllers/speech/speech'
 import french from './lang.fr'
 import mitt from 'mitt'
 
-const emitter = mitt()
-const DEBUG = true
-const dom = DEBUG ? document.createElement('dom') : null
-if (dom) document.body.appendChild(dom)
+import config from 'config'
 
-if (DEBUG) console.log(french)
+const emitter = mitt()
+const DEBUG = config.speechDebug
+let dom, logevent
+
+if (DEBUG) {
+  dom = document.createElement('dom')
+  dom.style.zIndex = '1000'
+  dom.style.position = 'absolute'
+  dom.style.top = '0'
+  dom.style.left = '0'
+  dom.style.fontSize = '10px'
+  dom.style.lineHeight = '100%'
+  dom.style.margin = '20px'
+  dom.style.padding = '10px'
+  dom.style.color = 'white'
+  dom.style.background = 'rgba(0, 0, 0, 0.5)'
+  dom.style.pointerEvents = 'none'
+  logevent = document.createElement('pre')
+  dom.appendChild(logevent)
+  document.body.appendChild(dom)
+  console.log(french)
+}
 
 let cachedMatches = []
 let buffer = []
@@ -35,8 +53,8 @@ function processResult (index, result, last) {
     buffer[index] = { value: '', matches: [], dom: null, final: false }
     if (DEBUG) {
       buffer[index].dom = document.createElement('pre')
-      buffer[index].dom.style.color = '#ccc'
-      document.body.appendChild(buffer[index].dom)
+      buffer[index].dom.style.color = 'rgba(255, 255, 255, 0.6)'
+      dom.appendChild(buffer[index].dom)
     }
   }
   const buf = buffer[index]
@@ -58,7 +76,6 @@ function processResult (index, result, last) {
     buf.dom.innerHTML = (
       'index: ' + index + '\n' +
       'value: ' + buf.value + '\n' +
-      'matches: ' + buf.matches.join(' / ') + '\n' +
       'final:' + buf.final
     )
   }
@@ -87,9 +104,15 @@ function analyze (newStr, finale = false) {
           newStr = newStr.replace(match[1], ' ')
           cachedMatches.push(match[1])
           match.shift()
-          const out = { order: k, match }
+          const out = {
+            type: k,
+            transcript: match[0].trim(),
+            capture: match,
+            finale: !!finale
+          }
           emitter.emit(':all', out)
           emitter.emit(k, out)
+          if (DEBUG) logevent.innerHTML += k + '\n'
           match = regex.exec(newStr)
         }
       } else {
@@ -98,7 +121,13 @@ function analyze (newStr, finale = false) {
         res.forEach(match => {
           newStr = newStr.replace(match, ' ')
           cachedMatches.push(match)
-          const out = { order: k, match }
+          const out = {
+            type: k,
+            transcript: match.trim(),
+            capture: [match],
+            finale: !!finale
+          }
+          if (DEBUG) logevent.innerHTML += k + '\n'
           emitter.emit(':all', out)
           emitter.emit(k, out)
         })

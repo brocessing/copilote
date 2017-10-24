@@ -1,4 +1,7 @@
 import throttle from 'lodash/throttle'
+
+import config from 'config'
+
 import store from 'utils/store'
 
 import preloader from 'controllers/preloader/preloader'
@@ -8,9 +11,11 @@ import three from 'controllers/three/three'
 import canvas from 'controllers/canvas/canvas'
 
 import Homescreen from 'components/dom/Homescreen/Homescreen'
+import GameGUI from 'components/dom/GameGUI/GameGUI'
 import Main from 'components/three/Main/Main'
 
-const home = new Homescreen(document.querySelector('.homescreen'))
+const gameGui = new GameGUI()
+const home = new Homescreen()
 home.onstart = startExperience
 
 // Listen the resize
@@ -26,8 +31,10 @@ Promise.resolve()
   .then(threeSetup)
   .then(() => canvas.setup())
   .then(speech.start)
+  .then(() => home.hydrate(document.querySelector('.homescreen')))
   .then(home.show)
   .then(preloader.hide)
+  .then(() => config.quickstart && startExperience(config.quickstart))
 
 function threeSetup () {
   three.setup(document.querySelector('.game-three'))
@@ -39,44 +46,9 @@ function startExperience (lang = 'fr') {
   Promise.resolve()
     .then(() => speech.setLang(lang))
     .then(orders.listen)
+    // initiate the GUI just before leaving the Home
+    // and just after start listening to orders
+    .then(() => gameGui.hydrate(document.querySelector('.game-gui')))
     .then(three.start)
     .then(home.hide)
 }
-
-// import speech from 'controllers/speech'
-// import orders from 'controllers/orders'
-
-// speech
-//   .start('fr')
-//   .then(orders.listen)
-
-// const log = document.createElement('pre')
-// document.body.appendChild(log)
-
-// orders.on(':all', ({order}) => {
-//   if (order === 'radioOn') return
-//   log.innerHTML = log.innerHTML + order + '\n'
-// })
-
-// orders.on('radioOn', ({order, match}) => {
-//   console.log(match)
-//   log.innerHTML = log.innerHTML + '🎶🎶 ' + match[1].toUpperCase() + ' 🎶🎶' + '\n'
-// })
-// let transcript = ''
-
-// speech.on('result', event => {
-//   console.log(event)
-//   let interim = ''
-//   for (var i = event.resultIndex; i < event.results.length; ++i) {
-//     if (event.results[i].isFinal) transcript += event.results[i][0].transcript
-//     else {
-//       interim += event.results[i][0].transcript
-//       let a = ''
-//       for (let j = 0; j > event.results[i].length; j++) {
-//         a += event.results[i][j].transcript + '  /  '
-//       }
-//       console.log(a)
-//     }
-//   }
-//   div.innerHTML = transcript + interim
-// })
