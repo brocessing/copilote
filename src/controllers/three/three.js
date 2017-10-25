@@ -13,7 +13,10 @@ function setup (el) {
     window.innerWidth / window.innerHeight,
     0.1, 1000
   )
-  renderer = new THREE.WebGLRenderer()
+  renderer = new THREE.WebGLRenderer({
+    antialias: true
+  })
+  renderer.setClearColor(0xf4bc7a, 1)
 
   store.watch('size', resize)
   resize(store.get('size'))

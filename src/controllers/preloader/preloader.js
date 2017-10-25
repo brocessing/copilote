@@ -1,7 +1,10 @@
+/* global THREE */
+
+import noop from 'utils/noop'
 import config from 'config'
 
 const loadjs = window.loadjs
-const api = { bindDom, hide, loadJS }
+const api = { bindDom, hide, loadJS, loadTextures, loadObjects }
 
 let $el
 
@@ -14,6 +17,40 @@ function loadJS () {
     if (!config.vendors || config.vendors.length < 1) return resolve()
     loadjs(config.vendors, { success: resolve, error: reject })
   })
+}
+
+function loadTextures () {
+  const loader = new THREE.TextureLoader()
+  const p = []
+  for (let filepath in config.textures) {
+    const cb = config.textures[filepath]
+    p.push(new Promise((resolve, reject) => {
+      loader.load(
+        filepath,
+        function (tex) { cb(tex); resolve() },
+        noop,
+        function () { reject(new Error('Error downloading ' + filepath)) }
+      )
+    }))
+  }
+  return Promise.all(p)
+}
+
+function loadObjects () {
+  const loader = new THREE.JSONLoader()
+  const p = []
+  for (let filepath in config.objects) {
+    const cb = config.objects[filepath]
+    p.push(new Promise((resolve, reject) => {
+      loader.load(
+        filepath,
+        function (geometry, materials) { cb(geometry, materials); resolve() },
+        noop,
+        function () { reject(new Error('Error downloading ' + filepath)) }
+      )
+    }))
+  }
+  return Promise.all(p)
 }
 
 function hide () {

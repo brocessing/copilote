@@ -39,3 +39,11 @@
   z-index: 1;
   // display: none;
 }
+
+.p2-container {
+  z-index: 5;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0.4
+}
