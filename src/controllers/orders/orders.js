@@ -12,14 +12,14 @@ if (DEBUG) {
   dom = document.createElement('dom')
   dom.style.zIndex = '1000'
   dom.style.position = 'absolute'
-  dom.style.top = '0'
+  dom.style.top = '45px'
   dom.style.left = '0'
   dom.style.fontSize = '10px'
   dom.style.lineHeight = '100%'
-  dom.style.margin = '20px'
+  dom.style.margin = '0'
   dom.style.padding = '10px'
-  dom.style.color = 'white'
-  dom.style.background = 'rgba(0, 0, 0, 0.5)'
+  dom.style.color = 'black'
+  dom.style.background = 'rgba(0, 0, 0, 0.1)'
   dom.style.pointerEvents = 'none'
   logevent = document.createElement('pre')
   dom.appendChild(logevent)
@@ -53,7 +53,7 @@ function processResult (index, result, last) {
     buffer[index] = { value: '', matches: [], dom: null, final: false }
     if (DEBUG) {
       buffer[index].dom = document.createElement('pre')
-      buffer[index].dom.style.color = 'rgba(255, 255, 255, 0.6)'
+      buffer[index].dom.style.color = 'rgba(0, 0, 0, 0.4)'
       dom.appendChild(buffer[index].dom)
     }
   }

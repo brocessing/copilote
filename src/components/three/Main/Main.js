@@ -1,16 +1,32 @@
-/* global THREE */
+import random from 'utils/random'
 
 import ThreeComponent from 'abstractions/ThreeComponent/ThreeComponent'
+import three from 'controllers/three/three'
+
+import Car from 'components/three/Car/Car'
+import CameraFollow from 'components/three/CameraFollow/CameraFollow'
+import Box from 'components/three/Box/Box'
 
 export default class Main extends ThreeComponent {
   setup () {
-    this.geometries.box = new THREE.BoxGeometry(1, 1, 1)
-    this.materials.basic = new THREE.MeshBasicMaterial({color: 0x00ff00})
-    this.meshes.cube = new THREE.Mesh(this.geometries.box, this.materials.basic)
-    this.group.add(this.meshes.cube)
+    this.car = this.addComponent(new Car())
+    for (let i = 0; i < 150; i++) {
+      this.addComponent(new Box({
+        x: i * random(-0.5, 0.5),
+        y: i * random(-0.5, 0.5),
+        width: random(0.1, 10),
+        height: random(0.1, 10)
+      }))
+    }
+
+    this.cameraFollow = new CameraFollow()
+    this.cameraFollow.setTarget(this.car.group)
+    three.addCamera('car', this.cameraFollow.camera)
+    three.switchCamera('car')
   }
 
   update (dt) {
-    this.meshes.cube.rotation.x += 0.1
+    super.update(dt)
+    this.cameraFollow.update(dt)
   }
 }
