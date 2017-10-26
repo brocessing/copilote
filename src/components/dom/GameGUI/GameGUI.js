@@ -3,6 +3,8 @@ import orders from 'controllers/orders/orders'
 import DomComponent from 'abstractions/DomComponent/DomComponent'
 
 import Bubble from 'components/dom/Bubble/Bubble'
+import volume from 'controllers/volume/volume'
+
 
 export default class GameGUI extends DomComponent {
   didInit () {
@@ -11,7 +13,7 @@ export default class GameGUI extends DomComponent {
   }
 
   // Called each time a new order is received
-  onOrder (data) {
+  onOrder (data) { // 'data' is actually data we get from the voice recognition
     if (
       this.bubbles.length > 0 &&
       this.bubbles[this.bubbles.length - 1].type === data.type
@@ -19,9 +21,9 @@ export default class GameGUI extends DomComponent {
       // do something if this is the same order as the last
     } else {
       // if not create a new bubble
-      const bubble = new Bubble({ type: data.type, msg: data.transcript })
+      const bubble = new Bubble({ type: data.type, msg: data.transcript }) // we pass the transcript into the bubble's object options
       this.bubbles.push(bubble)
-      // mount to the base gui component
+      // mount to the base gui component (launch render funtion)
       bubble.mount(this.refs.base)
       // time end the bubble 3 seconds after
       window.setTimeout(() => {

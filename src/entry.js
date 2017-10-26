@@ -6,13 +6,16 @@ import store from 'utils/store'
 
 import preloader from 'controllers/preloader/preloader'
 import speech from 'controllers/speech/speech'
+import volume from 'controllers/volume/volume'
 import orders from 'controllers/orders/orders'
 import three from 'controllers/three/three'
 import canvas from 'controllers/canvas/canvas'
 
+
 import Homescreen from 'components/dom/Homescreen/Homescreen'
 import GameGUI from 'components/dom/GameGUI/GameGUI'
 import Main from 'components/three/Main/Main'
+
 
 const gameGui = new GameGUI()
 const home = new Homescreen()
@@ -31,6 +34,7 @@ Promise.resolve()
   .then(threeSetup)
   .then(() => canvas.setup())
   .then(speech.start)
+  .then(volume.start)
   .then(() => home.hydrate(document.querySelector('.homescreen')))
   .then(home.show)
   .then(preloader.hide)
