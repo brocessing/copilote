@@ -1,14 +1,19 @@
-/* global THREE */
+/* global THREE, p2 */
 
-import raf from 'raf'
+import gui from 'controllers/datgui/datgui'
+import raf from 'utils/raf'
 import store from 'utils/store'
+import config from 'config'
+import BodyViewer from 'components/three/BodyViewer/BodyViewer'
 
-let scene, camera, renderer
+let scene, renderer, world, currentCamera
+let cameras = {}
 let components = []
 
 function setup (el) {
+  world = new p2.World({ gravity: [0, 0] })
   scene = new THREE.Scene()
-  camera = new THREE.PerspectiveCamera(
+  cameras.free = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
     0.1, 1000
@@ -17,16 +22,29 @@ function setup (el) {
     antialias: true
   })
   renderer.setClearColor(0xf4bc7a, 1)
+  renderer.setPixelRatio(1)
 
   store.watch('size', resize)
   resize(store.get('size'))
 
   el.appendChild(renderer.domElement)
-  camera.position.z = 5
+  cameras.free.position.z = 5
+  switchCamera('free')
+  store.set('mat.blue', new THREE.MeshBasicMaterial({ color: 0x0000ff }))
+  store.set('mat.wireframe', new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true }))
+  store.set('geo.box', new THREE.BoxBufferGeometry(1, 1, 1))
 }
 
 function start () { raf.add(update) }
 function stop () { raf.remove(update) }
+
+function addCamera (k, cam) {
+  cameras[k] = cam
+}
+
+function switchCamera (k) {
+  currentCamera = cameras[k]
+}
 
 function addComponent (component) {
   if (!scene || ~components.indexOf(component) || !component.group) return
@@ -42,29 +60,48 @@ function removeComponent (component) {
 }
 
 function update (dt) {
+  world.step(config.p2steps)
   components.forEach(component => component.update(dt))
-  renderer.render(scene, camera)
+  renderer.render(scene, currentCamera)
 }
 
 function resize (size) {
   if (!renderer) return
-  camera.aspect = size.w / size.h
-  camera.updateProjectionMatrix()
+  for (let k in cameras) {
+    cameras[k].aspect = size.w / size.h
+    cameras[k].updateProjectionMatrix()
+  }
   renderer.setSize(size.w, size.h)
   components.forEach(component => component.resize(size))
 }
 
+function bodyCopy (body, obj3d) {
+  obj3d.position.x = -body.position[0]
+  obj3d.position.z = body.position[1]
+  obj3d.rotation.y = body.angle
+}
+
+function debugBody (body) {
+  // addComponent(new BodyViewer(body))
+}
+
 function getScene () { return scene || null }
-function getCamera () { return camera || null }
+function getCamera () { return currentCamera || null }
 function getRenderer () { return renderer || null }
+function getWorld () { return world || null }
 
 export default {
+  addCamera,
+  switchCamera,
   setup,
   start,
   stop,
+  debugBody,
+  bodyCopy,
   addComponent,
   removeComponent,
   getScene,
   getCamera,
-  getRenderer
+  getRenderer,
+  getWorld
 }
