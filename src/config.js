@@ -34,8 +34,8 @@ export default {
   // autoload json objects during the preloading phase
   objects: {
     'models/r5.json': function (geo, mats) {
-      geo.scale(0.07, 0.07, 0.07)
-      geo.translate(0, -0.32, 0)
+      geo.scale(0.02, 0.02, 0.02)
+      geo.translate(0, 0.2, 0)
       store.set('geo.r5', geo)
     }
   }

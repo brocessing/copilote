@@ -5,7 +5,7 @@ export default function kbControls (frontWheel, backWheel) {
     '38': 0, // up
     '40': 0 // down
   }
-  const maxSteer = Math.PI / 5
+  const maxSteer = Math.PI / 6
 
   document.addEventListener('keydown', (evt) => {
     keys[evt.keyCode] = 1
@@ -20,10 +20,11 @@ export default function kbControls (frontWheel, backWheel) {
   function onInputChange () {
     // Steer value zero means straight forward. Positive is left and negative right.
     frontWheel.targetSteerValue = maxSteer * (keys[37] - keys[39])
+    backWheel.targetSteerValue = maxSteer * (keys[37] - keys[39])
 
     // Engine force forward
     backWheel.engineForce = keys[38] * 5
-    backWheel.setBrakeForce(3)
+    backWheel.setBrakeForce(0)
     if (keys[40]) {
       if (backWheel.getSpeed() > 0.1) {
         // Moving forward - add some brake force to slow down

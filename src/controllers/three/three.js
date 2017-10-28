@@ -13,6 +13,7 @@ let components = []
 function setup (el) {
   world = new p2.World({ gravity: [0, 0] })
   scene = new THREE.Scene()
+  scene.fog = new THREE.Fog(0xf4bc7a, 10, 30)
   cameras.free = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
@@ -30,7 +31,14 @@ function setup (el) {
   el.appendChild(renderer.domElement)
   cameras.free.position.z = 5
   switchCamera('free')
+
+  store.set('geo.plane', new THREE.PlaneBufferGeometry(1, 1))
+  store.get('geo.plane').rotateX(-Math.PI / 2)
+  store.get('geo.plane').translate(0.5, 0, 0.5)
+
   store.set('mat.blue', new THREE.MeshBasicMaterial({ color: 0x0000ff }))
+  store.set('mat.gray', new THREE.MeshBasicMaterial({ color: 0x5a5a5a }))
+
   store.set('mat.wireframe', new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true }))
   store.set('geo.box', new THREE.BoxBufferGeometry(1, 1, 1))
 }
