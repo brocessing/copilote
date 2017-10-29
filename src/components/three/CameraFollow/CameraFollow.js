@@ -7,7 +7,7 @@ import kbControls from 'utils/keyboardControls'
 
 export default class CameraCar extends ThreeComponent {
   setup () {
-    this.ipos = new THREE.Vector3(-0.1, 0.7, -0.63).setLength(2)
+    this.ipos = new THREE.Vector3(-0.1, 0.7, -0.63).setLength(1)
     const lerp = 0.2
     this.alerp = 0.05
     this.angvel = 0

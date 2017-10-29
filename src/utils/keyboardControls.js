@@ -24,7 +24,7 @@ export default function kbControls (frontWheel, backWheel) {
 
     // Engine force forward
     backWheel.engineForce = keys[38] * 5
-    backWheel.setBrakeForce(0)
+    backWheel.setBrakeForce(3)
     if (keys[40]) {
       if (backWheel.getSpeed() > 0.1) {
         // Moving forward - add some brake force to slow down

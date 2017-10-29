@@ -13,7 +13,7 @@ export default class Car extends ThreeComponent {
     this.group.add(this.meshes.car)
     this.targetRot = 0
     this.body = new p2.Body({ mass: 1, position: [0, 0] })
-    const box = new p2.Box({ width: 0.5, height: 1.2 })
+    const box = new p2.Box({ width: 0.08, height: 0.16 })
     this.body.addShape(box)
 
     this.vehicle = new p2.TopDownVehicle(this.body)
@@ -25,7 +25,7 @@ export default class Car extends ThreeComponent {
     frontWheel.targetSteerValue = 0
     kbControls(frontWheel, backWheel)
 
-    three.debugBody(this.body)
+    // three.debugBody(this.body)
   }
 
   update (dt) {

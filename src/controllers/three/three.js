@@ -13,7 +13,7 @@ let components = []
 function setup (el) {
   world = new p2.World({ gravity: [0, 0] })
   scene = new THREE.Scene()
-  scene.fog = new THREE.Fog(0xf4bc7a, 10, 30)
+  scene.fog = new THREE.Fog(config.background, 10, 30)
   cameras.free = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
@@ -22,7 +22,7 @@ function setup (el) {
   renderer = new THREE.WebGLRenderer({
     antialias: true
   })
-  renderer.setClearColor(0xf4bc7a, 1)
+  renderer.setClearColor(config.background, 1)
   renderer.setPixelRatio(1)
 
   store.watch('size', resize)
@@ -31,10 +31,7 @@ function setup (el) {
   el.appendChild(renderer.domElement)
   cameras.free.position.z = 5
   switchCamera('free')
-
-  store.set('geo.plane', new THREE.PlaneBufferGeometry(1, 1))
-  store.get('geo.plane').rotateX(-Math.PI / 2)
-  store.get('geo.plane').translate(0.5, 0, 0.5)
+  // store.get('geo.plane').translate(0.5, 0, 0.5)
 
   store.set('mat.blue', new THREE.MeshBasicMaterial({ color: 0x0000ff }))
   store.set('mat.gray', new THREE.MeshBasicMaterial({ color: 0x5a5a5a }))
@@ -90,7 +87,7 @@ function bodyCopy (body, obj3d) {
 }
 
 function debugBody (body) {
-  // addComponent(new BodyViewer(body))
+  addComponent(new BodyViewer(body))
 }
 
 function getScene () { return scene || null }

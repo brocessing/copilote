@@ -17,7 +17,7 @@ export default class Chunk extends ThreeComponent {
     // console.log(opts.road)
     for (let k in opts.road) {
       const road = opts.road[k]
-      this.addComponent(new RoadTile({x: road.x, y: road.y}))
+      this.addComponent(new RoadTile(road))
     }
   }
 

@@ -11,10 +11,10 @@ import map from 'controllers/map/map'
 
 export default class Main extends ThreeComponent {
   setup () {
-    const gridHelper = new THREE.GridHelper(map.getChunkSize(), map.getChunkSize())
-    this.group.add(gridHelper)
-    const axisHelper = new THREE.AxisHelper( 5 )
-    this.group.add(axisHelper)
+    // const gridHelper = new THREE.GridHelper(map.getChunkSize(), map.getChunkSize())
+    // this.group.add(gridHelper)
+    // const axisHelper = new THREE.AxisHelper( 5 )
+    // this.group.add(axisHelper)
 
     this.terrain = this.addComponent(new Terrain())
     this.car = this.addComponent(new Car())

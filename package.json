@@ -11,6 +11,7 @@
     "deploy": "cross-env APP_ENV=ghpages npm run build && ghp build",
     "lint": "npm run lint:js",
     "lint:js": "eslint --ext .js ./config ./scripts ./src --cache",
+    "chunks": "cd static/chunks && for f in *.png; do copit -i $f -o ${f%%.*}.json; done",
     "test": "npm run lint"
   },
   "repository": {
@@ -30,6 +31,7 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.1",
     "browser-sync": "^2.18.13",
+    "copilote-tile-converter": "brocessing/copilote-tile-converter",
     "copy-webpack-plugin": "^4.2.0",
     "cross-env": "^5.1.0",
     "css-loader": "^0.28.7",

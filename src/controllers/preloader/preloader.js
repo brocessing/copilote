@@ -4,7 +4,7 @@ import noop from 'utils/noop'
 import config from 'config'
 
 const loadjs = window.loadjs
-const api = { bindDom, hide, loadJS, loadTextures, loadObjects }
+const api = { bindDom, hide, loadJS, loadTextures, loadObjects, loadChunks }
 
 let $el
 
@@ -48,6 +48,24 @@ function loadObjects () {
         noop,
         function () { reject(new Error('Error downloading ' + filepath)) }
       )
+    }))
+  }
+  return Promise.all(p)
+}
+
+function loadChunks () {
+  const p = []
+  for (let i = 0; i < config.chunks.count; i++) {
+    p.push(new Promise((resolve, reject) => {
+      const xhr = new window.XMLHttpRequest()
+      xhr.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+          config.chunks.onchunkload(i, JSON.parse(this.responseText))
+          return resolve()
+        }
+      }
+      xhr.open('GET', config.chunks.folder + '/' + i + '.json', true)
+      xhr.send()
     }))
   }
   return Promise.all(p)
