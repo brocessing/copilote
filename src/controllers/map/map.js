@@ -8,11 +8,12 @@ const emitter = mitt()
 const DISTVIEW = config.viewDistance // chunk side
 const DISTFROMCENTER = (DISTVIEW - 1) / 2
 const CHUNKSIZE = config.chunkSize
-// const CENTER = CHUNKSIZE / 2 + 0.5
-let chunksPool
-let currentChunk = null
+const MAPCENTER = CHUNKSIZE * ((DISTVIEW - 1) / 2) + (CHUNKSIZE - 1) / 2
+let chunksPool = []
+let currentMiddleChunk = null
 let loadedChunks = {}
 let walkMap = []
+let prevPos = [0, 0]
 
 function allocateWalkMap () {
   for (let y = 0; y < CHUNKSIZE * DISTVIEW; y++) {
@@ -24,8 +25,8 @@ function allocateWalkMap () {
 }
 
 function regenerateWalkMap () {
-  const minChunkX = currentChunk.chunkX - DISTFROMCENTER
-  const minChunkY = currentChunk.chunkY - DISTFROMCENTER
+  const minChunkX = currentMiddleChunk.chunkX - DISTFROMCENTER
+  const minChunkY = currentMiddleChunk.chunkY - DISTFROMCENTER
 
   walkMap.forEach((arr, y) => {
     const relY = y % CHUNKSIZE
@@ -42,16 +43,16 @@ function regenerateWalkMap () {
 }
 
 function mockChunk () {
-  const data = { map: [], road: {} }
+  const data = { map: [], road: {}, props: [], buildings: [] }
   const map = data.map
   const road = data.road
-  for (let x = 0; x < CHUNKSIZE; x++) {
-    map[x] = []
-    for (let y = 0; y < CHUNKSIZE; y++) {
+  for (let y = 0; y < CHUNKSIZE; y++) {
+    map[y] = []
+    for (let x = 0; x < CHUNKSIZE; x++) {
       const isRoad = Math.round(Math.random())
-      map[x][y] = isRoad
+      map[y][x] = isRoad
       if (!isRoad) continue
-      road[x + '.' + y] = { x, y }
+      road[x + '.' + y] = { p: [x, y], c: 255, r: 0, t: 1 }
     }
   }
   return data
@@ -59,6 +60,8 @@ function mockChunk () {
 
 function init () {
   chunksPool = store.get('map.chunks')
+  // for (let i = 0; i < 6; i++) { chunksPool.push(mockChunk()) }
+
   allocateWalkMap()
   const minChunkX = -DISTFROMCENTER
   const maxChunkX = DISTFROMCENTER
@@ -72,7 +75,7 @@ function init () {
     }
   }
   // console.log('salut')
-  currentChunk = getChunkFromPos(0, 0)
+  currentMiddleChunk = getChunkFromPos(0, 0)
   regenerateWalkMap()
 }
 
@@ -107,7 +110,7 @@ function removeChunk (x, y) {
   delete loadedChunks[id]
 }
 
-function onNewCurrentChunk (prevChunkX, prevChunkY, chunkX, chunkY) {
+function onNewMiddleChunk (prevChunkX, prevChunkY, chunkX, chunkY) {
   const xDir = chunkX - prevChunkX
   const yDir = chunkY - prevChunkY
 
@@ -115,13 +118,13 @@ function onNewCurrentChunk (prevChunkX, prevChunkY, chunkX, chunkY) {
   if (xDir !== 0) {
     const chunkXtoRemove = prevChunkX - (DISTFROMCENTER * xDir)
     const chunkXtoAdd = chunkX + (DISTFROMCENTER * xDir)
-    console.log('removeX', chunkXtoRemove, 'addX', chunkXtoAdd)
+    // console.log('removeX', chunkXtoRemove, 'addX', chunkXtoAdd)
     const minChunkY = prevChunkY - DISTFROMCENTER
     const maxChunkY = prevChunkY + DISTFROMCENTER
     for (let y = minChunkY; y <= maxChunkY; y++) {
-      console.log('rem', chunkXtoRemove, y)
+      // console.log('rem', chunkXtoRemove, y)
       removeChunk(chunkXtoRemove, y)
-      console.log('add', chunkXtoAdd, y)
+      // console.log('add', chunkXtoAdd, y)
       addChunk(chunkXtoAdd, y)
     }
 
@@ -132,13 +135,13 @@ function onNewCurrentChunk (prevChunkX, prevChunkY, chunkX, chunkY) {
   if (yDir !== 0) {
     const chunkYtoRemove = prevChunkY - (DISTFROMCENTER * yDir)
     const chunkYtoAdd = chunkY + (DISTFROMCENTER * yDir)
-    console.log('removeY', chunkYtoRemove, 'addY', chunkYtoAdd)
+    // console.log('removeY', chunkYtoRemove, 'addY', chunkYtoAdd)
     const minChunkX = prevChunkX - DISTFROMCENTER
     const maxChunkX = prevChunkX + DISTFROMCENTER
     for (let x = minChunkX; x <= maxChunkX; x++) {
-      console.log('rem', x, chunkYtoRemove)
+      // console.log('rem', x, chunkYtoRemove)
       removeChunk(x, chunkYtoRemove)
-      console.log('add', x, chunkYtoAdd)
+      // console.log('add', x, chunkYtoAdd)
       addChunk(x, chunkYtoAdd)
     }
   }
@@ -146,41 +149,79 @@ function onNewCurrentChunk (prevChunkX, prevChunkY, chunkX, chunkY) {
   // regenerateWalkMap()
 }
 
+function getWalkCoordFromPos (x, y) {
+  x = Math.round(x)
+  y = Math.round(y)
+  const chunk = getChunkFromPos(x, y)
+  if (!chunk) return null
+  const relX = (x >= 0 ? x : CHUNKSIZE + x) % CHUNKSIZE
+  const relY = (y >= 0 ? y : CHUNKSIZE + y) % CHUNKSIZE
+  const wx = (chunk.chunkX - currentMiddleChunk.chunkX) * CHUNKSIZE + (MAPCENTER + relX)
+  const wy = (chunk.chunkY - currentMiddleChunk.chunkY) * CHUNKSIZE + (MAPCENTER + relY)
+  return [wx, wy]
+}
+
 function getRoadFromPos (x, y) {
-  const chunkX = Math.ceil(x / CHUNKSIZE)
-  const chunkY = Math.ceil(y / CHUNKSIZE)
+  x = Math.round(x)
+  y = Math.round(y)
+  const chunkX = Math.floor(x / CHUNKSIZE)
+  const chunkY = Math.floor(y / CHUNKSIZE)
   const chunkId = chunkX + '.' + chunkY
   if (!loadedChunks[chunkId]) return null
-  const relX = x % CHUNKSIZE
-  const relY = y % CHUNKSIZE
+  const relX = (x >= 0 ? x : CHUNKSIZE - x) % CHUNKSIZE
+  const relY = (y >= 0 ? y : CHUNKSIZE - y) % CHUNKSIZE
   const roadId = relX + '.' + relY
-  console.log(loadedChunks[chunkId])
+  // console.log(loadedChunks[chunkId])
   return loadedChunks[chunkId].road[roadId]
     ? loadedChunks[chunkId].road[roadId]
     : null
 }
 
 function getChunkFromPos (x, y) {
-  x = Math.ceil(x / CHUNKSIZE)
-  y = Math.ceil(y / CHUNKSIZE)
+  x = Math.round(x)
+  y = Math.round(y)
+  x = Math.floor(x / CHUNKSIZE)
+  y = Math.floor(y / CHUNKSIZE)
   const id = x + '.' + y
   return loadedChunks[id] ? loadedChunks[id] : null
 }
 
 function updateCenter (x, y) { // pos is three vec3
-  // x -= CHUNKSIZE / 2
-  // y -= CHUNKSIZE / 2
-  const nchunk = getChunkFromPos(x, y)
-  if (nchunk !== null && nchunk !== currentChunk) {
-    // console.log(nchunk)
-    onNewCurrentChunk(currentChunk.chunkX, currentChunk.chunkY, nchunk.chunkX, nchunk.chunkY)
-    currentChunk = nchunk
+  x = Math.round(x)
+  y = Math.round(y)
+
+  const offsetX = x + CHUNKSIZE / 2
+  const offsetY = y + CHUNKSIZE / 2
+  const nchunk = getChunkFromPos(offsetX, offsetY)
+  if (nchunk !== null && nchunk !== currentMiddleChunk) {
+    console.log('newChunk', nchunk.chunkX, nchunk.chunkY)
+    onNewMiddleChunk(currentMiddleChunk.chunkX, currentMiddleChunk.chunkY, nchunk.chunkX, nchunk.chunkY)
+    currentMiddleChunk = nchunk
     regenerateWalkMap()
+  }
+
+  if (prevPos[0] !== x || prevPos[1] !== y) {
+    prevPos[0] = x
+    prevPos[1] = y
+    const chunk = getChunkFromPos(x, y)
+    const relX = (x >= 0 ? x : CHUNKSIZE + x) % CHUNKSIZE
+    const relY = (y >= 0 ? y : CHUNKSIZE + y) % CHUNKSIZE
+    const walk = getWalkCoordFromPos(x, y)
+    console.log(
+      'tile:', x, y,
+      'chunk:', chunk.chunkX, chunk.chunkY,
+      'chunktile:', relX, relY,
+      'walkmap:', walkMap[walk[1]][walk[0]]
+    )
   }
 }
 
 function getChunkSize () {
   return CHUNKSIZE
+}
+
+function getWalkMap () {
+  return walkMap
 }
 
 export default {
@@ -189,5 +230,7 @@ export default {
   getChunkSize,
   getChunkFromPos,
   getRoadFromPos,
+  getWalkCoordFromPos,
+  getWalkMap,
   on: emitter.on
 }

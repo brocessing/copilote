@@ -11,8 +11,8 @@ import map from 'controllers/map/map'
 
 export default class Main extends ThreeComponent {
   setup () {
-    // const gridHelper = new THREE.GridHelper(map.getChunkSize(), map.getChunkSize())
-    // this.group.add(gridHelper)
+    const gridHelper = new THREE.GridHelper(map.getChunkSize() * 3, map.getChunkSize() * 3)
+    this.group.add(gridHelper)
     // const axisHelper = new THREE.AxisHelper( 5 )
     // this.group.add(axisHelper)
 

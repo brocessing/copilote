@@ -3,6 +3,7 @@
  */
 
 import mitt from 'mitt'
+import config from 'config'
 
 const emitter = mitt()
 
@@ -12,7 +13,7 @@ const languages = {
   'en': 'en-EN'
 }
 
-const DEBUG = true
+const DEBUG = config.speechDebug
 const REBOOTDELAY = 20000
 // const DEFAULT_LANGUAGE = 'fr'
 

@@ -24,7 +24,7 @@ export default class Homescreen extends DomComponent {
   }
 
   willUnmount () {
-    console.log('salut')
+    // console.log('salut')
     this.refs.frenchButton.removeEventListener('click', this.frenchClick)
   }
 }
