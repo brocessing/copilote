@@ -13,7 +13,7 @@ export default {
 
   viewDistance: 3,
   chunkSize: 11,
-  background: 0xf6bf79,
+  background: 0xb7b7b7,
 
   // autoload vendors libraries during the preloading phase
   vendors: [
@@ -37,13 +37,14 @@ export default {
     },
     'textures/roads.png': function (tex) {
       store.set('tex.road', tex)
-      tex.format = THREE.RGBFormat
+      tex.format = THREE.RGBAFormat
       tex.magFilter = THREE.NearestFilter
       // tex.minFilter = THREE.LinearMigMagLinearFilter
       tex.needsUpdate = true
       store.set('mat.road', new THREE.MeshBasicMaterial({
         color: 0xffffff,
-        map: tex
+        map: tex,
+        transparent: true
       }))
       const roads = []
       store.set('geo.roads', roads)
