@@ -15,7 +15,7 @@ export default class Driver {
 
     this.pos = this.chassis.position
     this.vel = this.chassis.velocity
-    // console.log(map.getRoadFromPos(this.pos[0], this.pos[1]))
+    console.log(map.getRoadFromPos(this.pos[0], this.pos[1]))
   }
 
   randomOrders () {

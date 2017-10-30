@@ -6,6 +6,7 @@ import tilePlane from 'utils/tilePlane'
 export default {
   quickstart: 'fr',
   speechDebug: false,
+  locDebug: true,
   debug: true,
   fpsCounter: true,
   p2steps: 1 / 60,
