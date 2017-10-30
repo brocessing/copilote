@@ -3,7 +3,7 @@ import random from 'utils/random'
 import ThreeComponent from 'abstractions/ThreeComponent/ThreeComponent'
 import three from 'controllers/three/three'
 
-import Car from 'components/three/Car/Car'
+import PlayerCar from 'components/three/PlayerCar/PlayerCar'
 import CameraFollow from 'components/three/CameraFollow/CameraFollow'
 import Box from 'components/three/Box/Box'
 import Terrain from 'components/three/Terrain/Terrain'
@@ -17,7 +17,7 @@ export default class Main extends ThreeComponent {
     // this.group.add(axisHelper)
 
     this.terrain = this.addComponent(new Terrain())
-    this.car = this.addComponent(new Car())
+    this.playerCar = this.addComponent(new PlayerCar())
     // for (let i = 0; i < 150; i++) {
     //   this.addComponent(new Box({
     //     x: i * random(-0.5, 0.5),
@@ -28,7 +28,7 @@ export default class Main extends ThreeComponent {
     // }
 
     this.cameraFollow = new CameraFollow()
-    this.cameraFollow.setTarget(this.car.group)
+    this.cameraFollow.setTarget(this.playerCar.group)
     three.addCamera('car', this.cameraFollow.camera)
     three.switchCamera('car')
   }

@@ -67,7 +67,7 @@ export default {
   // autoload chunks
   chunks: {
     folder: 'chunks',
-    count: 7,
+    count: 5,
     onchunkload: function (id, obj) {
       if (!store.get('map.chunks')) store.set('map.chunks', [])
       store.get('map.chunks')[id] = obj

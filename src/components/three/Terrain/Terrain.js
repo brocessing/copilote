@@ -11,7 +11,7 @@ export default class Terrain extends ThreeComponent {
     map.on('chunk-removed', this.chunkRemoved)
     this.chunks = {}
     map.init()
-    console.log('terrain')
+    // console.log('terrain')
   }
 
   removeChunk (id) {
@@ -29,7 +29,7 @@ export default class Terrain extends ThreeComponent {
   }
 
   chunkAdded (data) {
-    console.log(data)
+    // console.log(data)
     if (this.chunks[data.id]) this.removeChunk(data.id)
     this.addChunk(data.id, data)
   }

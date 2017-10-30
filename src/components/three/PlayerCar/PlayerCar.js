@@ -5,13 +5,15 @@ import store from 'utils/store'
 import three from 'controllers/three/three'
 import ThreeComponent from 'abstractions/ThreeComponent/ThreeComponent'
 import kbControls from 'utils/keyboardControls'
+import Driver from 'components/three/Driver/Driver'
 
-export default class Car extends ThreeComponent {
+export default class PlayerCar extends ThreeComponent {
   setup () {
     this.meshes.car = new THREE.Mesh(store.get('geo.r5'), store.get('mat.gradient'))
     // this.meshes.car.scale.set(0.07, 0.07, 0.07)
     this.group.add(this.meshes.car)
     this.targetRot = 0
+
     this.body = new p2.Body({ mass: 1, position: [0, 0] })
     const box = new p2.Box({ width: 0.08, height: 0.16 })
     this.body.addShape(box)
@@ -25,20 +27,23 @@ export default class Car extends ThreeComponent {
     frontWheel.targetSteerValue = 0
     kbControls(frontWheel, backWheel)
 
-    // three.debugBody(this.body)
+    this.driver = new Driver({ vehicle: this.vehicle })
   }
 
   update (dt) {
     super.update(dt)
-    const vel = this.body.velocity
-    // console.log(this.body.shapes)
-    const max = 1 ** 2
-    const speed = (vel[0] ** 2 + vel[1] ** 2) / 2
-    if (speed > max) {
-      const mult = max / speed
-      this.body.velocity[0] *= mult
-      this.body.velocity[1] *= mult
-    }
+    this.driver.update(dt)
+    // const vel = this.body.velocity
+    // // console.log(this.body.shapes)
+    // const max = 1 ** 2
+    // const speed = (vel[0] ** 2 + vel[1] ** 2) / 2
+    // if (speed > max) {
+    //   const mult = max / speed
+    //   this.body.velocity[0] *= mult
+    //   this.body.velocity[1] *= mult
+    // }
+    store.set('car.speed', this.vehicle.speed)
+    store.set('car.angvel', this.body.angularVelocity)
     // // this.body.velocity[0] = Math.min(1, Math.max(-1, this.body.velocity[0]))
     // // this.body.velocity[1] = Math.min(1, Math.max(-1, this.body.velocity[1]))
     three.bodyCopy(this.body, this.group)
@@ -47,7 +52,7 @@ export default class Car extends ThreeComponent {
     this.meshes.car.rotation.z += (this.targetRot - this.meshes.car.rotation.z) * 0.2
     this.targetRot = this.body.angularVelocity / 100 * -(this.body.velocity[0] + this.body.velocity[1])
     this.meshes.car.rotation.x += (this.targetRot - this.meshes.car.rotation.x) * 0.1
-    store.set('car.angvel', this.body.angularVelocity)
+
     map.updateCenter(this.group.position.x, this.group.position.z)
   }
 }

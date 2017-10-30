@@ -13,7 +13,7 @@ let components = []
 function setup (el) {
   world = new p2.World({ gravity: [0, 0] })
   scene = new THREE.Scene()
-  scene.fog = new THREE.Fog(config.background, 10, 30)
+  scene.fog = new THREE.Fog(config.background, 5, 15)
   cameras.free = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
