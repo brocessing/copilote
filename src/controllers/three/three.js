@@ -23,7 +23,7 @@ function setup (el) {
     antialias: true
   })
   renderer.setClearColor(config.background, 1)
-  renderer.setPixelRatio(1)
+  renderer.setPixelRatio(window.devicePixelRatio || 1)
 
   store.watch('size', resize)
   resize(store.get('size'))

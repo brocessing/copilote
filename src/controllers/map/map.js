@@ -55,7 +55,7 @@ function regenerateWalkMap () {
     }
   })
 
-  console.table(walkMap)
+  // console.table(walkMap)
 }
 
 function mockChunk () {
@@ -180,8 +180,8 @@ function getWalkCoordFromThreePos (tx, ty) {
 function getWalkCoordFromPos (x, y) {
   const wx = x + CHUNKSIZE * (CHUNKDISTFROMCENTER - currentMiddleChunk.chunkX)
   const wy = y + CHUNKSIZE * (CHUNKDISTFROMCENTER - currentMiddleChunk.chunkY)
-  console.log('w', x, y, wx, wy)
-  console.log(wx, wy)
+  // console.log('w', x, y, wx, wy)
+  // console.log(wx, wy)
   return [wx, wy]
 }
 
@@ -196,16 +196,16 @@ function getRoadFromPos (x, y) {
   const chunkX = Math.floor(x / CHUNKSIZE)
   const chunkY = Math.floor(y / CHUNKSIZE)
   const chunkId = chunkX + '.' + chunkY
+  // console.log(x, y, loadedChunks[chunkId])
   if (!loadedChunks[chunkId]) return null
   const relX = x < 0
-    ? (x % CHUNKSIZE + CHUNKSIZE) % CHUNKSIZE + CHUNKCENTER - 1
-    : x % CHUNKSIZE + CHUNKCENTER - 1
+    ? (x % CHUNKSIZE + CHUNKSIZE) % CHUNKSIZE
+    : x % CHUNKSIZE
   const relY = y < 0
-    ? (y % CHUNKSIZE + CHUNKSIZE) % CHUNKSIZE + CHUNKCENTER - 1
-    : y % CHUNKSIZE + CHUNKCENTER - 1
+    ? (y % CHUNKSIZE + CHUNKSIZE) % CHUNKSIZE
+    : y % CHUNKSIZE
   const roadId = relX + '.' + relY
-  console.log(x, y, roadId)
-  console.log(loadedChunks[chunkId])
+  // console.log(loadedChunks[chunkId])
   return loadedChunks[chunkId].road[roadId]
     ? loadedChunks[chunkId].road[roadId]
     : null
@@ -226,6 +226,8 @@ function getChunkFromPos (x, y) {
 }
 
 function updateCenter (x, y, forcedebug = false) { // pos is three vec3
+  const tx = Math.round(x)
+  const ty = Math.round(y)
   // convert three pos to map pos
   x = Math.floor(Math.round(x) + CHUNKSIZE / 2)
   y = Math.floor(Math.round(y) + CHUNKSIZE / 2)
@@ -252,10 +254,11 @@ function updateCenter (x, y, forcedebug = false) { // pos is three vec3
         ? (y % CHUNKSIZE + CHUNKSIZE) % CHUNKSIZE
         : y % CHUNKSIZE
       const walk = getWalkCoordFromPos(x, y)
+      // console.log(getRoadFromPos(x, y))
       // console.log('walk', walk)
       // console.log(getPosFromWalkCoord(walk[0], walk[1]))
       domDebug.innerHTML = (
-        `pos: ${x} ${y} | chunk: ${chunk.chunkX} ${chunk.chunkY} | chunkPos: ${relX} ${relY} | isRoad: ${walkMap[walk[1]][walk[0]]}`
+        `three: ${tx} ${ty} | pos: ${x} ${y} | chunk: ${chunk.chunkX} ${chunk.chunkY} | chunkPos: ${relX} ${relY} | isRoad: ${walkMap[walk[1]][walk[0]]}`
       )
     }
   }

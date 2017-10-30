@@ -27,8 +27,8 @@ export default class CameraCar extends ThreeComponent {
     super.update(dt)
 
     this.dist += (Math.max(1, store.get('car.speed') * 1.5) - this.dist) * 0.02
-    this.targetVec.copy(this.target.localToWorld(this.ipos.clone().setLength(this.dist)))
-    // this.targetVec.copy(this.target.position).add(this.ipos.clone().setLength(this.dist))
+    // this.targetVec.copy(this.target.localToWorld(this.ipos.clone().setLength(this.dist)))
+    this.targetVec.copy(this.target.position).add(this.ipos.clone().setLength(this.dist))
     this.camera.position.add(this.targetVec.sub(this.camera.position).multiply(this.lerp))
 
     const backQt = this.camera.quaternion.clone()
@@ -39,8 +39,8 @@ export default class CameraCar extends ThreeComponent {
 
     this.angvel += (store.get('car.angvel') - this.angvel) * this.alerp
     const dangvel = this.pangvel - this.angvel
-    this.camera.rotation.x -= dangvel / 100
-    // this.camera.rotation.y += dangvel / 100
+    // this.camera.rotation.x -= dangvel / 100
+    this.camera.rotation.y += dangvel / 100
   }
 
   setTarget (obj) {

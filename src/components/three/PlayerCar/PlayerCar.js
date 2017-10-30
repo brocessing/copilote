@@ -9,7 +9,7 @@ import Driver from 'components/three/Driver/Driver'
 
 export default class PlayerCar extends ThreeComponent {
   setup () {
-    this.meshes.car = new THREE.Mesh(store.get('geo.r5'), store.get('mat.gradient'))
+    this.meshes.car = new THREE.Mesh(store.get('geo.bandit'), store.get('mat.cars'))
     // this.meshes.car.scale.set(0.07, 0.07, 0.07)
     this.group.add(this.meshes.car)
     this.targetRot = 0
