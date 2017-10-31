@@ -10,7 +10,7 @@ export default {
   debug: true,
   fpsCounter: true,
   p2steps: 1 / 60,
-
+  enableSpeech: true,
   viewDistance: 3,
   chunkSize: 11,
   background: 0xffda48,
@@ -26,20 +26,20 @@ export default {
 
   // autoload textures during the preloading phase
   textures: {
-    'textures/gradients.png': function (tex) {
-      store.set('tex.gradient', tex)
-      tex.format = THREE.RGBFormat
-      tex.needsUpdate = true
-      store.set('mat.gradient', new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        map: tex
-      }))
-    },
+    // 'textures/gradients.png': function (tex) {
+    //   store.set('tex.gradient', tex)
+    //   tex.format = THREE.RGBFormat
+    //   tex.needsUpdate = true
+    //   store.set('mat.cars', new THREE.MeshBasicMaterial({
+    //     color: 0xffffff,
+    //     map: tex
+    //   }))
+    // },
     'textures/carsMap.png': function (tex) {
       store.set('tex.cars', tex)
       tex.format = THREE.RGBAFormat
       tex.magFilter = THREE.NearestFilter
-      tex.minFilter = THREE.Linear
+      tex.minFilter = THREE.LinearFilter
       tex.needsUpdate = true
       store.set('mat.cars', new THREE.MeshBasicMaterial({
         transparent: true,
@@ -73,16 +73,16 @@ export default {
       tex.needsUpdate = true
       store.set('mat.road', new THREE.MeshBasicMaterial({
         color: 0xffffff,
-        map: tex,
-        transparent: true
+        map: tex
+        // transparent: true
       }))
       const roads = []
       store.set('geo.roads', roads)
-      roads[0] = tilePlane({ x: 0, y: 384, tileSize: 128, texSize: 512 })
-      roads[2] = tilePlane({ x: 0, y: 384, tileSize: 128, texSize: 512 })
-      roads[3] = tilePlane({ x: 0, y: 384, tileSize: 128, texSize: 512 })
-      roads[4] = tilePlane({ x: 0, y: 384, tileSize: 128, texSize: 512 })
-      roads[1] = tilePlane({ x: 0, y: 384, tileSize: 128, texSize: 512 })
+      roads[0] = tilePlane({ x: 1, y: 129, tileSize: 126, texSize: 512 })
+      roads[1] = tilePlane({ x: 1, y: 385, tileSize: 126, texSize: 512 })
+      roads[2] = tilePlane({ x: 129, y: 129, tileSize: 126, texSize: 512 })
+      roads[3] = tilePlane({ x: 1, y: 257, tileSize: 126, texSize: 512 })
+      roads[4] = tilePlane({ x: 129, y: 257, tileSize: 126, texSize: 512 })
     }
   },
 
@@ -91,7 +91,7 @@ export default {
     'models/bandit.json': function (geo, mats) {
       const scale = 0.4
       geo.scale(scale, scale, scale)
-      geo.translate(0, 0.1, 0)
+      geo.translate(0, 0, 0)
       store.set('geo.bandit', geo)
     }
   },

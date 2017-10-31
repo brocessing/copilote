@@ -22,6 +22,8 @@ function setup (el) {
   renderer = new THREE.WebGLRenderer({
     antialias: true
   })
+  // renderer.shadowMap.enabled = true
+  // renderer.shadowMap.type = THREE.BasicShadowMap
   renderer.setClearColor(config.background, 1)
   renderer.setPixelRatio(window.devicePixelRatio || 1)
 
@@ -33,6 +35,9 @@ function setup (el) {
   switchCamera('free')
   // store.get('geo.plane').translate(0.5, 0, 0.5)
 
+  store.set('mat.orange', new THREE.MeshBasicMaterial({ color: 0xf6b849 }))
+  store.set('mat.red', new THREE.MeshBasicMaterial({ color: 0xff0000 }))
+  store.set('mat.green', new THREE.MeshBasicMaterial({ color: 0x00ff00 }))
   store.set('mat.blue', new THREE.MeshBasicMaterial({ color: 0x0000ff }))
   store.set('mat.gray', new THREE.MeshBasicMaterial({ color: 0x5a5a5a }))
 
@@ -80,9 +85,9 @@ function resize (size) {
   components.forEach(component => component.resize(size))
 }
 
-function bodyCopy (body, obj3d) {
-  obj3d.position.x = -body.position[0]
-  obj3d.position.z = body.position[1]
+function bodyCopy (body, obj3d, offx = 0, offy = 0) {
+  obj3d.position.x = -body.position[0] - offx
+  obj3d.position.z = body.position[1] - offy
   obj3d.rotation.y = body.angle
 }
 

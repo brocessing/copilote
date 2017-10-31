@@ -25,27 +25,20 @@ export default class PlayerCar extends ThreeComponent {
     const backWheel = this.vehicle.addWheel({ localPosition: [0, -0.5] })
     backWheel.setSideFriction(1)
     frontWheel.targetSteerValue = 0
-    kbControls(frontWheel, backWheel)
 
-    this.driver = new Driver({ vehicle: this.vehicle })
+    box.material = new p2.Material()
+    store.set('car.p2material', box.material)
+
+    this.driver = new Driver({ vehicle: this.vehicle, backWheel, frontWheel })
   }
 
   update (dt) {
     super.update(dt)
     this.driver.update(dt)
-    // const vel = this.body.velocity
-    // // console.log(this.body.shapes)
-    // const max = 1 ** 2
-    // const speed = (vel[0] ** 2 + vel[1] ** 2) / 2
-    // if (speed > max) {
-    //   const mult = max / speed
-    //   this.body.velocity[0] *= mult
-    //   this.body.velocity[1] *= mult
-    // }
+
     store.set('car.speed', this.vehicle.speed)
     store.set('car.angvel', this.body.angularVelocity)
-    // // this.body.velocity[0] = Math.min(1, Math.max(-1, this.body.velocity[0]))
-    // // this.body.velocity[1] = Math.min(1, Math.max(-1, this.body.velocity[1]))
+
     three.bodyCopy(this.body, this.group)
     this.frontWheel.steerValue += (this.frontWheel.targetSteerValue - this.frontWheel.steerValue) * 0.08
     this.targetRot = this.body.angularVelocity / 80 * -(this.body.velocity[0] + this.body.velocity[1])

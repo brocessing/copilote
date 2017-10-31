@@ -36,7 +36,7 @@ Promise.resolve()
   .then(preloader.loadChunks)
   .then(threeSetup)
   .then(() => canvas.setup())
-  .then(speech.start)
+  .then(() => config.enableSpeech && speech.start())
   .then(volume.start)
   .then(() => home.hydrate(document.querySelector('.homescreen')))
   .then(home.show)
@@ -52,8 +52,8 @@ function threeSetup () {
 function startExperience (lang = 'fr') {
   // TODO: Order setlang method?
   Promise.resolve()
-    .then(() => speech.setLang(lang))
-    .then(orders.listen)
+    .then(() => config.enableSpeech && speech.setLang(lang))
+    .then(() => config.enableSpeech && orders.listen)
     // initiate the GUI just before leaving the Home
     // and just after start listening to orders
     .then(() => gameGui.hydrate(document.querySelector('.game-gui')))

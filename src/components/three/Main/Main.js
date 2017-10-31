@@ -15,9 +15,8 @@ export default class Main extends ThreeComponent {
     this.group.add(gridHelper)
     // const axisHelper = new THREE.AxisHelper( 5 )
     // this.group.add(axisHelper)
-
-    this.terrain = this.addComponent(new Terrain())
     this.playerCar = this.addComponent(new PlayerCar())
+    this.terrain = this.addComponent(new Terrain())
     // for (let i = 0; i < 150; i++) {
     //   this.addComponent(new Box({
     //     x: i * random(-0.5, 0.5),

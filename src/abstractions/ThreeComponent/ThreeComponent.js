@@ -47,6 +47,7 @@ export default class ThreeComponent {
 
     if (this.body) this.world.removeBody(this.body)
     if (this.vehicle) this.vehicle.removeFromWorld()
+    this.shape = null
     this.body = null
     this.vehicle = null
     this.scene = null

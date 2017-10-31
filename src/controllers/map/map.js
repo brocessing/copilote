@@ -106,7 +106,9 @@ function newChunkFromPool (absChunkX, absChunkY) {
     x: absChunkX * CHUNKSIZE - CHUNKSIZE / 2,
     y: absChunkY * CHUNKSIZE - CHUNKSIZE / 2,
     road: chunk.road,
-    map: chunk.map
+    map: chunk.map,
+    buildings: chunk.buildings,
+    props: chunk.props
   }
 }
 
