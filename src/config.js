@@ -14,14 +14,14 @@ export default {
   viewDistance: 3,
   chunkSize: 11,
   background: 0xffda48,
+  manualDrive: false,
 
   // autoload vendors libraries during the preloading phase
   vendors: [
     'vendors/dat.gui.min.js',
     'vendors/three.min.js',
     'vendors/howler.min.js',
-    'vendors/p2.min.js',
-    'vendors/p2.renderer.min.js'
+    'vendors/p2.min.js'
   ],
 
   // autoload textures during the preloading phase

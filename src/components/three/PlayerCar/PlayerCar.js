@@ -21,7 +21,7 @@ export default class PlayerCar extends ThreeComponent {
     this.vehicle = new p2.TopDownVehicle(this.body)
     const frontWheel = this.vehicle.addWheel({ localPosition: [0, 0.5] })
     this.frontWheel = frontWheel
-    frontWheel.setSideFriction(2)
+    frontWheel.setSideFriction(3)
     const backWheel = this.vehicle.addWheel({ localPosition: [0, -0.5] })
     backWheel.setSideFriction(1)
     frontWheel.targetSteerValue = 0

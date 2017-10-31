@@ -5,7 +5,7 @@ export default function kbControls (frontWheel, backWheel) {
     '38': 0, // up
     '40': 0 // down
   }
-  const maxSteer = Math.PI / 3.5
+  const maxSteer = Math.PI / 3.6
 
   document.addEventListener('keydown', (evt) => {
     keys[evt.keyCode] = 1
