@@ -52,8 +52,8 @@ export default class Driver {
     this.manual = config.manualDrive
     if (this.manual) kbctrl(this.frontWheel, this.backWheel)
 
-    this.forward = false
-    this.backward = false
+    this.forwardon = false
+    this.backwardmode = false
     this.turn = 0
     this.dir = 0
 
@@ -193,51 +193,37 @@ export default class Driver {
       this.improviseFromPos(prev, current, quantity)
     }
 
+
+    // FOLLOW ALGORYTHM
+
     const waypoint = this.wayPoints[0]
-    const wangle = nmod(waypoint.group.rotation.y - Math.PI, Math.PI * 2)
-    const angle = nmod(this.chassis.angle, Math.PI * 2)
+    const wpNormAng = nmod(waypoint.group.rotation.y - Math.PI, Math.PI * 2)
+    const carNormAng = nmod(this.chassis.angle, Math.PI * 2)
 
-    let mangle = nmod(Math.atan2(waypoint.group.position.z - this.pos[1], waypoint.group.position.x + this.pos[0]) + wangle - Math.PI / 2, Math.PI * 2)
-    if (mangle > Math.PI) mangle = mangle - Math.PI * 2
-    const offH = -this.pos[0] - waypoint.group.position.x
-    const offV = this.pos[1] - waypoint.group.position.y
-    let off
-    if (wangle === 0) off = -offH
-    else if (wangle === Math.PI * 0.5) off = offV
-    else if (wangle === Math.PI) off = offH
-    else if (wangle === Math.PI * 1.5) off = -offV
+    // the parallelAng method
+    // more smooth but the parallel can lost the car
+    let parallelAng = wpNormAng - carNormAng
+    if (Math.abs(wpNormAng - carNormAng) >= Math.PI) parallelAng -= Math.sign(wpNormAng - carNormAng) * (Math.PI * 2)
 
-    console.log(
-      (wangle * 180 / Math.PI).toFixed(),
-      (angle * 180 / Math.PI).toFixed(),
-      // (mangle * 180 / Math.PI).toFixed()
-      offH.toFixed(2), offV.toFixed(2)
-    )
+    // the lookAtAng target method
+    // higher risk to hit buildings
+    let lookAtAng = -Math.atan2(
+      waypoint.group.position.z - this.pos[1], waypoint.group.position.x + this.pos[0]
+    ) + Math.PI / 2 - this.chassis.angle
+    if (Math.abs(lookAtAng) >= Math.PI) lookAtAng -= Math.sign(lookAtAng) * (Math.PI * 2)
 
-    let a = Math.abs(wangle - angle) < Math.PI
-      ? wangle - angle
-      : wangle - angle - Math.sign(wangle - angle) * (Math.PI * 2)
+    // blend the two methods together
+    let steerAng = parallelAng * 0.75 + lookAtAng * 0.25
 
-    // if (a < 0.05 && a > -0.05) {
-    //   const f = (0.2 - Math.abs(a)) * 5
-    //   a -= mangle * f * 5
-    // }
-
-    console.log(a)
-    // console.log(a)
-    // const a = Math.sign((wangle - angle) + Math.PI) === 1
-    //   ? wangle - angle
-    //   : wangle - angle + Math.PI * 2
-    // console.log(a)
+    // clamp the value
+    steerAng = Math.max(-MAXSTEER, Math.min(MAXSTEER, steerAng))
 
     if (this.manual) return
-    this.forward = true
-    if (this.forward) this.frontWheel.engineForce = 3
-    // if (a > 0.2) this.turn = 1
-    // else if (a < -0.2) this.turn = -1
-    // else this.turn = 0
-    const steer = Math.max(-MAXSTEER, Math.min(MAXSTEER, a))
-    this.frontWheel.targetSteerValue = steer
-    this.backWheel.targetSteerValue = steer
+
+    this.forwardon = true
+    if (this.forwardon) this.frontWheel.engineForce = 3
+
+    this.frontWheel.targetSteerValue = steerAng
+    this.backWheel.targetSteerValue = steerAng
   }
 }
