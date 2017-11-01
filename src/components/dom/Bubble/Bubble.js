@@ -17,20 +17,20 @@ export default class Bubble extends DomComponent {
     return el
   }
 
-  show() {
+  show () {
   // show() return a pormise
-  return new Promise((resolve, reject) => {
-    // call resolve() when animation is done
-  })
-}
+    return new Promise((resolve, reject) => {
+      // call resolve() when animation is done
+    })
+  }
 
   timeEnd () {
     this.destroy()
   }
 
   didMount () {
-    console.log(orders.on)
-    console.log(volume.getVolume()*1000)
+    // console.log(orders.on)
+    // console.log(volume.getVolume() * 1000)
     this.show()
   }
 }

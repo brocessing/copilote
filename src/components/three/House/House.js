@@ -1,5 +1,6 @@
 /* global THREE, p2 */
 
+import config from 'config'
 import store from 'utils/store'
 import three from 'controllers/three/three'
 import ThreeComponent from 'abstractions/ThreeComponent/ThreeComponent'
@@ -9,7 +10,10 @@ export default class House extends ThreeComponent {
     // console.log(x, y)
     this.cx = cx
     this.cy = cy
-    this.group = new THREE.Mesh(store.get('geo.box'), store.get('mat.orange'))
+    this.group = new THREE.Mesh(
+      store.get('geo.box'),
+      !config.lofi ? store.get('mat.orange') : store.get('mat.wireframe')
+    )
     this.group.scale.set(1, 4, 1)
     this.group.position.y = 2
     this.body = new p2.Body({ position: [-(cx + x + 0.5), cy + y + 0.5] })

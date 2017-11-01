@@ -2,12 +2,13 @@ import orders from 'controllers/orders/orders'
 
 import DomComponent from 'abstractions/DomComponent/DomComponent'
 
+import Minimap from 'components/dom/Minimap/Minimap'
 import Bubble from 'components/dom/Bubble/Bubble'
 import volume from 'controllers/volume/volume'
 
-
 export default class GameGUI extends DomComponent {
   didInit () {
+    this.minimap = new Minimap()
     this.onOrder = this.onOrder.bind(this)
     this.bubbles = []
   }
@@ -33,6 +34,10 @@ export default class GameGUI extends DomComponent {
         bubble.timeEnd()
       }, 3000)
     }
+  }
+
+  willMount (el) {
+    this.minimap.mount(el)
   }
 
   didMount () {

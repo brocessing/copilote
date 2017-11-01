@@ -3,18 +3,23 @@
 import store from 'utils/store'
 import tilePlane from 'utils/tilePlane'
 
+const LOFI = (window.location.hash && window.location.hash === '#lofi')
+
 export default {
+  lofi: LOFI, // Special case for RNO melting computer
+  enableSpeech: true, // Disable this to test on others navigators
   quickstart: 'fr',
   speechDebug: true,
   locDebug: true,
   debug: true,
   fpsCounter: true,
   p2steps: 1 / 60,
-  enableSpeech: true,
   viewDistance: 3,
   chunkSize: 11,
-  background: 0xffda48,
+  background: !LOFI ? 0xffda48 : 0x000000,
   manualDrive: true,
+  cullingMin: !LOFI ? 0.001 : 0.1,
+  cullingMax: !LOFI ? 30 : 5,
 
   // autoload vendors libraries during the preloading phase
   vendors: [
@@ -24,19 +29,30 @@ export default {
     'vendors/p2.min.js'
   ],
 
+  // create commonly used materials
+  initCommonMaterials: function () {
+    store.set('mat.orange', new THREE.MeshBasicMaterial({ color: 0xf6b849 }))
+    store.set('mat.red', new THREE.MeshBasicMaterial({ color: 0xff0000 }))
+    store.set('mat.green', new THREE.MeshBasicMaterial({ color: 0x00ff00 }))
+    store.set('mat.blue', new THREE.MeshBasicMaterial({ color: 0x0000ff }))
+    store.set('mat.gray', new THREE.MeshBasicMaterial({ color: 0x5a5a5a }))
+    store.set('mat.shadow', new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.7 }))
+
+    store.set('mat.wireframe', new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true }))
+    store.set('mat.wfwhite', new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true }))
+    store.set('mat.wfgray', new THREE.MeshBasicMaterial({ color: 0x999999, wireframe: true }))
+  },
+
+  // create commonly used geometries
+  initCommonGeometries: function () {
+    store.set('geo.box', new THREE.BoxBufferGeometry(1, 1, 1))
+    store.set('geo.plane', new THREE.PlaneBufferGeometry(1, 1))
+  },
+
   // autoload textures during the preloading phase
   textures: {
-    // 'textures/gradients.png': function (tex) {
-    //   store.set('tex.gradient', tex)
-    //   tex.format = THREE.RGBFormat
-    //   tex.needsUpdate = true
-    //   store.set('mat.cars', new THREE.MeshBasicMaterial({
-    //     color: 0xffffff,
-    //     map: tex
-    //   }))
-    // },
     'textures/carsMap.png': function (tex) {
-      store.set('tex.cars', tex)
+      if (LOFI) return store.set('mat.cars', store.get('mat.wfwhite'))
       tex.format = THREE.RGBAFormat
       tex.magFilter = THREE.NearestFilter
       tex.minFilter = THREE.LinearFilter
@@ -47,38 +63,23 @@ export default {
         side: THREE.DoubleSide
       }))
     },
-    // 'textures/roads.png': function (tex) {
-    //   store.set('tex.road', tex)
-    //   tex.format = THREE.RGBAFormat
-    //   tex.magFilter = THREE.NearestFilter
-    //   // tex.minFilter = THREE.LinearMigMagLinearFilter
-    //   tex.needsUpdate = true
-    //   store.set('mat.road', new THREE.MeshBasicMaterial({
-    //     color: 0xffffff,
-    //     map: tex,
-    //     transparent: true
-    //   }))
-    //   const roads = []
-    //   store.set('geo.roads', roads)
-    //   roads[0] = tilePlane({ x: 4, y: 4, tileSize: 64, texSize: 256 })
-    //   roads[2] = tilePlane({ x: 72, y: 4, tileSize: 64, texSize: 256 })
-    //   roads[3] = tilePlane({ x: 4, y: 72, tileSize: 64, texSize: 256 })
-    //   roads[4] = tilePlane({ x: 72, y: 72, tileSize: 64, texSize: 256 })
-    //   roads[1] = tilePlane({ x: 4, y: 140, tileSize: 64, texSize: 256 })
-    // }
+
     'textures/roadsMap.png': function (tex) {
-      store.set('tex.road', tex)
-      tex.format = THREE.RGBAFormat
+      const roads = []
+      store.set('geo.roads', roads)
+      if (LOFI) {
+        store.set('mat.road', store.get('mat.wfgray'))
+        const road = tilePlane({ x: 0, y: 1, tileSize: 1, texSize: 1 })
+        for (let i = 0; i < 5; i++) roads[i] = road
+        return
+      }
+      tex.format = THREE.RGBFormat
       tex.magFilter = THREE.NearestFilter
-      // tex.minFilter = THREE.LinearMigMagLinearFilter
       tex.needsUpdate = true
       store.set('mat.road', new THREE.MeshBasicMaterial({
         color: 0xffffff,
         map: tex
-        // transparent: true
       }))
-      const roads = []
-      store.set('geo.roads', roads)
       roads[0] = tilePlane({ x: 1, y: 129, tileSize: 126, texSize: 512 })
       roads[1] = tilePlane({ x: 1, y: 385, tileSize: 126, texSize: 512 })
       roads[2] = tilePlane({ x: 129, y: 129, tileSize: 126, texSize: 512 })

@@ -13,7 +13,7 @@ let components = []
 function setup (el) {
   world = new p2.World({ gravity: [0, 0] })
   scene = new THREE.Scene()
-  scene.fog = new THREE.Fog(config.background, 5, 15)
+  scene.fog = new THREE.Fog(config.background, config.cullingMax / 3, config.cullingMax / 2)
   cameras.free = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
@@ -25,7 +25,11 @@ function setup (el) {
   // renderer.shadowMap.enabled = true
   // renderer.shadowMap.type = THREE.BasicShadowMap
   renderer.setClearColor(config.background, 1)
-  renderer.setPixelRatio(window.devicePixelRatio || 1)
+  if (!config.lofi) {
+    renderer.setPixelRatio(window.devicePixelRatio || 1)
+  } else {
+    renderer.setPixelRatio(0.5)
+  }
 
   store.watch('size', resize)
   resize(store.get('size'))
@@ -34,21 +38,6 @@ function setup (el) {
   cameras.free.position.z = 5
   switchCamera('free')
   // store.get('geo.plane').translate(0.5, 0, 0.5)
-
-  store.set('mat.orange', new THREE.MeshBasicMaterial({ color: 0xf6b849 }))
-  store.set('mat.red', new THREE.MeshBasicMaterial({ color: 0xff0000 }))
-  store.set('mat.green', new THREE.MeshBasicMaterial({ color: 0x00ff00 }))
-  store.set('mat.blue', new THREE.MeshBasicMaterial({ color: 0x0000ff }))
-  store.set('mat.gray', new THREE.MeshBasicMaterial({ color: 0x5a5a5a }))
-
-  const shadowmat = new THREE.MeshBasicMaterial({ color: 0x000000 })
-  store.set('mat.shadow', shadowmat)
-  shadowmat.transparent = true
-  shadowmat.opacity = 0.7
-
-  store.set('mat.wireframe', new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true }))
-  store.set('geo.box', new THREE.BoxBufferGeometry(1, 1, 1))
-  store.set('geo.plane', new THREE.PlaneBufferGeometry(1, 1))
 }
 
 function start () { raf.add(update) }

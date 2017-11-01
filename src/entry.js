@@ -9,8 +9,6 @@ import speech from 'controllers/speech/speech'
 import volume from 'controllers/volume/volume'
 import orders from 'controllers/orders/orders'
 import three from 'controllers/three/three'
-import canvas from 'controllers/canvas/canvas'
-
 
 import Homescreen from 'components/dom/Homescreen/Homescreen'
 import GameGUI from 'components/dom/GameGUI/GameGUI'
@@ -34,9 +32,8 @@ Promise.resolve()
   .then(preloader.loadObjects)
   .then(preloader.loadChunks)
   .then(threeSetup)
-  .then(() => canvas.setup())
-  .then(() => speech.start())
-  .then(volume.start)
+  .then(() => config.enableSpeech && speech.start())
+  .then(() => config.enableSpeech && volume.start())
   .then(() => home.hydrate(document.querySelector('.homescreen')))
   .then(home.show)
   .then(preloader.hide)
@@ -51,8 +48,8 @@ function threeSetup () {
 function startExperience (lang = 'fr') {
   // TODO: Order setlang method?
   Promise.resolve()
-    .then(() => speech.setLang(lang))
-    .then(() => orders.listen())
+    .then(() => config.enableSpeech && speech.setLang(lang))
+    .then(() => config.enableSpeech && orders.listen())
     // initiate the GUI just before leaving the Home
     // and just after start listening to orders
     .then(() => gameGui.hydrate(document.querySelector('.game-gui')))

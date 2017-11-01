@@ -4,6 +4,7 @@ import store from 'utils/store'
 import three from 'controllers/three/three'
 import ThreeComponent from 'abstractions/ThreeComponent/ThreeComponent'
 import kbControls from 'utils/keyboardControls'
+import config from 'config'
 
 export default class CameraCar extends ThreeComponent {
   setup () {
@@ -18,7 +19,7 @@ export default class CameraCar extends ThreeComponent {
     this.camera = new THREE.PerspectiveCamera(
       75,
       window.innerWidth / window.innerHeight,
-      0.01, 30
+      config.cullingMin, config.cullingMax
     )
   }
 

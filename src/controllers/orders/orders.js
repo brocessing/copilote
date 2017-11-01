@@ -9,7 +9,7 @@ const DEBUG = config.speechDebug
 let dom, logevent
 
 if (DEBUG) {
-  dom = document.createElement('dom')
+  dom = document.createElement('div')
   dom.style.zIndex = '1000'
   dom.style.position = 'absolute'
   dom.style.top = '45px'
@@ -18,8 +18,8 @@ if (DEBUG) {
   dom.style.lineHeight = '100%'
   dom.style.margin = '0'
   dom.style.padding = '10px'
-  dom.style.color = 'black'
-  dom.style.background = 'rgba(0, 0, 0, 0.1)'
+  dom.style.color = 'white'
+  dom.style.background = 'rgba(0, 0, 0, 0.5)'
   dom.style.pointerEvents = 'none'
   logevent = document.createElement('pre')
   dom.appendChild(logevent)
@@ -53,7 +53,7 @@ function processResult (index, result, last) {
     buffer[index] = { value: '', matches: [], dom: null, final: false }
     if (DEBUG) {
       buffer[index].dom = document.createElement('pre')
-      buffer[index].dom.style.color = 'rgba(0, 0, 0, 0.4)'
+      buffer[index].dom.style.color = 'rgba(255, 255, 255, 0.4)'
       dom.appendChild(buffer[index].dom)
     }
   }

@@ -167,7 +167,7 @@ export default class Vehicle extends ThreeComponent {
 
     // update engineForce and steer value
     this.frontWheel.engineForce = (
-      this.engineBaseForce * (this.needsBackward ? -0.7 : 1) * (this.antiObstacle ? -0.6 : 1)
+      this.engineBaseForce * (this.needsBackward ? -0.7 : 1) * (this.antiObstacle ? -1 : 1)
     )
     this.frontWheel.targetSteerValue = (
       steerAng * (this.needsBackward ? -1 : 1) * (this.antiObstacle ? -1 : 1)

@@ -20,6 +20,7 @@ function loadJS () {
 }
 
 function loadTextures () {
+  config.initCommonMaterials()
   const loader = new THREE.TextureLoader()
   const p = []
   for (let filepath in config.textures) {
@@ -37,6 +38,7 @@ function loadTextures () {
 }
 
 function loadObjects () {
+  config.initCommonGeometries()
   const loader = new THREE.JSONLoader()
   const p = []
   for (let filepath in config.objects) {
