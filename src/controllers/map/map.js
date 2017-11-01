@@ -3,6 +3,7 @@
 import mitt from 'mitt'
 import store from 'utils/store'
 import config from 'config'
+import prng from 'utils/prng'
 
 const emitter = mitt()
 const DISTVIEW = config.viewDistance // chunk side
@@ -65,7 +66,7 @@ function mockChunk () {
   for (let y = 0; y < CHUNKSIZE; y++) {
     map[y] = []
     for (let x = 0; x < CHUNKSIZE; x++) {
-      const isRoad = Math.round(Math.random())
+      const isRoad = Math.round(prng.random())
       map[y][x] = isRoad
       if (!isRoad) continue
       road[x + '.' + y] = { p: [x, y], c: 255, r: 0, t: 1 }
@@ -85,7 +86,7 @@ function init () {
   for (let absChunkX = minChunkX; absChunkX <= maxChunkX; absChunkX++) {
     for (let absChunkY = minChunkY; absChunkY <= maxChunkY; absChunkY++) {
       const id = absChunkX + '.' + absChunkY
-      loadedChunks[id] = newChunkFromPool(absChunkX, absChunkY)
+      loadedChunks[id] = getChunkFromPool(absChunkX, absChunkY)
       emitter.emit('chunk-added', loadedChunks[id])
     }
   }
@@ -95,10 +96,10 @@ function init () {
   updateCenter(0, 0, true)
 }
 
-function newChunkFromPool (absChunkX, absChunkY) {
+function getChunkFromPool (absChunkX, absChunkY) {
   const id = absChunkX + '.' + absChunkY
-  const len = chunksPool.length - 1
-  const chunk = chunksPool[Math.abs(Math.floor(Math.sin(Math.sin(absChunkX * 15.31) + Math.cos(absChunkY)) * len))]
+  const max = chunksPool.length - 1
+  const chunk = chunksPool[prng.hash2dInt(absChunkX, absChunkY, 0, max)]
   return {
     id,
     chunkX: absChunkX,
@@ -108,7 +109,8 @@ function newChunkFromPool (absChunkX, absChunkY) {
     road: chunk.road,
     map: chunk.map,
     buildings: chunk.buildings,
-    props: chunk.props
+    props: chunk.props,
+    svg: chunk.svg
   }
 }
 
@@ -116,7 +118,7 @@ function addChunk (x, y) {
   const id = x + '.' + y
   // console.log('add', x, y)
   if (loadedChunks[id]) return
-  loadedChunks[id] = newChunkFromPool(x, y)
+  loadedChunks[id] = getChunkFromPool(x, y)
   // console.log('add', x, y)
   emitter.emit('chunk-added', loadedChunks[id])
 }
@@ -187,19 +189,17 @@ function getWalkCoordFromPos (x, y) {
   return [wx, wy]
 }
 
-function getRoadFromThreePos (tx, ty) {
+function getRoadFromThreePos (tx, ty, loadedOnly = false) {
   return getRoadFromPos(
     Math.floor(Math.round(tx) + CHUNKSIZE / 2),
-    Math.floor(Math.round(ty) + CHUNKSIZE / 2)
+    Math.floor(Math.round(ty) + CHUNKSIZE / 2),
+    loadedOnly
   )
 }
 
-function getRoadFromPos (x, y) {
-  const chunkX = Math.floor(x / CHUNKSIZE)
-  const chunkY = Math.floor(y / CHUNKSIZE)
-  const chunkId = chunkX + '.' + chunkY
-  // console.log(x, y, loadedChunks[chunkId])
-  if (!loadedChunks[chunkId]) return null
+function getRoadFromPos (x, y, loadedOnly = false) {
+  const chunk = getChunkFromPos(x, y, loadedOnly)
+  if (!chunk) return null
   const relX = x < 0
     ? (x % CHUNKSIZE + CHUNKSIZE) % CHUNKSIZE
     : x % CHUNKSIZE
@@ -207,24 +207,28 @@ function getRoadFromPos (x, y) {
     ? (y % CHUNKSIZE + CHUNKSIZE) % CHUNKSIZE
     : y % CHUNKSIZE
   const roadId = relX + '.' + relY
-  // console.log(loadedChunks[chunkId])
-  return loadedChunks[chunkId].road[roadId]
-    ? loadedChunks[chunkId].road[roadId]
+  return chunk.road[roadId]
+    ? chunk.road[roadId]
     : null
 }
 
-function getChunkFromThreePos (tx, ty) {
+function getChunkFromThreePos (tx, ty, loadedOnly = false) {
   return getChunkFromPos(
     Math.floor(Math.round(tx) + CHUNKSIZE / 2),
-    Math.floor(Math.round(ty) + CHUNKSIZE / 2)
+    Math.floor(Math.round(ty) + CHUNKSIZE / 2),
+    loadedOnly
   )
 }
 
-function getChunkFromPos (x, y) {
-  x = Math.floor(x / CHUNKSIZE)
-  y = Math.floor(y / CHUNKSIZE)
-  const id = x + '.' + y
-  return loadedChunks[id] ? loadedChunks[id] : null
+function getChunkFromPos (x, y, loadedOnly = false) {
+  const chunkX = Math.floor(x / CHUNKSIZE)
+  const chunkY = Math.floor(y / CHUNKSIZE)
+  const id = chunkX + '.' + chunkY
+
+  if (loadedChunks[id]) return loadedChunks[id]
+  return loadedOnly
+    ? null
+    : getChunkFromPool(chunkX, chunkY)
 }
 
 function updateCenter (x, y, forcedebug = false) { // pos is three vec3

@@ -1,6 +1,7 @@
 import map from 'controllers/map/map'
 import posFromRelativeDirection from './posFromRelativeDirection'
 import rotIndexFromPos from './rotIndexFromPos'
+import prng from 'utils/prng'
 
 export default function randomNextWaypoint (prevPos, currentPos) {
   // console.log('from:', currentPos[0], currentPos[1])
@@ -26,7 +27,7 @@ export default function randomNextWaypoint (prevPos, currentPos) {
     choices.push(posFromRelativeDirection(currentPos, prefNextN, [0, -1]))
   }
 
-  point = choices[Math.floor(Math.random() * choices.length)]
+  point = choices[Math.floor(prng.random() * choices.length)]
 
   // GO STRAIGHT MODE
   // if (currentRoad.n[prefNextN]) {
@@ -34,7 +35,7 @@ export default function randomNextWaypoint (prevPos, currentPos) {
   //   point = posFromRelativeDirection(currentPos, prefNextN, [0, 1])
   // // rel left or right
   // } else if (currentRoad.n[prefNextNLeft] && currentRoad.n[prefNextNRight]) {
-  //   const left = (Math.random() > 0.5)
+  //   const left = (prng.random() > 0.5)
   //   console.log(left ? 'turn left' : 'turn right')
   //   point = posFromRelativeDirection(currentPos, prefNextN, [(left ? 1 : -1), 0])
   // // rel left

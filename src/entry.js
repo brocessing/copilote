@@ -1,8 +1,7 @@
 import throttle from 'lodash/throttle'
-
 import config from 'config'
-
 import store from 'utils/store'
+import prng from 'utils/prng'
 
 import preloader from 'controllers/preloader/preloader'
 import speech from 'controllers/speech/speech'
@@ -13,6 +12,8 @@ import three from 'controllers/three/three'
 import Homescreen from 'components/dom/Homescreen/Homescreen'
 import GameGUI from 'components/dom/GameGUI/GameGUI'
 import Main from 'components/three/Main/Main'
+
+prng.setSeed(0)
 
 const gameGui = new GameGUI()
 const home = new Homescreen()

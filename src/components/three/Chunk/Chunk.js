@@ -21,7 +21,7 @@ export default class Chunk extends ThreeComponent {
     // this.meshes.box.position.z = 0.5
     // this.meshes.box.position.y = 0.5
     // console.log(opts.road)
-    console.log(opts)
+    // console.log(opts)
 
     opts.buildings.forEach(building => {
       const id = building[2]
