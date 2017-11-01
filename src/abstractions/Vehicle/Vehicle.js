@@ -13,11 +13,11 @@ export default class Vehicle extends ThreeComponent {
     this.maxSpeed = 1
 
     // conf
-    this.maxSteer = this.maxSteer !== undefined ? this.maxSteer : Math.PI / 5.4
+    this.maxSteer = this.maxSteer !== undefined ? this.maxSteer : Math.PI / 5.2
     this.engineBaseForce = this.engineBaseForce !== undefined ? this.engineBaseForce : 2.5 //2.3
     this.frontWheelFriction = this.frontWheelFriction !== undefined ? this.frontWheelFriction : 2
     this.backWheelFriction = this.backWheelFriction !== undefined ? this.backWheelFriction : 2.8
-    this.lerpSteerValue = this.lerpSteerValue !== undefined ? this.lerpSteerValue : 0.07
+    this.lerpSteerValue = this.lerpSteerValue !== undefined ? this.lerpSteerValue : 0.068
 
     this.frontWheel.setSideFriction(this.frontWheelFriction)
     this.backWheel.setSideFriction(this.backWheelFriction)
@@ -140,7 +140,7 @@ export default class Vehicle extends ThreeComponent {
     this.needsBackward = !(this.needsBackwardScore < 35)
 
     // Reverse the engine when the car doesn't move for too long
-    if (this.running && this.vehicle.speed < 0.001) {
+    if (this.running && this.speed < 0.005) {
       if (this.antiObstacleScore < 40 && this.antiObstacleScore + 1 >= 40) {
         console.warn('Antiblock')
         this.antiObstacleDir = Math.random() > 0.5 ? 1 : -1
@@ -167,7 +167,7 @@ export default class Vehicle extends ThreeComponent {
 
     // update engineForce and steer value
     this.frontWheel.engineForce = (
-      this.engineBaseForce * (this.needsBackward ? -0.7 : 1) * (this.antiObstacle ? -0.3 : 1)
+      this.engineBaseForce * (this.needsBackward ? -0.7 : 1) * (this.antiObstacle ? -0.6 : 1)
     )
     this.frontWheel.targetSteerValue = (
       steerAng * (this.needsBackward ? -1 : 1) * (this.antiObstacle ? -1 : 1)

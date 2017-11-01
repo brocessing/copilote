@@ -3,7 +3,7 @@ import posFromRelativeDirection from './posFromRelativeDirection'
 import rotIndexFromPos from './rotIndexFromPos'
 
 export default function randomNextWaypoint (prevPos, currentPos) {
-  console.log('from:', currentPos[0], currentPos[1])
+  // console.log('from:', currentPos[0], currentPos[1])
   const currentRoad = map.getRoadFromThreePos(currentPos[0], currentPos[1])
   // console.log(dirX, dirY)
   const prefNextN = rotIndexFromPos(prevPos, currentPos)

@@ -8,15 +8,15 @@ import Arrow from 'components/three/Arrow/Arrow'
 export default class Waypoint {
   // t: type / p: pos / r: rotation / n: neighbors links
   constructor (opts) {
-    console.log(opts)
+    // console.log(opts)
     this.angle = opts.r * -Math.PI / 2
     this.x = opts.x
     this.y = opts.y
     this.improvised = !!opts.improvised
     this.debug = !!opts.debug
-    console.log('HOLA')
+    // console.log('HOLA')
     if (this.debug) {
-      console.log('HOLA')
+      // console.log('HOLA')
       this.debugArrow = new Arrow({
         x: this.x,
         y: 0.01,
