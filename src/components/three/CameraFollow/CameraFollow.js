@@ -10,7 +10,7 @@ export default class CameraCar extends ThreeComponent {
     this.dist = 1
     this.ipos = new THREE.Vector3(0, 1, -0.8).setLength(1)
     const lerp = 0.1
-    this.alerp = 0.05
+    this.alerp = 0.04
     this.pangvel = 0
     this.angvel = 0
     this.lerp = new THREE.Vector3(lerp, lerp, lerp)
@@ -26,7 +26,7 @@ export default class CameraCar extends ThreeComponent {
     if (!this.target) return
     super.update(dt)
 
-    this.dist += (Math.max(1, store.get('car.speed') * 1.5) - this.dist) * 0.02
+    this.dist += (Math.max(1, store.get('car.speed') * 1.5) - this.dist) * 0.01
     // this.targetVec.copy(this.target.localToWorld(this.ipos.clone().setLength(this.dist)))
     this.targetVec.copy(this.target.position).add(this.ipos.clone().setLength(this.dist))
     this.camera.position.add(this.targetVec.sub(this.camera.position).multiply(this.lerp))

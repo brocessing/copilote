@@ -16,7 +16,6 @@ import Homescreen from 'components/dom/Homescreen/Homescreen'
 import GameGUI from 'components/dom/GameGUI/GameGUI'
 import Main from 'components/three/Main/Main'
 
-
 const gameGui = new GameGUI()
 const home = new Homescreen()
 home.onstart = startExperience
@@ -36,7 +35,7 @@ Promise.resolve()
   .then(preloader.loadChunks)
   .then(threeSetup)
   .then(() => canvas.setup())
-  .then(() => config.enableSpeech && speech.start())
+  .then(() => speech.start())
   .then(volume.start)
   .then(() => home.hydrate(document.querySelector('.homescreen')))
   .then(home.show)
@@ -52,8 +51,8 @@ function threeSetup () {
 function startExperience (lang = 'fr') {
   // TODO: Order setlang method?
   Promise.resolve()
-    .then(() => config.enableSpeech && speech.setLang(lang))
-    .then(() => config.enableSpeech && orders.listen)
+    .then(() => speech.setLang(lang))
+    .then(() => orders.listen())
     // initiate the GUI just before leaving the Home
     // and just after start listening to orders
     .then(() => gameGui.hydrate(document.querySelector('.game-gui')))

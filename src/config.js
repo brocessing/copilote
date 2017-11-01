@@ -5,7 +5,7 @@ import tilePlane from 'utils/tilePlane'
 
 export default {
   quickstart: 'fr',
-  speechDebug: false,
+  speechDebug: true,
   locDebug: true,
   debug: true,
   fpsCounter: true,
@@ -14,7 +14,7 @@ export default {
   viewDistance: 3,
   chunkSize: 11,
   background: 0xffda48,
-  manualDrive: false,
+  manualDrive: true,
 
   // autoload vendors libraries during the preloading phase
   vendors: [
@@ -43,7 +43,8 @@ export default {
       tex.needsUpdate = true
       store.set('mat.cars', new THREE.MeshBasicMaterial({
         transparent: true,
-        map: tex
+        map: tex,
+        side: THREE.DoubleSide
       }))
     },
     // 'textures/roads.png': function (tex) {

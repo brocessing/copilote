@@ -41,8 +41,14 @@ function setup (el) {
   store.set('mat.blue', new THREE.MeshBasicMaterial({ color: 0x0000ff }))
   store.set('mat.gray', new THREE.MeshBasicMaterial({ color: 0x5a5a5a }))
 
+  const shadowmat = new THREE.MeshBasicMaterial({ color: 0x000000 })
+  store.set('mat.shadow', shadowmat)
+  shadowmat.transparent = true
+  shadowmat.opacity = 0.7
+
   store.set('mat.wireframe', new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true }))
   store.set('geo.box', new THREE.BoxBufferGeometry(1, 1, 1))
+  store.set('geo.plane', new THREE.PlaneBufferGeometry(1, 1))
 }
 
 function start () { raf.add(update) }
