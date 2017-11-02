@@ -187,7 +187,7 @@ export default class WaypointManager {
     let newWaypoints = []
     let i = 0
     if (orders.length <= 0) return
-    while (orders.length > 0 && i < 60) {
+    while (orders.length > 0 && i < 100) {
       let next = getNextWaypoint(position, direction, orders[0])
       console.log(next)
       if (!next) break
@@ -215,6 +215,10 @@ export default class WaypointManager {
     this.cancelAll()
     newWaypoints.forEach((waypoint) => this.addWaypoint(waypoint))
     newWaypoints = null
+  }
+
+  goStraight () {
+    this.makeOrders([0])
   }
 
   turnRight () {

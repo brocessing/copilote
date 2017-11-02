@@ -57,6 +57,7 @@ $gui-minimap-road-width: 0.7px;
   border-radius: 100%;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
   overflow: hidden;
+  will-change: transform;
 
   .gui-minimap-car {
     z-index: 11;
@@ -69,12 +70,14 @@ $gui-minimap-road-width: 0.7px;
     background: url('minimap_car.svg');
     background-size: $gui-minimap-car-size $gui-minimap-car-size;
     transform-origin: center center;
+    will-change: transform;
   }
 
   .gui-minimap-container {
     position: absolute;
     top: 50%;
     left: 50%;
+    will-change: transform;
   }
 
   .gui-minimap-cop {
@@ -87,6 +90,7 @@ $gui-minimap-road-width: 0.7px;
     height: $gui-minimap-cop-size;
     margin-top: -#{$gui-minimap-cop-size / 2};
     margin-left: -#{$gui-minimap-cop-size / 2};
+    will-change: transform;
   }
 
   .gui-minimap-chunk {

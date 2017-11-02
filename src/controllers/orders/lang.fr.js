@@ -12,8 +12,8 @@ french
 french.order('goRight')
   .add('tourner à droite|tourne à droite|à droite|droite|20 droites')
 
-// french.order('goStraight')
-//   .add('tous droits|vas tout droit|tout droit|tous droit|droit devant|avance|tu dois|toulon')
+french.order('goStraight')
+  .add('tous droits|vas tout droit|tout droit|tous droit|droit devant|avance|tu dois|toulon')
 
 // french.order('speedUp')
 //   .add('à vence|accéléré|auxerre|fonce|foncer|va plus vite|plus vite|accélère|augmente la vitesse')

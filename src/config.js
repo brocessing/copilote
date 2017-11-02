@@ -9,7 +9,7 @@ export default {
   lofi: LOFI, // Special case for RNO melting computer
   enableSpeech: true, // Disable this to test on others navigators
   quickstart: 'fr',
-  speechDebug: false,
+  speechDebug: true,
   locDebug: true,
   debug: true,
   fpsCounter: true,
@@ -101,7 +101,7 @@ export default {
   // autoload chunks
   chunks: {
     folder: 'chunks',
-    count: 1,
+    count: 3,
     onchunkload: function (id, obj) {
       if (!store.get('map.chunks')) store.set('map.chunks', [])
       store.get('map.chunks')[id] = obj

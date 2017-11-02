@@ -8,8 +8,8 @@ import config from 'config'
 
 export default class CameraCar extends ThreeComponent {
   setup () {
-    this.dist = 1
-    this.ipos = new THREE.Vector3(0, 1, -0.8).setLength(1)
+    this.dist = 2
+    this.ipos = new THREE.Vector3(0, 1, -0.8).setLength(2)
     const lerp = 0.1
     this.alerp = 0.04
     this.pangvel = 0
@@ -27,7 +27,7 @@ export default class CameraCar extends ThreeComponent {
     if (!this.target) return
     super.update(dt)
 
-    this.dist += (Math.max(1, store.get('car.speed') * 1.5) - this.dist) * 0.01
+    this.dist += (Math.max(2, store.get('car.speed') * 1.5) - this.dist) * 0.01
     this.targetVec.copy(this.angtarget.localToWorld(this.ipos.clone().setLength(this.dist)))
     // this.targetVec.copy(this.target.position).add(this.ipos.clone().setLength(this.dist))
     this.camera.position.add(this.targetVec.sub(this.camera.position).multiply(this.lerp))
@@ -39,9 +39,9 @@ export default class CameraCar extends ThreeComponent {
     this.camera.quaternion.slerp(targetQt, 0.8)
 
     this.angvel += (store.get('car.angvel') - this.angvel) * this.alerp
-    const dangvel = this.pangvel - this.angvel
+    // const dangvel = this.pangvel - this.angvel
     // this.camera.rotation.x -= dangvel / 100
-    this.camera.rotation.y += dangvel / 100
+    // this.camera.rotation.y += dangvel / 100
   }
 
   setTarget (obj, robj) {

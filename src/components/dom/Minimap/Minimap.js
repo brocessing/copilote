@@ -9,9 +9,11 @@ const translate = ({x, y}) => `translateX(${x}px) translateY(${y}px)`
 function createNSNode (n, v) {
   n = document.createElementNS('http://www.w3.org/2000/svg', n)
   for (var p in v) {
-    if (p === 'class')
-      (Array.isArray(v[p]) ? v[p]: [v[p]]).forEach(c => n.classList.add(c))
-    else n.setAttributeNS(null, p, v[p])
+    if (p === 'class') {
+      (Array.isArray(v[p]) ? v[p] : [v[p]]).forEach(c => n.classList.add(c))
+    } else {
+      n.setAttributeNS(null, p, v[p])
+    }
   }
   return n
 }
@@ -19,9 +21,9 @@ function createNSNode (n, v) {
 function createNode (n, v) {
   n = document.createElement(n)
   for (var p in v) {
-    if (p === 'class')
-      (Array.isArray(v[p]) ? v[p]: [v[p]]).forEach(c => n.classList.add(c))
-    else n[p] = v[p]
+    if (p === 'class') {
+      (Array.isArray(v[p]) ? v[p] : [v[p]]).forEach(c => n.classList.add(c))
+    } else n[p] = v[p]
   }
   return n
 }
@@ -30,16 +32,16 @@ function removeNode (n) {
   n && n.parentNode && n.parentNode.removeChild(n)
 }
 
-function inBound (position, aabb) {
-  return position[0] >= aabb.xmin && position[0] < aabb.xmax
-    && position[1] >= aabb.ymin && position[1] < aabb.ymax
-}
+// function inBound (position, aabb) {
+//   return position[0] >= aabb.xmin && position[0] < aabb.xmax &&
+//     position[1] >= aabb.ymin && position[1] < aabb.ymax
+// }
 
 const defaultOpts = {
-  width: 500,
-  height: 500,
-  viewDistance: 3,
-  lockNorth: false,
+  width: 250,
+  height: 250,
+  viewDistance: 5,
+  lockNorth: false
 }
 
 export default class Minimap extends DomComponent {
@@ -53,11 +55,11 @@ export default class Minimap extends DomComponent {
     this.width = opts.width
     this.height = opts.height
 
-    this.viewDistance = opts.viewDistance + (opts.viewDistance & 1)
-    this.viewRadius = this.viewDistance / 2
+    this.viewDistance = opts.viewDistance + !(opts.viewDistance & 1)
+    this.chunkDistFromCenter = (this.viewDistance - 1) / 2
 
-    this.pcenter = [0, 0]
-    this.center = [0, 0]
+    this.previousChunk = [0, 0]
+    this.currentChunk = [0, 0]
 
     this.chunkSize = map.getChunkSize()
     this.chunkWidth = this.width / this.viewDistance
@@ -87,9 +89,9 @@ export default class Minimap extends DomComponent {
     el.appendChild(this.refs.car)
     el.appendChild(this.refs.container)
 
-    for (let i = -this.viewRadius; i <= this.viewRadius; i++) {
-      for (let j = -this.viewRadius; j <= this.viewRadius; j++) {
-        this.addChunk(this.center[0] + i, this.center[1] + j);
+    for (let i = -this.chunkDistFromCenter; i <= this.chunkDistFromCenter; i++) {
+      for (let j = -this.chunkDistFromCenter; j <= this.chunkDistFromCenter; j++) {
+        this.addChunk(this.currentChunk[0] + i, this.currentChunk[1] + j)
       }
     }
 
@@ -100,37 +102,51 @@ export default class Minimap extends DomComponent {
   }
 
   update () {
-    this.center = [
-      Math.floor((this.playerPos[0] + this.chunkSize / 2) / this.chunkSize),
-      Math.floor((this.playerPos[1] + this.chunkSize / 2) / this.chunkSize)
+    this.currentChunk = [
+      Math.floor((Math.round(this.playerPos[0]) + this.chunkSize / 2) / this.chunkSize),
+      Math.floor((Math.round(this.playerPos[1]) + this.chunkSize / 2) / this.chunkSize)
     ]
 
-    let di = this.center[0] - this.pcenter[0]
-    if (di) {
-      let ti = di * this.viewRadius
-      for (let j = -this.viewRadius; j <= this.viewRadius; j++) {
-        this.addChunk(-(this.center[0] + ti), this.center[1] + j)
-        this.removeChunk(-(this.center[0] - ti - di), this.center[1] + j)
+    const xDir = this.currentChunk[0] - this.previousChunk[0]
+    const yDir = this.currentChunk[1] - this.previousChunk[1]
+
+    if (!xDir && !yDir) return
+
+    console.log('[minimap] NEW CURRENT', this.currentChunk)
+
+    if (xDir !== 0) {
+      const chunkXtoRemove = this.previousChunk[0] - (this.chunkDistFromCenter * xDir)
+      const chunkXtoAdd = this.currentChunk[0] + (this.chunkDistFromCenter * xDir)
+      const minChunkY = this.previousChunk[1] - this.chunkDistFromCenter
+      const maxChunkY = this.currentChunk[1] + this.chunkDistFromCenter
+      for (let y = minChunkY; y <= maxChunkY; y++) {
+        this.removeChunk(chunkXtoRemove, y)
+        this.addChunk(chunkXtoAdd, y)
+      }
+      this.previousChunk[0] = this.currentChunk[0]
+    }
+
+    if (yDir !== 0) {
+      const chunkYtoRemove = this.previousChunk[1] - (this.chunkDistFromCenter * yDir)
+      const chunkYtoAdd = this.currentChunk[1] + (this.chunkDistFromCenter * yDir)
+      const minChunkX = this.previousChunk[0] - this.chunkDistFromCenter
+      const maxChunkX = this.currentChunk[0] + this.chunkDistFromCenter
+      for (let x = minChunkX; x <= maxChunkX; x++) {
+        this.removeChunk(x, chunkYtoRemove)
+        this.addChunk(x, chunkYtoAdd)
       }
     }
-    let dj = this.center[1] - this.pcenter[1]
-    if (dj) {
-      let tj = dj * this.viewRadius
-      for (let i = -this.viewRadius; i <= this.viewRadius; i++) {
-        this.addChunk(this.center[0] + i, -(this.center[1] + tj) )
-        this.removeChunk(this.center[0] + i, -(this.center[1] - tj - dj))
-      }
-    }
-    this.pcenter = [...this.center]
+
+    this.previousChunk = this.currentChunk.slice()
   }
 
-
   addChunk (i, j) {
-    if (!this.refs.chunks) this.refs.chunks = []
+    console.log('[minimap] add', i, j, 'current', this.currentChunk)
+    if (!this.refs.chunks) this.refs.chunks = []
 
     let id = chunkId(i, j)
     if (!this.refs.chunks[id]) {
-      let chunk = map.getChunkFromPos(i, j)
+      let chunk = map.getChunkFromPool(i, j)
       if (chunk) {
         let chunkEl = createNSNode('svg', {
           class: 'gui-minimap-chunk',
@@ -139,8 +155,8 @@ export default class Minimap extends DomComponent {
           viewBox: `-0.01 -0.01 ${this.chunkSize + 0.01} ${this.chunkSize + 0.01}`
         })
 
-        chunkEl.style.left = Math.floor((i * this.chunkWidth) - (this.chunkWidth / 2)) + 'px'
-        chunkEl.style.top = Math.floor((j * this.chunkHeight) - (this.chunkHeight / 2)) + 'px'
+        chunkEl.style.left = Math.floor((-i * this.chunkWidth) - (this.chunkWidth / 2)) + 'px'
+        chunkEl.style.top = Math.floor((-j * this.chunkHeight) - (this.chunkHeight / 2)) + 'px'
         chunkEl.innerHTML = chunk.svg
         this.refs.container.appendChild(chunkEl)
 
@@ -152,6 +168,7 @@ export default class Minimap extends DomComponent {
   removeChunk (i, j) {
     let id = chunkId(i, j)
     removeNode(this.refs.chunks[id])
+    console.log('[minimap] remove', i, j, 'current', this.currentChunk)
     this.refs.chunks[id] = null
     delete this.refs.chunks[id]
   }
@@ -168,12 +185,12 @@ export default class Minimap extends DomComponent {
 
   onPlayerRotate (newAng) {
     this.playerAng = newAng
-    if (this.lockNorth) this.refs.base.style.transform = `rotate(${this.playerAng}rad)`
+    if (this.lockNorth || 1) this.refs.base.style.transform = `rotate(${this.playerAng}rad)`
     this.refs.car.style.transform = `rotate(${-this.playerAng}rad)`
   }
 
   onCopAdded ({ id, position }) {
-    if (!this.refs.cops) this.refs.cops = []
+    if (!this.refs.cops) this.refs.cops = []
 
     let cop = createNode('div', { class: 'gui-minimap-cop' })
     cop.style.transform = translate({

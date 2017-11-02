@@ -43,7 +43,7 @@ export default class PlayerCar extends Vehicle {
     // Vehicle driving behaviours
     this.improvise = true
     this.improvisationTreshold = 3
-    this.running = true
+    this.running = false
 
     // 0: Totally random between left / right / top
     // 1: Prefer to go straight
@@ -79,6 +79,11 @@ export default class PlayerCar extends Vehicle {
       this.manualControls = false
       this.running = true
       return
+    }
+
+    if (data.type === 'goStraight') {
+      // if (this.running === false) return
+      this.waypoints.goStraight()
     }
 
     if (data.type === 'goLeft') {

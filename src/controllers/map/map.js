@@ -231,6 +231,13 @@ function getChunkFromPos (x, y, loadedOnly = false) {
     : getChunkFromPool(chunkX, chunkY)
 }
 
+function getPosFromThreePos (x, y) {
+  return [
+    Math.floor(Math.round(x) + CHUNKSIZE / 2),
+    Math.floor(Math.round(y) + CHUNKSIZE / 2)
+  ]
+}
+
 function updateCenter (x, y, forcedebug = false) { // pos is three vec3
   const tx = Math.round(x)
   const ty = Math.round(y)
@@ -293,6 +300,9 @@ export default {
   getWalkCoordFromThreePos,
 
   getThreePosFromWalkCoord,
+
+  getPosFromThreePos,
+  getChunkFromPool,
 
   getWalkMap,
   on: emitter.on
