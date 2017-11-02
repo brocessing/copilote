@@ -7,8 +7,9 @@ export default class Box extends ThreeComponent {
   setup (opts = {}) {
     opts = Object.assign({}, { x: 0, y: 0, z: 0, r: 0 }, opts)
     this.group = new THREE.Group()
-    this.meshes.arrow = new THREE.Mesh(store.get('geo.box'), store.get('mat.red'))
-    this.meshes.base = new THREE.Mesh(store.get('geo.box'), store.get('mat.red'))
+    const color = opts.color || 'red'
+    this.meshes.arrow = new THREE.Mesh(store.get('geo.box'), store.get('mat.' + color))
+    this.meshes.base = new THREE.Mesh(store.get('geo.box'), store.get('mat.' + color))
     this.group.add(this.meshes.arrow)
     this.group.add(this.meshes.base)
     this.meshes.base.scale.set(3, 1, 0.1)

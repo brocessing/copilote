@@ -13,7 +13,7 @@ function random () {
 }
 
 function randomInt (min, max) {
-  return Math.floor(randomizer() * (max - min + 1)) + min
+  return Math.floor(randomizer.nextFloat() * (max - min + 1)) + min
 }
 
 function hash2d (x, y) {

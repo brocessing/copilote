@@ -6,6 +6,9 @@ import three from 'controllers/three/three'
 import ThreeComponent from 'abstractions/ThreeComponent/ThreeComponent'
 import Vehicle from 'abstractions/Vehicle/Vehicle'
 import config from 'config'
+import orders from 'controllers/orders/orders'
+import kbctrl from 'utils/keyboardControls'
+
 /*
   this.group = position sync with the p2 body position
   this.chassis = angle sync with the p2 angle
@@ -40,6 +43,11 @@ export default class PlayerCar extends Vehicle {
     // Vehicle driving behaviours
     this.improvise = true
     this.improvisationTreshold = 3
+    this.running = true
+
+    // 0: Totally random between left / right / top
+    // 1: Prefer to go straight
+    this.improvisationMode = 1
 
     // Misc options
     this.debugSteering = true
@@ -48,6 +56,9 @@ export default class PlayerCar extends Vehicle {
 
     store.set('player.position', [0, 0])
     store.set('player.angle', 0)
+
+    this.onOrder = this.onOrder.bind(this)
+    orders.on(':all', this.onOrder)
   }
 
   update (dt) {
@@ -61,5 +72,44 @@ export default class PlayerCar extends Vehicle {
     store.set('player.position', [this.group.position.x, this.group.position.z])
     store.set('player.angle', this.chassis.rotation.y)
     map.updateCenter(this.group.position.x, this.group.position.z)
+  }
+
+  onOrder (data) {
+    if (data.type === 'start') {
+      this.manualControls = false
+      this.running = true
+      return
+    }
+
+    if (data.type === 'goLeft') {
+      // if (this.running === false) return
+      this.waypoints.turnLeft()
+    }
+
+    if (data.type === 'goRight') {
+      // if (this.running === false) return
+      this.waypoints.turnRight()
+    }
+
+    if (data.type === 'turnBack') {
+      // if (this.running === false) return
+      this.waypoints.turnBack()
+    }
+
+    if (data.type === 'stop') {
+      this.running = false
+      return
+    }
+
+    if (data.type === 'goManual') {
+      this.frontWheel.steerValue = 0
+      this.frontWheel.targetSteerValue = 0
+      this.backWheel.steerValue = 0
+      this.backWheel.targetSteerValue = 0
+      this.engineForce = 0
+      this.backWheel.setBrakeForce(3)
+      this.manualControls = true
+      kbctrl(this.frontWheel, this.backWheel)
+    }
   }
 }

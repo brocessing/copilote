@@ -28,11 +28,11 @@ export default class Minimap extends DomComponent {
   }
 
   onChunkRemoved (chunkData) {
-    console.log('MINIMAP', 'chunk removed')
+    // console.log('MINIMAP', 'chunk removed')
   }
 
   onChunkAdded (chunkData) {
-    console.log('MINIMAP', 'chunk added')
+    // console.log('MINIMAP', 'chunk added')
   }
 
   onPlayerRotate (newAng) {

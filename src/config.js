@@ -9,7 +9,7 @@ export default {
   lofi: LOFI, // Special case for RNO melting computer
   enableSpeech: true, // Disable this to test on others navigators
   quickstart: 'fr',
-  speechDebug: true,
+  speechDebug: false,
   locDebug: true,
   debug: true,
   fpsCounter: true,
