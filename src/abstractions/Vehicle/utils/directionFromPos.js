@@ -13,7 +13,7 @@ function rotIndexFromDirs (h, v) {
   else return randomInt(0, 3)
 }
 
-export default function rotIndexFromPos (ppos, cpos) {
+export default function directionFromPos (ppos, cpos) {
   const dirX = -Math.sign(ppos[0] - cpos[0])
   const dirY = -Math.sign(ppos[1] - cpos[1])
   return rotIndexFromDirs(dirX, dirY)

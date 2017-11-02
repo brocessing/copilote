@@ -4,36 +4,38 @@ import ThreeComponent from 'abstractions/ThreeComponent/ThreeComponent'
 import WaypointManager from './WaypointManager'
 import Arrow from 'components/three/Arrow/Arrow'
 import nmod from 'utils/nmod'
-import kbctrl from 'utils/keyboardControls'
 
 export default class Vehicle extends ThreeComponent {
   constructor (opts) {
     super(opts)
     this.speed = 0
     this.maxSpeed = 1
+    this.dead = false
 
     // conf
     this.maxSteer = this.maxSteer !== undefined ? this.maxSteer : Math.PI / 5.2
     this.engineBaseForce = this.engineBaseForce !== undefined ? this.engineBaseForce : 2.5 //2.3
     this.frontWheelFriction = this.frontWheelFriction !== undefined ? this.frontWheelFriction : 2
-    this.backWheelFriction = this.backWheelFriction !== undefined ? this.backWheelFriction : 2.8
+    this.backWheelFriction = this.backWheelFriction !== undefined ? this.backWheelFriction : 2.9
     this.lerpSteerValue = this.lerpSteerValue !== undefined ? this.lerpSteerValue : 0.068
+    this.running = !!this.running
+    this.useBackward = !!this.backwardDetection
+    this.useAntiObstacle = !!this.useAntiObstacle
 
     this.frontWheel.setSideFriction(this.frontWheelFriction)
     this.backWheel.setSideFriction(this.backWheelFriction)
 
-    this.running = false
-    this.useBackward = !!this.backwardDetection
     this.needsBackwardScore = 0
     this.needsBackward = false
-    this.useAntiObstacle = !!this.useAntiObstacle
     this.antiObstacleScore = 0
     this.antiObstacle = false
+    this.antiObstacleDir = 1
 
     this.bodyPos = this.body.position
     this.bodyVel = this.body.velocity
 
     this.waypoints = new WaypointManager({
+      isPlayer: true,
       debug: !!this.debugWaypoints,
       improvise: !!this.improvise,
       improvistionTreshold: this.improvisationTreshold,
@@ -43,7 +45,6 @@ export default class Vehicle extends ThreeComponent {
     if (this.debugSteering) {
       this.steeringArrow = this.addComponent(new Arrow({ y: 0.1 }))
     }
-    if (this.manualControls) kbctrl(this.frontWheel, this.backWheel)
 
     this.frontWheel.targetSteerValue = 0
   }
@@ -59,19 +60,32 @@ export default class Vehicle extends ThreeComponent {
 
   update (dt) {
     super.update(dt)
+
     // update & limit speed
     this.speed = (this.bodyVel[0] ** 2 + this.bodyVel[1] ** 2) / 2
     this.limitSpeed()
 
+    if (this.dead) {
+      this.backWheel.setBrakeForce(1)
+      this.frontWheel.targetSteerValue = 0
+      this.engineForce = 0
+      this.backWheel.setBrakeForce(4)
+      return
+    }
+
     // update waypoints list
-    this.waypoints.update()
+    this.waypoints.update(this.bodyPos, this.body.angle)
 
-    this.running = this.waypoints.list.length > 0
-
-    if (this.running) {
-      this.goto(this.waypoints.list[0])
-    } else {
-      this.backWheel.setBrakeForce(2)
+    if ((this.running || this.manualControls) && this.waypoints.list.length > 0) {
+      const closest = this.waypoints.getClosest(-this.bodyPos[0], this.bodyPos[1])
+      // console.log(closest.point)
+      // console.log(closest.distance)
+      // const point = closest.distance < 1.1 ? closest.point : this.waypoints[0]
+      this.goto(closest.point)
+    } else if (!this.manualControls) {
+      this.frontWheel.targetSteerValue = 0
+      this.engineForce = 0
+      this.backWheel.setBrakeForce(4)
     }
 
     // copy p2 body parameters to the three group & car
@@ -141,16 +155,19 @@ export default class Vehicle extends ThreeComponent {
 
     // Reverse the engine when the car doesn't move for too long
     if (this.running && this.speed < 0.005) {
-      if (this.antiObstacleScore < 40 && this.antiObstacleScore + 1 >= 40) {
-        console.warn('Antiblock')
-        this.antiObstacleDir = Math.random() > 0.5 ? 1 : -1
-        this.antiObstacleScore = 120
+      if (
+        (this.antiObstacleScore < 35 && this.antiObstacleScore + 1 >= 35) ||
+        (this.antiObstacleScore < 120 && this.antiObstacleScore + 1 >= 120)
+      ) {
+        console.warn('Antiblock Trigger')
+        this.antiObstacleDir = -this.antiObstacleDir
+        this.antiObstacleScore = 80
       }
       this.antiObstacleScore = Math.min(120, this.antiObstacleScore + 1)
     } else {
       this.antiObstacleScore = Math.max(0, this.antiObstacleScore - 1)
     }
-    this.antiObstacle = !(this.antiObstacleScore < 40)
+    this.antiObstacle = !(this.antiObstacleScore < 35)
     if (this.antiObstacle) steerAng += Math.PI * 0.5 * this.antiObstacleDir
 
     // clamp the value

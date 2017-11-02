@@ -27,7 +27,7 @@ export default class Main extends ThreeComponent {
     // }
 
     this.cameraFollow = new CameraFollow()
-    this.cameraFollow.setTarget(this.playerCar.group)
+    this.cameraFollow.setTarget(this.playerCar.group, this.playerCar.chassis)
     three.addCamera('car', this.cameraFollow.camera)
     three.switchCamera('car')
   }

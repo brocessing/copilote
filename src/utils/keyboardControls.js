@@ -23,7 +23,7 @@ export default function kbControls (frontWheel, backWheel) {
     backWheel.targetSteerValue = maxSteer * (keys[37] - keys[39])
 
     // Engine force forward
-    backWheel.engineForce = keys[38] * 5
+    frontWheel.engineForce = keys[38] * 5
     backWheel.setBrakeForce(3)
     if (keys[40]) {
       if (backWheel.getSpeed() > 0.1) {
@@ -32,7 +32,7 @@ export default function kbControls (frontWheel, backWheel) {
       } else {
         // Moving backwards - reverse the engine force
         backWheel.setBrakeForce(0)
-        backWheel.engineForce = -2
+        frontWheel.engineForce = -2
       }
     }
   }

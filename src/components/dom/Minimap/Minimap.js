@@ -121,7 +121,6 @@ export default class Minimap extends DomComponent {
         this.removeChunk(this.center[0] + i, -(this.center[1] - tj - dj))
       }
     }
-
     this.pcenter = [...this.center]
   }
 
