@@ -1,3 +1,13 @@
+$color-car: #24DAFF;
+$color-background: #1D1D1D;
+$color-road: #696969;
+$color-cop-1: #FF3838;
+$color-cop-2: #FE6F57;
+
+$gui-minimap-car-size: 50px;
+$gui-minimap-cop-size: 12px;
+$gui-minimap-road-width: 0.7px;
+
 .experience {
   z-index: 1;
   position: fixed;
@@ -39,5 +49,56 @@
 .gui-minimap {
   z-index: 10;
   position: absolute;
-  bottom: 0
+  left: 10px;
+  bottom: 10px;
+
+  border: 3px solid $color-background;
+  background: rgba($color-background, 0.9);
+  border-radius: 100%;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+
+  .gui-minimap-car {
+    z-index: 11;
+    position: absolute;
+    top: calc(50% - #{$gui-minimap-car-size / 2});
+    left: calc(50% - #{$gui-minimap-car-size / 2});
+    background: $color-car;
+    width: $gui-minimap-car-size;
+    height: $gui-minimap-car-size;
+    background: url('minimap_car.svg');
+    background-size: $gui-minimap-car-size $gui-minimap-car-size;
+    transform-origin: center center;
+  }
+
+  .gui-minimap-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+  }
+
+  .gui-minimap-cop {
+    position: absolute;
+    border-radius: 100%;
+    background: linear-gradient($color-cop-1, $color-cop-2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+
+    width: $gui-minimap-cop-size;
+    height: $gui-minimap-cop-size;
+    margin-top: -#{$gui-minimap-cop-size / 2};
+    margin-left: -#{$gui-minimap-cop-size / 2};
+  }
+
+  .gui-minimap-chunk {
+    position: absolute;
+    transform: rotate(180deg);
+    padding: 1px;
+    path {
+      fill: none;
+      stroke: $color-road;
+      stroke-width: $gui-minimap-road-width;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+    }
+  }
 }
