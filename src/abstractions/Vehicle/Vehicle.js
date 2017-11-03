@@ -64,6 +64,7 @@ export default class Vehicle extends ThreeComponent {
     // update & limit speed
     this.speed = (this.bodyVel[0] ** 2 + this.bodyVel[1] ** 2) / 2
     this.limitSpeed()
+    this.angularVelocity = this.body.angularVelocity
 
     if (this.dead) {
       this.backWheel.setBrakeForce(1)

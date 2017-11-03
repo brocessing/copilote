@@ -65,7 +65,7 @@ export default class PlayerCar extends Vehicle {
     super.update(dt)
 
     store.set('car.speed', this.speed)
-    store.set('car.angvel', this.body.angularVelocity)
+    store.set('car.angvel', this.angularVelocity)
 
     this.meshes.shadow.rotation.z = this.chassis.rotation.y
 

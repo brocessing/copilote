@@ -5,51 +5,28 @@ import raf from 'utils/raf'
 import store from 'utils/store'
 import config from 'config'
 import BodyViewer from 'components/three/BodyViewer/BodyViewer'
+import cameraController from 'controllers/camera/camera'
 
-let scene, renderer, world, currentCamera
-let cameras = {}
+let scene, renderer, world, camera
 let components = []
 
 function setup (el) {
   world = new p2.World({ gravity: [0, 0] })
   scene = new THREE.Scene()
-  scene.fog = new THREE.Fog(config.background, config.cullingMax / 3, config.cullingMax / 2)
-  cameras.free = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1, 1000
-  )
-  renderer = new THREE.WebGLRenderer({
-    antialias: true
-  })
-  // renderer.shadowMap.enabled = true
-  // renderer.shadowMap.type = THREE.BasicShadowMap
+  cameraController.setup()
+  camera = cameraController.getCamera()
+
+  renderer = new THREE.WebGLRenderer({ antialias: !(config.lofi) })
   renderer.setClearColor(config.background, 1)
-  if (!config.lofi) {
-    renderer.setPixelRatio(window.devicePixelRatio || 1)
-  } else {
-    renderer.setPixelRatio(0.5)
-  }
+  renderer.setPixelRatio(config.lofi ? 0.5 : window.devicePixelRatio || 1)
 
   store.watch('size', resize)
   resize(store.get('size'))
-
   el.appendChild(renderer.domElement)
-  cameras.free.position.z = 5
-  switchCamera('free')
-  // store.get('geo.plane').translate(0.5, 0, 0.5)
 }
 
 function start () { raf.add(update) }
 function stop () { raf.remove(update) }
-
-function addCamera (k, cam) {
-  cameras[k] = cam
-}
-
-function switchCamera (k) {
-  currentCamera = cameras[k]
-}
 
 function addComponent (component) {
   if (!scene || ~components.indexOf(component) || !component.group) return
@@ -67,15 +44,13 @@ function removeComponent (component) {
 function update (dt) {
   world.step(config.p2steps)
   components.forEach(component => component.update(dt))
-  renderer.render(scene, currentCamera)
+  renderer.render(scene, camera)
 }
 
 function resize (size) {
   if (!renderer) return
-  for (let k in cameras) {
-    cameras[k].aspect = size.w / size.h
-    cameras[k].updateProjectionMatrix()
-  }
+  camera.aspect = size.w / size.h
+  camera.updateProjectionMatrix()
   renderer.setSize(size.w, size.h)
   components.forEach(component => component.resize(size))
 }
@@ -91,13 +66,10 @@ function debugBody (body) {
 }
 
 function getScene () { return scene || null }
-function getCamera () { return currentCamera || null }
 function getRenderer () { return renderer || null }
 function getWorld () { return world || null }
 
 export default {
-  addCamera,
-  switchCamera,
   setup,
   start,
   stop,
@@ -106,7 +78,6 @@ export default {
   addComponent,
   removeComponent,
   getScene,
-  getCamera,
   getRenderer,
   getWorld
 }

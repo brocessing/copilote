@@ -62,8 +62,8 @@ export default class Minimap extends DomComponent {
     this.currentChunk = [0, 0]
 
     this.chunkSize = map.getChunkSize()
-    this.chunkWidth = this.width / this.viewDistance
-    this.chunkHeight = this.height / this.viewDistance
+    this.chunkSVGWidth = this.width / this.viewDistance * 1.3
+    this.chunkSVGHeight = this.height / this.viewDistance * 1.3
 
     this.playerPos = [0, 0]
 
@@ -150,13 +150,13 @@ export default class Minimap extends DomComponent {
       if (chunk) {
         let chunkEl = createNSNode('svg', {
           class: 'gui-minimap-chunk',
-          width: this.chunkWidth,
-          height: this.chunkHeight,
+          width: this.chunkSVGWidth,
+          height: this.chunkSVGHeight,
           viewBox: `-0.01 -0.01 ${this.chunkSize + 0.01} ${this.chunkSize + 0.01}`
         })
 
-        chunkEl.style.left = Math.floor((-i * this.chunkWidth) - (this.chunkWidth / 2)) + 'px'
-        chunkEl.style.top = Math.floor((-j * this.chunkHeight) - (this.chunkHeight / 2)) + 'px'
+        chunkEl.style.left = Math.floor((-i * this.chunkSVGWidth) - (this.chunkSVGWidth / 2)) + 'px'
+        chunkEl.style.top = Math.floor((-j * this.chunkSVGHeight) - (this.chunkSVGHeight / 2)) + 'px'
         chunkEl.innerHTML = chunk.svg
         this.refs.container.appendChild(chunkEl)
 
@@ -176,8 +176,8 @@ export default class Minimap extends DomComponent {
   onPlayerMove (newPos) {
     this.playerPos = newPos
     this.refs.container.style.transform = translate({
-      x: (this.playerPos[0] / this.chunkSize) * this.chunkWidth,
-      y: (this.playerPos[1] / this.chunkSize) * this.chunkHeight
+      x: (this.playerPos[0] / this.chunkSize) * this.chunkSVGWidth,
+      y: (this.playerPos[1] / this.chunkSize) * this.chunkSVGHeight
     })
 
     this.update()
@@ -185,7 +185,7 @@ export default class Minimap extends DomComponent {
 
   onPlayerRotate (newAng) {
     this.playerAng = newAng
-    if (this.lockNorth || 1) this.refs.base.style.transform = `rotate(${this.playerAng}rad)`
+    if (this.lockNorth) this.refs.base.style.transform = `rotate(${this.playerAng}rad)`
     this.refs.car.style.transform = `rotate(${-this.playerAng}rad)`
   }
 
@@ -194,8 +194,8 @@ export default class Minimap extends DomComponent {
 
     let cop = createNode('div', { class: 'gui-minimap-cop' })
     cop.style.transform = translate({
-      x: (position[0] / this.chunkSize) * this.chunkWidth,
-      y: (position[1] / this.chunkSize) * this.chunkHeight
+      x: (position[0] / this.chunkSize) * this.chunkSVGWidth,
+      y: (position[1] / this.chunkSize) * this.chunkSVGHeight
     })
 
     this.refs.container.appendChild(cop)
@@ -205,8 +205,8 @@ export default class Minimap extends DomComponent {
   onCopMove ({ id, position }) {
     if (this.refs.cops[id]) {
       this.refs.cops[id].style.transform = translate({
-        x: (position[0] / this.chunkSize) * this.chunkWidth,
-        y: (position[1] / this.chunkSize) * this.chunkHeight
+        x: (position[0] / this.chunkSize) * this.chunkSVGWidth,
+        y: (position[1] / this.chunkSize) * this.chunkSVGHeight
       })
     }
   }
