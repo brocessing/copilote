@@ -3,6 +3,7 @@
 let gui
 
 function init () {
+  console.log(window.dat)
   gui = new dat.GUI()
   console.log(gui.domElement)
   gui.domElement.parentNode.style.zIndex = '1000'

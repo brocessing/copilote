@@ -12,17 +12,6 @@ const BUILDINGS = {
 
 export default class Chunk extends ThreeComponent {
   setup (opts) {
-    // console.log('added')
-    // this.meshes.box = new THREE.Mesh(store.get('geo.box'), store.get('mat.blue'))
-    // this.group.add(this.meshes.box)
-    // console.log(opts.x, opts.y)
-    // this.group.scale.set(1, 1, 1)
-    // this.meshes.box.position.x = 0.5
-    // this.meshes.box.position.z = 0.5
-    // this.meshes.box.position.y = 0.5
-    // console.log(opts.road)
-    // console.log(opts)
-
     opts.buildings.forEach(building => {
       const id = building[2]
       if (!BUILDINGS[id]) return
@@ -47,5 +36,6 @@ export default class Chunk extends ThreeComponent {
   }
 
   destroy () {
+    super.destroy()
   }
 }

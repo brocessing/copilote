@@ -9,7 +9,7 @@ export default class Vehicle extends ThreeComponent {
   constructor (opts) {
     super(opts)
     this.speed = 0
-    this.maxSpeed = 1
+    this.maxSpeed = this.maxSpeed !== undefined ? this.maxSpeed : 1
     this.dead = false
 
     // conf
@@ -38,7 +38,8 @@ export default class Vehicle extends ThreeComponent {
       isPlayer: true,
       debug: !!this.debugWaypoints,
       improvise: !!this.improvise,
-      improvistionTreshold: this.improvisationTreshold,
+      improvisationTreshold: this.improvisationTreshold,
+      improvisationMode: this.improvisationMode,
       posPointer: this.bodyPos
     })
 
@@ -158,18 +159,18 @@ export default class Vehicle extends ThreeComponent {
     if (this.running && this.speed < 0.005) {
       if (
         (this.antiObstacleScore < 35 && this.antiObstacleScore + 1 >= 35) ||
-        (this.antiObstacleScore < 120 && this.antiObstacleScore + 1 >= 120)
+        (this.antiObstacleScore < 240 && this.antiObstacleScore + 1 >= 240)
       ) {
         console.warn('Antiblock Trigger')
         this.antiObstacleDir = -this.antiObstacleDir
         this.antiObstacleScore = 80
       }
-      this.antiObstacleScore = Math.min(120, this.antiObstacleScore + 1)
+      this.antiObstacleScore = Math.min(240, this.antiObstacleScore + 1)
     } else {
       this.antiObstacleScore = Math.max(0, this.antiObstacleScore - 1)
     }
     this.antiObstacle = !(this.antiObstacleScore < 35)
-    if (this.antiObstacle) steerAng += Math.PI * 0.5 * this.antiObstacleDir
+    if (this.antiObstacle) steerAng += Math.PI * this.antiObstacleDir
 
     // clamp the value
     steerAng = Math.max(-this.maxSteer, Math.min(this.maxSteer, steerAng))
@@ -183,9 +184,10 @@ export default class Vehicle extends ThreeComponent {
     if (this.backWard) this.backWheel.setBrakeForce(1)
     else this.backWheel.setBrakeForce(1)
 
+    if (this.antiObstacle) this.backWheel.setBrakeForce(0)
     // update engineForce and steer value
     this.frontWheel.engineForce = (
-      this.engineBaseForce * (this.needsBackward ? -0.7 : 1) * (this.antiObstacle ? -1 : 1)
+      this.engineBaseForce * (this.needsBackward ? -0.7 : 1) * (this.antiObstacle ? -2 * this.antiObstacleDir : 1)
     )
     this.frontWheel.targetSteerValue = (
       steerAng * (this.needsBackward ? -1 : 1) * (this.antiObstacle ? -1 : 1)

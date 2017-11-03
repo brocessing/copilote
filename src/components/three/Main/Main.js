@@ -6,6 +6,7 @@ import three from 'controllers/three/three'
 import Terrain from 'components/three/Terrain/Terrain'
 import PlayerCar from 'components/three/PlayerCar/PlayerCar'
 import camera from 'controllers/camera/camera'
+import cops from 'controllers/cops/cops'
 
 export default class Main extends ThreeComponent {
   setup () {
@@ -13,6 +14,7 @@ export default class Main extends ThreeComponent {
     // this.group.add(gridHelper)
     // const axisHelper = new THREE.AxisHelper( 5 )
     // this.group.add(axisHelper)
+    cops.setup()
     this.playerCar = this.addComponent(new PlayerCar())
     this.terrain = this.addComponent(new Terrain())
     camera.setTarget(this.playerCar)
@@ -20,6 +22,7 @@ export default class Main extends ThreeComponent {
 
   update (dt) {
     super.update(dt)
+    cops.update(dt)
     camera.update(dt)
   }
 }

@@ -17,6 +17,8 @@ export default class Terrain extends ThreeComponent {
   removeChunk (id) {
     this.chunks[id].destroy()
     this.group.remove(this.chunks[id].group)
+    this.chunks[id] = undefined
+    delete this.chunks[id]
   }
 
   addChunk (id, data) {

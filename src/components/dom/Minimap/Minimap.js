@@ -2,6 +2,7 @@ import DomComponent from 'abstractions/DomComponent/DomComponent'
 
 import map from 'controllers/map/map'
 import store from 'utils/store'
+import events from 'utils/events'
 
 const chunkId = (i, j) => `chunk_${i}_${j}`
 const translate = ({x, y}) => `translateX(${x}px) translateY(${y}px)`
@@ -51,6 +52,9 @@ export default class Minimap extends DomComponent {
 
     this.onPlayerMove = this.onPlayerMove.bind(this)
     this.onPlayerRotate = this.onPlayerRotate.bind(this)
+    this.onCopAdded = this.onCopAdded.bind(this)
+    this.onCopMove = this.onCopMove.bind(this)
+    this.onCopRemoved = this.onCopRemoved.bind(this)
 
     this.width = opts.width
     this.height = opts.height
@@ -94,9 +98,6 @@ export default class Minimap extends DomComponent {
         this.addChunk(this.currentChunk[0] + i, this.currentChunk[1] + j)
       }
     }
-
-    // DEBUG
-    this.onCopAdded({id: 0, position: [11, 0]})
 
     return el
   }
@@ -205,8 +206,8 @@ export default class Minimap extends DomComponent {
   onCopMove ({ id, position }) {
     if (this.refs.cops[id]) {
       this.refs.cops[id].style.transform = translate({
-        x: (position[0] / this.chunkSize) * this.chunkSVGWidth,
-        y: (position[1] / this.chunkSize) * this.chunkSVGHeight
+        x: (-position[0] / this.chunkSize) * this.chunkSVGWidth,
+        y: (-position[1] / this.chunkSize) * this.chunkSVGHeight
       })
     }
   }
@@ -219,10 +220,16 @@ export default class Minimap extends DomComponent {
   didMount (el) {
     store.watch('player.position', this.onPlayerMove)
     store.watch('player.angle', this.onPlayerRotate)
+    events.on('cop.added', this.onCopAdded)
+    events.on('cop.move', this.onCopMove)
+    events.on('cop.removed', this.onCopRemoved)
   }
 
   willUnmount () {
     store.unwatch('player.position', this.onPlayerMove)
     store.unwatch('player.angle', this.onPlayerRotate)
+    events.off('cop.added', this.onCopAdded)
+    events.off('cop.move', this.onCopMove)
+    events.off('cop.removed', this.onCopRemoved)
   }
 }

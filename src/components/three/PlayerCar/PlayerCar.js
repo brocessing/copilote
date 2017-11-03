@@ -45,9 +45,9 @@ export default class PlayerCar extends Vehicle {
     this.improvisationTreshold = 3
     this.running = false
 
-    // 0: Totally random between left / right / top
-    // 1: Prefer to go straight
-    this.improvisationMode = 1
+    // 0: Prefer to go straight
+    // 1: Totally random between left / right / top
+    this.improvisationMode = 0
 
     // Misc options
     this.debugSteering = true
@@ -56,6 +56,7 @@ export default class PlayerCar extends Vehicle {
 
     store.set('player.position', [0, 0])
     store.set('player.angle', 0)
+    store.set('player.vehicle', this)
 
     this.onOrder = this.onOrder.bind(this)
     orders.on(':all', this.onOrder)
@@ -63,9 +64,6 @@ export default class PlayerCar extends Vehicle {
 
   update (dt) {
     super.update(dt)
-
-    store.set('car.speed', this.speed)
-    store.set('car.angvel', this.angularVelocity)
 
     this.meshes.shadow.rotation.z = this.chassis.rotation.y
 

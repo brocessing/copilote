@@ -9,6 +9,7 @@ export default class ThreeComponent {
     this.geometries = {}
     this.materials = {}
     this.components = []
+    this.contactMaterials = []
     this.group = new THREE.Group()
     this.setup(...args)
     if (this.body) this.world.addBody(this.body)
@@ -36,10 +37,24 @@ export default class ThreeComponent {
 
   destroy () {
     this.components.forEach(component => component.destroy())
-    for (let k in this.meshes) this.meshes[k].parent.remove(this.meshes[k])
-    for (let k in this.materials) this.materials[k].dispose()
-    for (let k in this.geometries) this.geometries[k].dispose()
+    for (let k in this.meshes) {
+      this.meshes[k].parent.remove(this.meshes[k])
+    }
+    for (let i = this.group.children.length - 1; i >= 0; i--) {
+      this.group.remove(this.group.children[i])
+    }
+    for (let k in this.materials) {
+      this.materials[k].dispose()
+      delete this.materials[k]
+    }
+    for (let k in this.geometries) {
+      this.geometries[k].dispose()
+      delete this.geometries[k]
+    }
 
+    if (this.group.parent) this.group.parent.remove(this.group)
+
+    this.group = undefined
     this.components = []
     this.meshes = {}
     this.geometries = {}
@@ -47,10 +62,13 @@ export default class ThreeComponent {
 
     if (this.body) this.world.removeBody(this.body)
     if (this.vehicle) this.vehicle.removeFromWorld()
-    this.shape = null
-    this.body = null
-    this.vehicle = null
-    this.scene = null
-    this.world = null
+    this.contactMaterials.forEach(mat => this.world.removeContactMaterial(mat))
+    this.contactMaterials = []
+
+    this.shape = undefined
+    this.body = undefined
+    this.vehicle = undefined
+    this.scene = undefined
+    this.world = undefined
   }
 }

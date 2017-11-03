@@ -4,7 +4,10 @@
 import three from 'controllers/three/three'
 // import ThreeComponent from 'abstractions/ThreeComponent/ThreeComponent'
 // import kbControls from 'utils/keyboardControls'
+import store from 'utils/store'
+import gui from 'controllers/datgui/datgui'
 import config from 'config'
+import cops from 'controllers/cops/cops'
 
 const minCameraDist = 1.1
 const cameraDistMult = 1.2
@@ -30,7 +33,25 @@ let fakeTargetAngs = {
   angVel: 0
 }
 
+const guiFn = { switchToPlayer, switchToCop }
+
+function switchToPlayer () {
+  const player = store.get('player.vehicle')
+  setTarget(player)
+}
+
+function switchToCop () {
+  const all = cops.getAlive()
+  if (all.length < 1) return
+  setTarget(all[0])
+}
+
 function setup () {
+  const f = gui.folder('camera', {open: true})
+  f.add(guiFn, 'switchToPlayer')
+  f.add(guiFn, 'switchToCop')
+  f.open()
+
   fakeTarget = new THREE.Object3D()
   three.getScene().add(fakeTarget)
 

@@ -20,12 +20,12 @@ export default class House extends ThreeComponent {
     this.shape = new p2.Box({ width: 1, height: 1 })
     this.body.addShape(this.shape)
     this.shape.material = new p2.Material()
-    // this.group.castShadow = true
-    // console.log(store.get('car.p2material'))
-    this.world.addContactMaterial(new p2.ContactMaterial(store.get('car.p2material'), this.shape.material, {
+    this.contactMaterials.push(new p2.ContactMaterial(store.get('car.p2material'), this.shape.material, {
       restitution: 0.6,
       stiffness: Number.MAX_VALUE
     }))
+    // this.group.castShadow = true
+    // console.log(store.get('car.p2material'))
     // three.debugBody(this.body)
   }
 
@@ -38,7 +38,6 @@ export default class House extends ThreeComponent {
   }
 
   destroy () {
-    this.world.addContactMaterial(store.get('car.p2material'), this.shape.material)
     super.destroy()
   }
 }

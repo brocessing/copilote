@@ -21,11 +21,13 @@ export default class WaypointManager {
     this.ang = 0
     this.improvise = opts.improvise
     this.improvisationTreshold = opts.improvisationTreshold || 3
+    this.improvisationMode = opts.improvisationMode !== undefined ? opts.improvisationMode : 0
+    this.chaoticImprovisation = !!(this.improvisationMode === 1)
   }
 
   improviseFrom (position, direction, quantity) {
     for (let i = 0; i < quantity; i++) {
-      let next = getNextWaypoint(position, direction)
+      let next = getNextWaypoint(position, direction, undefined, this.chaoticImprovisation)
       if (next) {
         this.addWaypoint({
           x: next.position[0],
@@ -166,7 +168,7 @@ export default class WaypointManager {
   turnBack () {
     let i = this.list.length
     while (i--) this.cancelWaypoint(i)
-    console.log(this.list)
+    // console.log(this.list)
     const fromPos = this.pos
     const fromDir = this.lastReachPos && this.preLastReachPos
       ? dirFromPos(this.lastReachPos, this.preLastReachPos)
@@ -189,7 +191,7 @@ export default class WaypointManager {
     if (orders.length <= 0) return
     while (orders.length > 0 && i < 100) {
       let next = getNextWaypoint(position, direction, orders[0])
-      console.log(next)
+      // console.log(next)
       if (!next) break
       newWaypoints.push({
         x: next.position[0],
