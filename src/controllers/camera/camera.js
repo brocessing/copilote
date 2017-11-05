@@ -8,6 +8,7 @@ import store from 'utils/store'
 import gui from 'controllers/datgui/datgui'
 import config from 'config'
 import cops from 'controllers/cops/cops'
+import prng from 'utils/prng'
 
 const minCameraDist = 1.1
 const cameraDistMult = 1.2
@@ -33,7 +34,21 @@ let fakeTargetAngs = {
   angVel: 0
 }
 
-const guiFn = { switchToPlayer, switchToCop }
+const maxShake = 250
+let shake = 0
+let shakeFreq = 0
+let shakeVec, targetShakeVec
+let shakeMult = 2
+
+const guiFn = { switchToPlayer, switchToCop, explodeCop, explodePlayer }
+
+function addCameraShake (val = shakeMult) {
+  shake = maxShake
+  shakeMult = val
+  shakeVec = new THREE.Vector3(0, 0, 0)
+  targetShakeVec = new THREE.Vector3(0, 0, 0)
+  shakeFreq = 0
+}
 
 function switchToPlayer () {
   const player = store.get('player.vehicle')
@@ -49,11 +64,22 @@ function switchToCop () {
   currentCop = ((currentCop + 1) >= all.length) ? 0 : currentCop + 1
 }
 
+function explodeCop () {
+  const all = cops.getAlive()
+  if (all.length < 1) return
+  if (currentCop > all.length - 1) currentCop = 0
+  all[currentCop].explode()
+}
+
+function explodePlayer () {
+  store.get('player.vehicle').explode()
+}
+
 function setup () {
-  const f = gui.folder('camera', {open: true})
-  f.add(guiFn, 'switchToPlayer')
-  f.add(guiFn, 'switchToCop')
-  f.open()
+  gui.add(guiFn, 'switchToPlayer').name('Switch to player')
+  gui.add(guiFn, 'switchToCop').name('Switch to cop')
+  gui.add(guiFn, 'explodeCop').name('Explode cop')
+  gui.add(guiFn, 'explodePlayer').name('Explode player')
 
   fakeTarget = new THREE.Object3D()
   three.getScene().add(fakeTarget)
@@ -70,12 +96,17 @@ function setup () {
     config.cullingMax / 3,
     config.cullingMax / 2
   )
+
+  shakeVec = new THREE.Vector3(0, 0, 0)
+  targetShakeVec = new THREE.Vector3(0, 0, 0)
 }
 
 function update (dt) {
   if (!target || !camera) return
+  const isShaking = (shake > 0)
 
-  fakeTarget.position.lerp(target.group.position, lerps.pos)
+  shakeVec.lerp(targetShakeVec, 0.1)
+  fakeTarget.position.lerp(target.group.position.clone(), lerps.pos)
 
   // fakeTargetAngs.angVel += (target.angularVelocity * 0.2 - fakeTargetAngs.angVel) * 0.1
   // const targetRot = target.chassis.rotation.y - fakeTargetAngs.angVel
@@ -91,6 +122,7 @@ function update (dt) {
 
   // stay behind the car
   camera.position.copy(fakeTarget.localToWorld(relPos.clone().setLength(cameraDist)))
+
   // keep pointing north
   // camera.position.copy(fakeTarget.position).add(relPos.clone().setLength(cameraDist))
 
@@ -104,9 +136,25 @@ function update (dt) {
   camera.setRotationFromQuaternion(backQt)
   camera.quaternion.slerp(targetQt, lerps.lookAt)
 
-  angularVelocity += (target.angularVelocity - angularVelocity) * lerps.angVel
-  // this.camera.rotation.x -= dangvel / 100
+  camera.rotation.z += shakeVec.z * 0.5
+  camera.rotation.y += shakeVec.z * 0.4
+  camera.rotation.x += shakeVec.x * 0.5
+
+  // angularVelocity += (target.angularVelocity - angularVelocity) * lerps.angVel
+  // camera.rotation.y += angularVelocity / 10
   // this.camera.rotation.y += dangvel / 100
+
+  if (!isShaking) return
+  const f = shake / maxShake
+  console.log('YOUPI')
+  if (!(shakeFreq % (Math.floor(3 * (1 - f))))) {
+    console.log('allo ?')
+    targetShakeVec.x = f * (prng.random() * 2 - 1) * 2.5 * shakeMult
+    targetShakeVec.y = f * (prng.random() * 2 - 1) * 1.9 * shakeMult
+    targetShakeVec.z = f * (prng.random() * 2 - 1) * 2.5 * shakeMult
+  }
+  shake -= dt * f
+  shakeFreq += 1
 }
 
 function setTarget (vehicle) {
@@ -122,5 +170,6 @@ export default {
   setup,
   update,
   setTarget,
+  addCameraShake,
   getCamera () { return camera }
 }

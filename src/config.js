@@ -31,6 +31,8 @@ export default {
 
   // create commonly used materials
   initCommonMaterials: function () {
+    store.set('mat.deadcar', new THREE.MeshBasicMaterial({ color: 0x2f2f2c }))
+
     store.set('mat.orange', new THREE.MeshBasicMaterial({ color: 0xf6b849 }))
     store.set('mat.red', new THREE.MeshBasicMaterial({ color: 0xff0000 }))
     store.set('mat.green', new THREE.MeshBasicMaterial({ color: 0x00ff00 }))

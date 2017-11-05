@@ -8,7 +8,7 @@ import Vehicle from 'abstractions/Vehicle/Vehicle'
 import config from 'config'
 import orders from 'controllers/orders/orders'
 import kbctrl from 'utils/keyboardControls'
-
+import cam from 'controllers/camera/camera'
 /*
   this.group = position sync with the p2 body position
   this.chassis = angle sync with the p2 angle
@@ -62,6 +62,11 @@ export default class PlayerCar extends Vehicle {
     orders.on(':all', this.onOrder)
 
     // three.debugBody(this.body)
+  }
+
+  didDie () {
+    cam.addCameraShake(1.6)
+    store.set('player.dead', true)
   }
 
   update (dt) {

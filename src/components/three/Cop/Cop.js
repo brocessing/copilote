@@ -10,6 +10,7 @@ import orders from 'controllers/orders/orders'
 import events from 'utils/events'
 import noop from 'utils/noop'
 import EasyStarJS from 'easystarjs'
+import cam from 'controllers/camera/camera'
 
 const EasyStar = EasyStarJS.js
 /*
@@ -76,10 +77,10 @@ export default class Cop extends Vehicle {
 
     this.findTimer = 0
     this.findTimerStart = 3000
+    this.dist = 0
   }
 
   searchPlayer () {
-    console.warn('COP SEARCHING...')
     if (this.astarInstance !== undefined) this.astar.cancelPath(this.astarInstance)
     this.astar.setGrid(map.copyWalkMap())
     const ppos = store.get('player.position')
@@ -89,38 +90,74 @@ export default class Cop extends Vehicle {
     let middleChunk = map.getCurrentMiddleChunk()
     const middleX = middleChunk.chunkX
     const middleY = middleChunk.chunkY
-    console.log(middleX, middleY)
     middleChunk = undefined
-
-    this.astarInstance = this.astar.findPath(fromPos[0], fromPos[1], toPos[0], toPos[1], (path) => {
-      console.warn('FOUND...')
-      map.convertWalkPathToThreePos(path, { middleX, middleY })
-      this.waypoints.createFromPath(path)
-      console.log('ok')
-      // restart timer before making a new a star
-      // this.astar.cancelPath(this.astarInstance)
+    try {
+      this.astarInstance = this.astar.findPath(fromPos[0], fromPos[1], toPos[0], toPos[1], (path) => {
+        if (!path) {
+          this.waypoints.cancelAll()
+          this.astarInstance = undefined
+          this.findTimer = this.findTimerStart
+          this.waypoints.improvise = true
+          return
+        }
+        this.waypoints.improvise = false
+        map.convertWalkPathToThreePos(path, { middleX, middleY })
+        this.waypoints.createFromPath(path)
+        // restart timer before making a new a star
+        // this.astar.cancelPath(this.astarInstance)
+        this.astarInstance = undefined
+        this.findTimer = this.findTimerStart
+      })
+    } catch (err) {
+      this.waypoints.cancelAll()
+      this.waypoints.improvise = true
       this.astarInstance = undefined
       this.findTimer = this.findTimerStart
-    })
+    }
+  }
+
+  didDie () {
+    const maxdist = 8
+    const f = 1 - ((Math.min(maxdist + 1, Math.max(1, this.dist)) - 1) / maxdist)
+    // blast depending on the distance from the player
+    cam.addCameraShake(0.8 * f)
   }
 
   update (dt) {
     super.update(dt)
+    const playerDead = store.get('player.dead')
 
-    if (this.findTimer < 1) {
+    if (this.findTimer < 1 && !this.target && !playerDead) {
       if (this.astarInstance === undefined) this.searchPlayer()
     } else {
       this.findTimer -= dt
     }
 
-    if (this.astarInstance) this.astar.calculate()
+    if (this.astarInstance && !this.target && !playerDead) this.astar.calculate()
 
     this.meshes.shadow.rotation.z = this.chassis.rotation.y
     events.emit('cop.move', { id: this.id, position: [this.group.position.x, this.group.position.z] })
 
     const ppos = store.get('player.position')
-    const dist = Math.pow(ppos[0] - this.group.position.x, 2) + Math.pow(ppos[1] - this.group.position.z, 2)
-    if (dist > 1000) this.onRemoved(this)
+    this.dist = Math.pow(ppos[0] - this.group.position.x, 2) + Math.pow(ppos[1] - this.group.position.z, 2)
+    if (this.dist > 1000) this.onRemoved(this)
+
+    if (playerDead && !this.winner) {
+      this.winner = true
+      this.waypoints.cancelAll()
+      this.waypoints.preLastReachPos = null
+      this.waypoints.lastReachPos = null
+      this.waypoints.improvise = true
+      this.target = undefined
+    } if (this.waypoints.list.length < 3 && this.waypoints.improvise === false && this.dist < 5) {
+      this.waypoints.cancelAll()
+      this.waypoints.preLastReachPos = null
+      this.waypoints.lastReachPos = null
+      this.target = [ppos[0], ppos[1]]
+      if (this.astarInstance !== undefined) this.astar.cancelPath(this.astarInstance)
+    } else {
+      this.target = undefined
+    }
   }
 
   destroy () {

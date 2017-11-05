@@ -4,6 +4,7 @@ import ThreeComponent from 'abstractions/ThreeComponent/ThreeComponent'
 import WaypointManager from './WaypointManager'
 import Arrow from 'components/three/Arrow/Arrow'
 import nmod from 'utils/nmod'
+import store from 'utils/store'
 
 export default class Vehicle extends ThreeComponent {
   constructor (opts) {
@@ -59,6 +60,38 @@ export default class Vehicle extends ThreeComponent {
     }
   }
 
+  didDie () {}
+
+  deadUpdate (dt) {
+    if (!this.alreadyDead) {
+      this.backWheel.setBrakeForce(3)
+      this.frontWheel.targetSteerValue = 0
+      this.frontWheel.steerValue = 0
+      this.frontWheel.engineForce = 0
+      console.log(this.body)
+      if (this.vehicle) this.vehicle.removeFromWorld()
+      this.vehicle = undefined
+      this.world.addBody(this.body)
+      this.deadForceTimer = 800
+      this.alreadyDead = true
+      this.chassis.material = store.get('mat.deadcar')
+      this.didDie()
+    }
+
+    if (this.deadForceTimer > 0) {
+      const f = this.deadForceTimer / 800
+      this.body.applyForceLocal([4.0 * f, -6.0 * f], [0, 0.06 * f])
+      this.body.applyForceLocal([3.0 * f, -1.0 * f])
+      this.deadForceTimer -= dt
+    }
+    this.body.velocity[0] *= 0.95
+    this.body.velocity[1] *= 0.95
+    this.body.angularVelocity *= 0.95
+    this.group.position.x = -this.bodyPos[0]
+    this.group.position.z = this.bodyPos[1]
+    this.chassis.rotation.y = this.body.angle
+  }
+
   update (dt) {
     super.update(dt)
 
@@ -68,17 +101,18 @@ export default class Vehicle extends ThreeComponent {
     this.angularVelocity = this.body.angularVelocity
 
     if (this.dead) {
-      this.backWheel.setBrakeForce(1)
-      this.frontWheel.targetSteerValue = 0
-      this.engineForce = 0
-      this.backWheel.setBrakeForce(4)
+      this.deadUpdate(dt)
       return
     }
 
     // update waypoints list
-    this.waypoints.update(this.bodyPos, this.body.angle)
+    if (!this.target) {
+      this.waypoints.update(this.bodyPos, this.body.angle)
+    }
 
-    if ((this.running || this.manualControls) && this.waypoints.list.length > 0) {
+    if (this.running && this.target) {
+      this.goto(this.target[0], this.target[1])
+    } else if ((this.running || this.manualControls) && this.waypoints.list.length > 0) {
       const closest = this.waypoints.getClosest(-this.bodyPos[0], this.bodyPos[1])
       // console.log(closest.point)
       // console.log(closest.distance)
@@ -96,7 +130,10 @@ export default class Vehicle extends ThreeComponent {
     this.chassis.rotation.y = this.body.angle
     // console.log(this.body.angle)
 
-    this.frontWheel.steerValue += (this.frontWheel.targetSteerValue - this.frontWheel.steerValue) * this.lerpSteerValue
+    this.frontWheel.steerValue += (
+      (this.frontWheel.targetSteerValue - this.frontWheel.steerValue) *
+      (!this.target ? this.lerpSteerValue : 0.4)
+    )
     this.targetRot = this.body.angularVelocity / 80 * -(this.body.velocity[0] + this.body.velocity[1])
     this.chassis.rotation.z += (this.targetRot - this.chassis.rotation.z) * 0.2
     this.targetRot = this.body.angularVelocity / 100 * -(this.body.velocity[0] + this.body.velocity[1])
@@ -106,9 +143,13 @@ export default class Vehicle extends ThreeComponent {
   // One argument: waypoint
   // two arguments: x + y (parallelAng method not used)
   goto (arg1, arg2) {
-    const useParallelAng = (arg2 !== undefined)
-    let parallelAng = 0
+    const useParallelAng = false // (arg2 !== undefined)
+    const isWaypoint = (arg2 === undefined)
 
+    let parallelAng = 0
+    if (arg2) {
+      console.log(arg1, arg2)
+    }
     // the parallelAng method
     // car angle adjusted to match the next waypoint angle
     // it's cool to smooth the path a bit
@@ -126,8 +167,8 @@ export default class Vehicle extends ThreeComponent {
     // the lookAtAng target method
     // angle of the vehicle adjusted to go directly to the coords
     // reliable but the car can hit buildings
-    const targetX = useParallelAng ? arg1 : arg1.x
-    const targetY = useParallelAng ? arg2 : arg1.y
+    const targetX = isWaypoint ? arg1.x : arg1
+    const targetY = isWaypoint ? arg1.y : arg2
 
     let lookAtAng = -Math.atan2(
       targetY - this.bodyPos[1], targetX + this.bodyPos[0]
@@ -159,7 +200,7 @@ export default class Vehicle extends ThreeComponent {
     if (this.running && this.speed < 0.005) {
       if (
         (this.antiObstacleScore < 35 && this.antiObstacleScore + 1 >= 35) ||
-        (this.antiObstacleScore < 240 && this.antiObstacleScore + 1 >= 240)
+        (this.antiObstacleScore < 300 && this.antiObstacleScore + 1 >= 300)
       ) {
         console.warn('Antiblock Trigger')
         this.antiObstacleDir = -this.antiObstacleDir
@@ -187,7 +228,7 @@ export default class Vehicle extends ThreeComponent {
     if (this.antiObstacle) this.backWheel.setBrakeForce(0)
     // update engineForce and steer value
     this.frontWheel.engineForce = (
-      this.engineBaseForce * (this.needsBackward ? -0.7 : 1) * (this.antiObstacle ? -2 * this.antiObstacleDir : 1)
+      this.engineBaseForce * (this.needsBackward ? -0.7 : 1) * (this.antiObstacle ? -1 * this.antiObstacleDir : 1)
     )
     this.frontWheel.targetSteerValue = (
       steerAng * (this.needsBackward ? -1 : 1) * (this.antiObstacle ? -1 * this.antiObstacleDir : 1)
@@ -196,6 +237,10 @@ export default class Vehicle extends ThreeComponent {
 
   destroy () {
     super.destroy()
-    this.chassis.parent.remove(this.chassis)
+    this.chassis = null
+  }
+
+  explode () {
+    this.dead = true
   }
 }
