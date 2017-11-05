@@ -165,22 +165,6 @@ export default class WaypointManager {
     }
   }
 
-  turnBack () {
-    let i = this.list.length
-    while (i--) this.cancelWaypoint(i)
-    // console.log(this.list)
-    const fromPos = this.pos
-    const fromDir = this.lastReachPos && this.preLastReachPos
-      ? dirFromPos(this.lastReachPos, this.preLastReachPos)
-      : this.getDirFromAngle(this.ang - Math.PI)
-    const quantity = this.improvisationTreshold > 3 ? this.improvisationTreshold : 3
-    this.preLastReachPos = null
-    this.lastReachPos = null
-    this.improviseFrom(fromPos, fromDir, quantity)
-    this.preLastReachPos = [this.list[0].x, this.list[0].y]
-    this.lastReachPos = [this.list[1].x, this.list[1].y]
-  }
-
   makeOrders (orders = []) {
     // console.log('YO')
     // const fromPt = this.getPointToStartFrom()
@@ -219,6 +203,23 @@ export default class WaypointManager {
     newWaypoints = null
   }
 
+  createFromPath (path) {
+    const fromPt = this.getPointToStartFrom()
+    let prevPos = fromPt.pos
+    this.cancelAll()
+    this.preLastReachPos = null
+    this.lastReachPos = null
+    path.forEach(coords => {
+      this.addWaypoint({
+        x: coords.x,
+        y: coords.y,
+        r: dirFromPos(prevPos, [coords.x, coords.y]),
+        type: 0
+      })
+      prevPos = [coords.x, coords.y]
+    })
+  }
+
   goStraight () {
     this.makeOrders([0])
   }
@@ -229,5 +230,21 @@ export default class WaypointManager {
 
   turnLeft () {
     this.makeOrders([3])
+  }
+
+  turnBack () {
+    let i = this.list.length
+    while (i--) this.cancelWaypoint(i)
+    // console.log(this.list)
+    const fromPos = this.pos
+    const fromDir = this.lastReachPos && this.preLastReachPos
+      ? dirFromPos(this.lastReachPos, this.preLastReachPos)
+      : this.getDirFromAngle(this.ang - Math.PI)
+    const quantity = this.improvisationTreshold > 3 ? this.improvisationTreshold : 3
+    this.preLastReachPos = null
+    this.lastReachPos = null
+    this.improviseFrom(fromPos, fromDir, quantity)
+    this.preLastReachPos = [this.list[0].x, this.list[0].y]
+    this.lastReachPos = [this.list[1].x, this.list[1].y]
   }
 }

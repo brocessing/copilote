@@ -166,6 +166,20 @@ function onNewMiddleChunk (prevChunkX, prevChunkY, chunkX, chunkY) {
   }
 }
 
+function getCurrentMiddleChunk () {
+  return currentMiddleChunk
+}
+
+function convertWalkPathToThreePos (path, opts = {}) {
+  const middleX = opts.middleX !== undefined ? opts.middleX : currentMiddleChunk.chunkX
+  const middleY = opts.middleY !== undefined ? opts.middleY : currentMiddleChunk.chunkY
+  path.forEach(coords => {
+    coords.x = Math.ceil(coords.x - CHUNKSIZE * (CHUNKDISTFROMCENTER - middleX + 0.5))
+    coords.y = Math.ceil(coords.y - CHUNKSIZE * (CHUNKDISTFROMCENTER - middleY + 0.5))
+  })
+  return path
+}
+
 function getThreePosFromWalkCoord (wx, wy, opts = {}) {
   const middleX = opts.middleX !== undefined ? opts.middleX : currentMiddleChunk.chunkX
   const middleY = opts.middleY !== undefined ? opts.middleY : currentMiddleChunk.chunkY
@@ -266,12 +280,19 @@ function updateCenter (x, y, forcedebug = false) { // pos is three vec3
       const relY = y < 0
         ? (y % CHUNKSIZE + CHUNKSIZE) % CHUNKSIZE
         : y % CHUNKSIZE
-      const walk = getWalkCoordFromPos(x, y)
+      const walk = getWalkCoordFromThreePos(tx, ty)
+      const wt = getThreePosFromWalkCoord(walk[0], walk[1])
       // console.log(getRoadFromPos(x, y))
       // console.log('walk', walk)
       // console.log(getPosFromWalkCoord(walk[0], walk[1]))
       domDebug.innerHTML = (
-        `three: ${tx} ${ty} | pos: ${x} ${y} | chunk: ${chunk.chunkX} ${chunk.chunkY} | chunkPos: ${relX} ${relY} | isRoad: ${walkMap[walk[1]][walk[0]]}`
+        `three: ${tx} ${ty} | ` +
+        `pos: ${x} ${y} | ` +
+        `chunk: ${chunk.chunkX} ${chunk.chunkY} | ` +
+        `chunkPos: ${relX} ${relY} | ` +
+        `walkPos: ${walk[0]} ${walk[1]} | ` +
+        `walk2Three: ${wt[0]} ${wt[1]} | ` +
+        `isRoad: ${walkMap[walk[1]][walk[0]]}`
       )
     }
   }
@@ -283,6 +304,14 @@ function getChunkSize () {
 
 function getWalkMap () {
   return walkMap
+}
+
+function copyWalkMap () {
+  const copy = []
+  for (let y = 0; y < walkMap.length; y++) {
+    copy[y] = walkMap[y].slice()
+  }
+  return copy
 }
 
 export default {
@@ -299,11 +328,14 @@ export default {
   getWalkCoordFromPos,
   getWalkCoordFromThreePos,
 
-  getThreePosFromWalkCoord,
+  // getThreePosFromWalkCoord,
+  convertWalkPathToThreePos,
 
   getPosFromThreePos,
   getChunkFromPool,
+  getCurrentMiddleChunk,
 
   getWalkMap,
+  copyWalkMap,
   on: emitter.on
 }

@@ -1673,6 +1673,12 @@ easy-extender@2.3.2:
   dependencies:
     lodash "^3.10.1"
 
+easystarjs@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/easystarjs/-/easystarjs-0.4.1.tgz#08dc1fb8404ee5bfcbea36127397175e5c82011e"
+  dependencies:
+    heap "0.2.6"
+
 eazy-logger@3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/eazy-logger/-/eazy-logger-3.0.2.tgz#a325aa5e53d13a2225889b2ac4113b2b9636f4fc"
@@ -2453,6 +2459,10 @@ hawk@~3.1.3:
     cryptiles "2.x.x"
     hoek "2.x.x"
     sntp "1.x.x"
+
+heap@0.2.6:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/heap/-/heap-0.2.6.tgz#087e1f10b046932fc8594dd9e6d378afc9d1e5ac"
 
 hmac-drbg@^1.0.0:
   version "1.0.1"

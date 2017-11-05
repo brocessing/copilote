@@ -40,10 +40,13 @@ function switchToPlayer () {
   setTarget(player)
 }
 
+let currentCop = 0
 function switchToCop () {
   const all = cops.getAlive()
   if (all.length < 1) return
-  setTarget(all[0])
+  if (currentCop > all.length - 1) currentCop = 0
+  setTarget(all[currentCop])
+  currentCop = ((currentCop + 1) >= all.length) ? 0 : currentCop + 1
 }
 
 function setup () {
@@ -110,6 +113,8 @@ function setTarget (vehicle) {
   target = vehicle
   camera.position.copy(target.group.position).add(relPos)
   camera.lookAt(target.group.position)
+  fakeTargetAngs.fromLerp = target.chassis.rotation.y
+  fakeTarget.position.copy(target.group.position)
   // this.angvel += (store.get('car.angvel') - this.angvel) * this.alerp
 }
 

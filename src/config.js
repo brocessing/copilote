@@ -9,7 +9,7 @@ export default {
   lofi: LOFI, // Special case for RNO melting computer
   enableSpeech: true, // Disable this to test on others navigators
   quickstart: 'fr',
-  speechDebug: true,
+  speechDebug: false,
   locDebug: true,
   debug: true,
   fpsCounter: true,
@@ -51,7 +51,7 @@ export default {
 
   // autoload textures during the preloading phase
   textures: {
-    'textures/carsMap.png': function (tex) {
+    'textures/texMap.png': function (tex) {
       if (LOFI) return store.set('mat.cars', store.get('mat.wfwhite'))
       tex.format = THREE.RGBAFormat
       tex.magFilter = THREE.NearestFilter
@@ -95,6 +95,12 @@ export default {
       geo.scale(scale, scale, scale)
       geo.translate(0, 0, 0)
       store.set('geo.bandit', geo)
+    },
+    'models/cop.json': function (geo, mats) {
+      const scale = 0.4
+      geo.scale(scale, scale, scale)
+      geo.translate(0, 0, 0)
+      store.set('geo.cop', geo)
     }
   },
 

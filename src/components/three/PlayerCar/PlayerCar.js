@@ -29,8 +29,8 @@ export default class PlayerCar extends Vehicle {
     if (config.lofi) this.meshes.shadow.visible = false
 
     // Vehicle: p2 main physic attributes
-    this.body = new p2.Body({ mass: 2, position: [0, 0] })
-    const box = new p2.Box({ width: 0.08, height: 0.16 })
+    this.body = new p2.Body({ mass: 2, position: [0, 0.1] })
+    const box = new p2.Box({ width: 0.1, height: 0.21 })
     box.material = new p2.Material()
     this.body.addShape(box)
     store.set('car.p2material', box.material)
@@ -60,6 +60,8 @@ export default class PlayerCar extends Vehicle {
 
     this.onOrder = this.onOrder.bind(this)
     orders.on(':all', this.onOrder)
+
+    // three.debugBody(this.body)
   }
 
   update (dt) {

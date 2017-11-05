@@ -3,24 +3,39 @@ import map from 'controllers/map/map'
 import camera from 'controllers/camera/camera'
 import Cop from 'components/three/Cop/Cop'
 import events from 'utils/events'
+import store from 'utils/store'
+import prng from 'utils/prng'
 
-let scene
+let scene, chunkSize
 let lastId = -1
 const aliveCops = []
 const deadCops = []
 
-const maxCops = 0
+const maxCops = 1
 let copsNeeded = 0
 let timerTrigger = 3000
-let currentTimer = -10000
+let currentTimer = 2000
 
 function setup () {
   scene = three.getScene()
+  chunkSize = map.getChunkSize()
 }
 
 function addCop () {
+  const pos = store.get('player.position').slice()
+  pos[0] += ((prng.random() > 0.5) ? 1 : -1) * chunkSize
+  pos[1] += ((prng.random() > 0.5) ? 1 : -1) * chunkSize
+  const chunk = map.getChunkFromThreePos(pos[0], pos[1])
+  const kroads = Object.keys(chunk.road)
+  // console.log(chunk)
+  const road = chunk.road[kroads[prng.randomInt(0, kroads.length - 1)]]
+  // const road = chunk.road['5.5']
+  console.log(chunk.x, chunk.y, road.p, chunk.x + road.p[0] + 0.5, chunk.x + road.p[1] + 0.5)
   const cop = new Cop({
     id: ++lastId,
+    x: chunk.x + road.p[0] + 0.5,
+    y: chunk.x + road.p[1] + 0.5,
+    angle: road.r * (Math.PI / 2),
     onDeath: onCopDeath,
     onRemoved: onCopRemoved
   })

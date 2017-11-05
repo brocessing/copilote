@@ -113,7 +113,7 @@ export default class Minimap extends DomComponent {
 
     if (!xDir && !yDir) return
 
-    console.log('[minimap] NEW CURRENT', this.currentChunk)
+    // console.log('[minimap] NEW CURRENT', this.currentChunk)
 
     if (xDir !== 0) {
       const chunkXtoRemove = this.previousChunk[0] - (this.chunkDistFromCenter * xDir)
@@ -142,7 +142,7 @@ export default class Minimap extends DomComponent {
   }
 
   addChunk (i, j) {
-    console.log('[minimap] add', i, j, 'current', this.currentChunk)
+    // console.log('[minimap] add', i, j, 'current', this.currentChunk)
     if (!this.refs.chunks) this.refs.chunks = []
 
     let id = chunkId(i, j)
@@ -169,7 +169,7 @@ export default class Minimap extends DomComponent {
   removeChunk (i, j) {
     let id = chunkId(i, j)
     removeNode(this.refs.chunks[id])
-    console.log('[minimap] remove', i, j, 'current', this.currentChunk)
+    // console.log('[minimap] remove', i, j, 'current', this.currentChunk)
     this.refs.chunks[id] = null
     delete this.refs.chunks[id]
   }

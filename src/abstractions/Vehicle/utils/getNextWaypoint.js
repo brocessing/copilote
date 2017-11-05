@@ -56,10 +56,10 @@ export default function getNextWaypoint (currentPosition, currentDirection, orde
 
   // Multiple possible choice
   if (len > 0) {
-    console.warn('MULTIPLE', 'order:', DIRKEYS[order])
+    // console.warn('MULTIPLE', 'order:', DIRKEYS[order])
     // The user order is found
     if (order !== undefined && choices[DIRKEYS[order]]) {
-      console.warn('FOUUUUND')
+      // console.warn('FOUUUUND')
       choice = choices[DIRKEYS[order]]
       choice.type = 1
       return choice
@@ -68,7 +68,7 @@ export default function getNextWaypoint (currentPosition, currentDirection, orde
     if (!chaotic && currentRoad.n[relDir.top]) {
       choice = choices.straight
     } else {
-      console.warn('CHAOS', chaotic)
+      // console.warn('CHAOS', chaotic)
       choice = choices[keys[prng.randomInt(0, len - 1)]]
     }
     choice.type = -1

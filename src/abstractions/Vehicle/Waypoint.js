@@ -21,7 +21,6 @@ export default class Waypoint {
     this.y = opts.y
     this.direction = opts.r
     this.type = opts.type
-    this.improvised = !!opts.improvised
     this.debug = !!opts.debug
     // console.log('HOLA')
     if (this.debug) {
