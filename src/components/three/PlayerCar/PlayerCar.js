@@ -9,6 +9,8 @@ import config from 'config'
 import orders from 'controllers/orders/orders'
 import kbctrl from 'utils/keyboardControls'
 import cam from 'controllers/camera/camera'
+import particles from 'controllers/particles/particles'
+import gui from 'controllers/datgui/datgui'
 /*
   this.group = position sync with the p2 body position
   this.chassis = angle sync with the p2 angle
@@ -17,7 +19,7 @@ import cam from 'controllers/camera/camera'
 export default class PlayerCar extends Vehicle {
   setup (opts) {
     // Vehicle: three
-    this.chassis = new THREE.Mesh(store.get('geo.bandit'), store.get('mat.cars'))
+    this.chassis = new THREE.Mesh(store.get('geo.bandit'), store.get('mat.sprites1'))
     this.group.add(this.chassis)
 
     this.meshes.shadow = new THREE.Mesh(store.get('geo.plane'), store.get('mat.shadow'))
@@ -28,8 +30,23 @@ export default class PlayerCar extends Vehicle {
     this.group.add(this.meshes.shadow)
     if (config.lofi) this.meshes.shadow.visible = false
 
+    this.meshes.ground = new THREE.Mesh(store.get('geo.plane'), store.get('mat.ground'))
+    const ground = this.meshes.ground
+    ground.scale.set(100, 100, 1)
+    ground.rotation.x = -Math.PI / 2
+    ground.position.set(0, -0.01, 0)
+    this.group.add(this.meshes.ground)
+
     // Vehicle: p2 main physic attributes
     this.body = new p2.Body({ mass: 2, position: [0, 0.1] })
+    this.body.propType = 'player'
+    const self = this
+    this.body.impactCallback = function (opts) {
+      if (opts.impactType === 'cop') {
+        self.damage(10)
+      }
+    }
+
     const box = new p2.Box({ width: 0.1, height: 0.21 })
     box.material = new p2.Material()
     this.body.addShape(box)
@@ -57,15 +74,50 @@ export default class PlayerCar extends Vehicle {
     store.set('player.position', [0, 0])
     store.set('player.angle', 0)
     store.set('player.vehicle', this)
+    store.set('player.body', this.body)
 
     this.onOrder = this.onOrder.bind(this)
     orders.on(':all', this.onOrder)
 
+    this.maxLife = 40
+    this.life = this.maxLife
     // three.debugBody(this.body)
+
+    gui.add(this, 'damage').name('Damage Player')
+
+    this.frontWheel.steerValue = 0
+    this.frontWheel.targetSteerValue = 0
+    this.backWheel.steerValue = 0
+    this.backWheel.targetSteerValue = 0
+    this.engineForce = 0
+    this.backWheel.setBrakeForce(3)
+    this.manualControls = true
+    kbctrl(this.frontWheel, this.backWheel)
+  }
+
+  damage (val = 10) {
+    this.life = Math.max(0, this.life - val)
+    this.smokeDensity = (1 - this.life / this.maxLife) * 5
+    if (this.life <= 0) this.explode()
   }
 
   didDie () {
-    cam.addCameraShake(1.6)
+    this.smokeDensity = 15
+    particles.emit({
+      x: this.group.position.x,
+      y: 0.1,
+      z: this.group.position.z,
+      type: 2,
+      amount: 55
+    })
+    particles.emit({
+      x: this.group.position.x,
+      y: 0.1,
+      z: this.group.position.z,
+      type: 3,
+      amount: 25
+    })
+    cam.addCameraShake(1.2)
     store.set('player.dead', true)
   }
 

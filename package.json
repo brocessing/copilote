@@ -58,9 +58,12 @@
     "copilote-tile-converter": "brocessing/copilote-tile-converter",
     "easystarjs": "^0.4.1",
     "fast-random": "^2.0.4",
+    "glsl-conditionals": "^1.0.0",
+    "glslify-loader": "pqml/glslify-loader",
     "lodash": "^4.17.4",
     "mitt": "^1.1.2",
     "raf": "pqml/raf",
+    "raw-loader": "^0.5.1",
     "stats.js": "^0.17.0"
   }
 }

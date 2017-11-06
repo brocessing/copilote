@@ -99,7 +99,9 @@ function init () {
 function getChunkFromPool (absChunkX, absChunkY) {
   const id = absChunkX + '.' + absChunkY
   const max = chunksPool.length - 1
-  const chunk = chunksPool[prng.hash2dInt(absChunkX, absChunkY, 0, max)]
+  const chunk = (id !== '0.0')
+    ? chunksPool[prng.hash2dInt(absChunkX, absChunkY, 0, max)]
+    : chunksPool[0]
   return {
     id,
     chunkX: absChunkX,

@@ -1,41 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="52px" height="55px" viewBox="0 0 52 55" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 47 (45396) - http://www.bohemiancoding.com/sketch -->
-    <title>noun_430435_cc</title>
-    <desc>Created with Sketch.</desc>
-    <defs>
-        <filter x="-9.0%" y="-9.4%" width="118.8%" height="120.7%" filterUnits="objectBoundingBox" id="filter-1">
-            <feOffset dx="1" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
-            <feGaussianBlur stdDeviation="7.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
-            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.1 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
-            <feMerge>
-                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
-                <feMergeNode in="SourceGraphic"></feMergeNode>
-            </feMerge>
-        </filter>
-        <filter x="-46.0%" y="-38.0%" width="192.0%" height="192.0%" filterUnits="objectBoundingBox" id="filter-2">
-            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
-            <feGaussianBlur stdDeviation="3.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
-            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
-            <feMerge>
-                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
-                <feMergeNode in="SourceGraphic"></feMergeNode>
-            </feMerge>
-        </filter>
-        <linearGradient x1="80.1386458%" y1="22.1292405%" x2="36.1164731%" y2="65.2003147%" id="linearGradient-3">
-            <stop stop-color="#24DAFF" offset="0%"></stop>
-            <stop stop-color="#24D8FD" offset="5.24477132%"></stop>
-            <stop stop-color="#24D5F9" offset="17.6166399%"></stop>
-            <stop stop-color="#25C0DF" offset="100%"></stop>
-        </linearGradient>
-    </defs>
-    <g id="Copilote-UX" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="In-game" transform="translate(-1240.000000, -878.000000)" fill-rule="nonzero" fill="url(#linearGradient-3)">
-            <g id="Mini-Map" filter="url(#filter-1)" transform="translate(1140.000000, 781.000000)">
-                <g id="noun_430435_cc" filter="url(#filter-2)" transform="translate(125.380465, 126.405592) rotate(-45.000000) translate(-125.380465, -126.405592) translate(112.880465, 113.905592)">
-                    <path d="M23.9682271,0.0850622965 L12.0422783,4.70594604 L0.70285604,9.10055787 C-0.266247716,9.47548356 -0.228265234,9.96615076 0.786252358,10.1913256 L9.50268145,12.1210821 L11.7626391,12.621623 C11.9164957,12.6559066 12.070077,12.809223 12.1042062,12.9619908 L12.5382524,14.9062836 L14.5433421,23.9003862 C14.7687599,24.9118902 15.2614312,24.9483679 15.6385037,23.9834897 L20.0480496,12.6836078 L24.6857657,0.800081522 C24.9367803,0.156097962 24.6142045,-0.16534528 23.9682271,0.0850622965 Z" id="Shape"></path>
-                </g>
-            </g>
-        </g>
-    </g>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 21.0.2, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 52 55" style="enable-background:new 0 0 52 55;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FFFFFF;}
+</style>
+<polygon class="st0" points="25.2,17.8 16.3,37.2 25.2,34.5 34,37.2 "/>
 </svg>

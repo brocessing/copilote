@@ -5,6 +5,8 @@ import WaypointManager from './WaypointManager'
 import Arrow from 'components/three/Arrow/Arrow'
 import nmod from 'utils/nmod'
 import store from 'utils/store'
+import particles from 'controllers/particles/particles'
+import prng from 'utils/prng'
 
 export default class Vehicle extends ThreeComponent {
   constructor (opts) {
@@ -49,6 +51,10 @@ export default class Vehicle extends ThreeComponent {
     }
 
     this.frontWheel.targetSteerValue = 0
+
+    this.smokeDensity = 0
+    this.smokeTimer = 0
+    this.smokeCycle = 300
   }
 
   limitSpeed () {
@@ -68,13 +74,13 @@ export default class Vehicle extends ThreeComponent {
       this.frontWheel.targetSteerValue = 0
       this.frontWheel.steerValue = 0
       this.frontWheel.engineForce = 0
-      console.log(this.body)
+      // console.log(this.body)
       if (this.vehicle) this.vehicle.removeFromWorld()
       this.vehicle = undefined
       this.world.addBody(this.body)
       this.deadForceTimer = 800
       this.alreadyDead = true
-      this.chassis.material = store.get('mat.deadcar')
+      this.chassis.material = store.get('mat.sprites2')
       this.didDie()
     }
 
@@ -92,6 +98,22 @@ export default class Vehicle extends ThreeComponent {
     this.chassis.rotation.y = this.body.angle
   }
 
+  smokeUpdate (dt) {
+    if (this.smokeDensity <= 0) return
+    if (this.smokeTimer > this.smokeCycle) {
+      particles.emit({
+        x: this.group.position.x + (prng.random() * 2 - 1) * 0.05,
+        y: 0.05,
+        z: this.group.position.z + (prng.random() * 2 - 1) * 0.05,
+        type: 1,
+        amount: Math.min(2, Math.max(1, 1 * this.smokeDensity))
+      })
+      this.smokeTimer = 0
+    } else {
+      this.smokeTimer += dt * this.smokeDensity
+    }
+  }
+
   update (dt) {
     super.update(dt)
 
@@ -99,6 +121,8 @@ export default class Vehicle extends ThreeComponent {
     this.speed = (this.bodyVel[0] ** 2 + this.bodyVel[1] ** 2) / 2
     this.limitSpeed()
     this.angularVelocity = this.body.angularVelocity
+
+    this.smokeUpdate(dt)
 
     if (this.dead) {
       this.deadUpdate(dt)
@@ -148,7 +172,7 @@ export default class Vehicle extends ThreeComponent {
 
     let parallelAng = 0
     if (arg2) {
-      console.log(arg1, arg2)
+      // console.log(arg1, arg2)
     }
     // the parallelAng method
     // car angle adjusted to match the next waypoint angle
@@ -187,7 +211,7 @@ export default class Vehicle extends ThreeComponent {
     // handle backward when the car stay too long in a revert ang
     if (steerAng > Math.PI * 0.6 || steerAng < -Math.PI * 0.6) {
       if (this.needsBackwardScore < 35 && this.needsBackwardScore + 1 >= 35) {
-        console.warn('Backward')
+        // console.warn('Backward')
         this.needsBackwardScore = 60
       }
       this.needsBackwardScore = Math.min(80, this.needsBackwardScore + 1)
@@ -200,10 +224,10 @@ export default class Vehicle extends ThreeComponent {
     if (this.running && this.speed < 0.005) {
       if (
         (this.antiObstacleScore < 35 && this.antiObstacleScore + 1 >= 35) ||
-        (this.antiObstacleScore < 300 && this.antiObstacleScore + 1 >= 300)
+        (this.antiObstacleScore < 180 && this.antiObstacleScore + 1 >= 120)
       ) {
-        console.warn('Antiblock Trigger')
-        this.antiObstacleDir = -this.antiObstacleDir
+        // console.warn('Antiblock Trigger')
+        this.antiObstacleDir = (this.antiObstacleDir + 1) % 4
         this.antiObstacleScore = 80
       }
       this.antiObstacleScore = Math.min(240, this.antiObstacleScore + 1)
@@ -215,6 +239,14 @@ export default class Vehicle extends ThreeComponent {
 
     // clamp the value
     steerAng = Math.max(-this.maxSteer, Math.min(this.maxSteer, steerAng))
+
+    let obstacleEngineForce = 1
+    let obstacleSteerAng = 1
+    if (this.antiObstacle) {
+      obstacleEngineForce = ((this.antiObstacleDir > 1) * 2) - 1
+      obstacleSteerAng = (this.antiObstacleDir % 2) * 2 - 1
+      // console.warn(obstacleEngineForce, obstacleSteerAng)
+    }
 
     // stop here if we are in manual mode
     if (this.debugSteering) {
@@ -228,19 +260,21 @@ export default class Vehicle extends ThreeComponent {
     if (this.antiObstacle) this.backWheel.setBrakeForce(0)
     // update engineForce and steer value
     this.frontWheel.engineForce = (
-      this.engineBaseForce * (this.needsBackward ? -0.7 : 1) * (this.antiObstacle ? -1 * this.antiObstacleDir : 1)
+      this.engineBaseForce * (this.needsBackward ? -0.7 : 1) * obstacleEngineForce
     )
     this.frontWheel.targetSteerValue = (
-      steerAng * (this.needsBackward ? -1 : 1) * (this.antiObstacle ? -1 * this.antiObstacleDir : 1)
+      steerAng * (this.needsBackward ? -1 : 1) * obstacleSteerAng
     )
   }
 
   destroy () {
+    if (this.body) { this.body.propType = 'dead'; this.body.impactCallback = undefined }
     super.destroy()
     this.chassis = null
   }
 
   explode () {
     this.dead = true
+    if (this.body) { this.body.propType = 'dead'; this.body.impactCallback = undefined }
   }
 }

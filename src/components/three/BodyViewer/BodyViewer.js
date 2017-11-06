@@ -6,7 +6,6 @@ import ThreeComponent from 'abstractions/ThreeComponent/ThreeComponent'
 
 export default class BodyViewer extends ThreeComponent {
   setup (body) {
-    console.log('BODY')
     this.pos = body.position
     this.body = body
     const wire = store.get('mat.wireframe')

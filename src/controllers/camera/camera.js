@@ -56,19 +56,19 @@ function switchToPlayer () {
 }
 
 let currentCop = 0
+let currentCop_
 function switchToCop () {
   const all = cops.getAlive()
   if (all.length < 1) return
   if (currentCop > all.length - 1) currentCop = 0
-  setTarget(all[currentCop])
+  currentCop_ = all[currentCop]
+  setTarget(currentCop_)
   currentCop = ((currentCop + 1) >= all.length) ? 0 : currentCop + 1
 }
 
 function explodeCop () {
-  const all = cops.getAlive()
-  if (all.length < 1) return
-  if (currentCop > all.length - 1) currentCop = 0
-  all[currentCop].explode()
+  if (!currentCop_) return
+  currentCop_.explode()
 }
 
 function explodePlayer () {
@@ -146,9 +146,9 @@ function update (dt) {
 
   if (!isShaking) return
   const f = shake / maxShake
-  console.log('YOUPI')
+  // console.log('YOUPI')
   if (!(shakeFreq % (Math.floor(3 * (1 - f))))) {
-    console.log('allo ?')
+    // console.log('allo ?')
     targetShakeVec.x = f * (prng.random() * 2 - 1) * 2.5 * shakeMult
     targetShakeVec.y = f * (prng.random() * 2 - 1) * 1.9 * shakeMult
     targetShakeVec.z = f * (prng.random() * 2 - 1) * 2.5 * shakeMult

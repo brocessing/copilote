@@ -2,15 +2,17 @@
 
 import store from 'utils/store'
 import tilePlane from 'utils/tilePlane'
+import caillouVert from './shaders/caillou.vert'
+import caillouFrag from './shaders/caillou.frag'
 
 const LOFI = (window.location.hash && window.location.hash === '#lofi')
 
 export default {
   lofi: LOFI, // Special case for RNO melting computer
-  enableSpeech: true, // Disable this to test on others navigators
+  enableSpeech: false, //true, // Disable this to test on others navigators
   quickstart: 'fr',
   speechDebug: false,
-  locDebug: true,
+  locDebug: false,
   debug: true,
   fpsCounter: true,
   p2steps: 1 / 60,
@@ -18,8 +20,8 @@ export default {
   chunkSize: 11,
   background: !LOFI ? 0xffda48 : 0x000000,
   manualDrive: true,
-  cullingMin: !LOFI ? 0.001 : 0.1,
-  cullingMax: !LOFI ? 30 : 5,
+  cullingMin: !LOFI ? 0.07 : 0.1,
+  cullingMax: !LOFI ? 9 : 5,
 
   // autoload vendors libraries during the preloading phase
   vendors: [
@@ -31,7 +33,7 @@ export default {
 
   // create commonly used materials
   initCommonMaterials: function () {
-    store.set('mat.deadcar', new THREE.MeshBasicMaterial({ color: 0x2f2f2c }))
+    store.set('mat.ground', new THREE.MeshBasicMaterial({ color: 0xffda48 }))
 
     store.set('mat.orange', new THREE.MeshBasicMaterial({ color: 0xf6b849 }))
     store.set('mat.red', new THREE.MeshBasicMaterial({ color: 0xff0000 }))
@@ -43,6 +45,11 @@ export default {
     store.set('mat.wireframe', new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true }))
     store.set('mat.wfwhite', new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true }))
     store.set('mat.wfgray', new THREE.MeshBasicMaterial({ color: 0x999999, wireframe: true }))
+
+    store.set('mat.caillou', new THREE.ShaderMaterial({
+      vertexShader: caillouVert,
+      fragmentShader: caillouFrag
+    }))
   },
 
   // create commonly used geometries
@@ -53,13 +60,34 @@ export default {
 
   // autoload textures during the preloading phase
   textures: {
-    'textures/texMap.png': function (tex) {
-      if (LOFI) return store.set('mat.cars', store.get('mat.wfwhite'))
+    'textures/smoke.png': function (tex) {
       tex.format = THREE.RGBAFormat
       tex.magFilter = THREE.NearestFilter
       tex.minFilter = THREE.LinearFilter
       tex.needsUpdate = true
-      store.set('mat.cars', new THREE.MeshBasicMaterial({
+      store.set('tex.smoke', tex)
+    },
+
+    'textures/texMap.png': function (tex) {
+      if (LOFI) return store.set('mat.sprites1', store.get('mat.wfwhite'))
+      tex.format = THREE.RGBAFormat
+      tex.magFilter = THREE.NearestFilter
+      tex.minFilter = THREE.LinearFilter
+      tex.needsUpdate = true
+      store.set('mat.sprites1', new THREE.MeshBasicMaterial({
+        transparent: true,
+        map: tex,
+        side: THREE.DoubleSide
+      }))
+    },
+
+    'textures/texMap2.png': function (tex) {
+      if (LOFI) return store.set('mat.sprites2', store.get('mat.wfwhite'))
+      tex.format = THREE.RGBAFormat
+      tex.magFilter = THREE.NearestFilter
+      tex.minFilter = THREE.LinearFilter
+      tex.needsUpdate = true
+      store.set('mat.sprites2', new THREE.MeshBasicMaterial({
         transparent: true,
         map: tex,
         side: THREE.DoubleSide
@@ -87,6 +115,12 @@ export default {
       roads[2] = tilePlane({ x: 129, y: 129, tileSize: 126, texSize: 512 })
       roads[3] = tilePlane({ x: 1, y: 257, tileSize: 126, texSize: 512 })
       roads[4] = tilePlane({ x: 129, y: 257, tileSize: 126, texSize: 512 })
+      roads[5] = tilePlane({ x: 257, y: 129, tileSize: 126, texSize: 512 })
+      roads[6] = tilePlane({ x: 257, y: 385, tileSize: 126, texSize: 512 })
+      roads[7] = tilePlane({ x: 385, y: 129, tileSize: 126, texSize: 512 })
+      roads[8] = tilePlane({ x: 257, y: 257, tileSize: 126, texSize: 512 })
+      roads[9] = tilePlane({ x: 385, y: 257, tileSize: 126, texSize: 512 })
+      roads[10] = tilePlane({ x: 129, y: 385, tileSize: 126, texSize: 512 })
     }
   },
 
@@ -103,13 +137,47 @@ export default {
       geo.scale(scale, scale, scale)
       geo.translate(0, 0, 0)
       store.set('geo.cop', geo)
+    },
+    'models/cactus.json': function (geo, mats) {
+      // const scale = 0.4
+      // geo.scale(scale, scale, scale)
+      // geo.translate(0, 0, 0)
+      store.set('geo.cactus', geo)
+    },
+    'models/sign1.json': function (geo, mats) {
+      const scale = 0.5
+      geo.rotateY(Math.PI / 4)
+      geo.scale(scale, scale, scale)
+      // geo.translate(0, 0, 0)
+      store.set('geo.sign1', geo)
+    },
+    'models/sign2.json': function (geo, mats) {
+      const scale = 0.5
+      geo.rotateY(Math.PI / 4)
+      geo.scale(scale, scale, scale)
+      // geo.translate(0, 0, 0)
+      store.set('geo.sign1', geo)
+    },
+    'models/sign3.json': function (geo, mats) {
+      const scale = 0.5
+      geo.rotateY(Math.PI / 4)
+      geo.scale(scale, scale, scale)
+      // geo.translate(0, 0, 0)
+      store.set('geo.sign1', geo)
+    },
+    'models/caillou.json': function (geo, mats) {
+      const scale = 0.5
+      geo.rotateY(Math.PI / 4)
+      geo.scale(scale, scale * 2, scale)
+      geo.translate(-0.5, 0, -0.5)
+      store.set('geo.caillou', geo)
     }
   },
 
   // autoload chunks
   chunks: {
     folder: 'chunks',
-    count: 3,
+    count: 4,
     onchunkload: function (id, obj) {
       if (!store.get('map.chunks')) store.set('map.chunks', [])
       store.get('map.chunks')[id] = obj

@@ -23,6 +23,24 @@ function setup (el) {
   store.watch('size', resize)
   resize(store.get('size'))
   el.appendChild(renderer.domElement)
+
+  world.on('impact', onImpact)
+  world.solver.iterations = 4
+  world.solver.tolerance = 0.5
+  console.log(world)
+}
+
+function onImpact (data) {
+  const bodyA = data.bodyA
+  const bodyB = data.bodyB
+  // console.log(data)
+  if (!bodyA || !bodyA.propType || !bodyB || !bodyB.propType) return
+
+  const propTypeA = bodyA.propType
+  const propTypeB = bodyB.propType
+
+  if (bodyA.impactCallback) bodyA.impactCallback({ impactType: propTypeB })
+  if (bodyB.impactCallback) bodyB.impactCallback({ impactType: propTypeA })
 }
 
 function start () { raf.add(update) }

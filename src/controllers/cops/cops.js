@@ -11,7 +11,7 @@ let lastId = -1
 const aliveCops = []
 const deadCops = []
 
-const maxCops = 1
+const maxCops = 0
 let copsNeeded = 0
 let timerTrigger = 3000
 let currentTimer = 2000
@@ -30,7 +30,7 @@ function addCop () {
   // console.log(chunk)
   const road = chunk.road[kroads[prng.randomInt(0, kroads.length - 1)]]
   // const road = chunk.road['5.5']
-  console.log(chunk.x, chunk.y, road.p, chunk.x + road.p[0] + 0.5, chunk.x + road.p[1] + 0.5)
+  // console.log(chunk.x, chunk.y, road.p, chunk.x + road.p[0] + 0.5, chunk.x + road.p[1] + 0.5)
   const cop = new Cop({
     id: ++lastId,
     x: chunk.x + road.p[0] + 0.5,
@@ -46,8 +46,10 @@ function addCop () {
 
 function onCopDeath (cop) {
   events.emit('cop.removed', { id: cop.id })
-  const index = aliveCops.indexOf(cop)
+  let index = aliveCops.indexOf(cop)
   if (~index) aliveCops.splice(index, 1)
+  index = deadCops.indexOf(cop)
+  if (!~index) deadCops.push(cop)
 }
 
 function onCopRemoved (cop) {
@@ -55,10 +57,9 @@ function onCopRemoved (cop) {
   if (~index) {
     events.emit('cop.removed', { id: cop.id })
     aliveCops.splice(index, 1)
-  } else {
-    index = deadCops.indexOf(cop)
-    if (~index) deadCops.splice(index, 1)
   }
+  index = deadCops.indexOf(cop)
+  if (~index) deadCops.splice(index, 1)
   scene.remove(cop.group)
   cop.destroy()
 }
@@ -75,6 +76,7 @@ function update (dt) {
   }
 
   aliveCops.forEach(cop => cop.update(dt))
+  deadCops.forEach(cop => cop.update(dt))
 }
 
 export default {

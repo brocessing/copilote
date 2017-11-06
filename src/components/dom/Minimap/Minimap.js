@@ -39,8 +39,8 @@ function removeNode (n) {
 // }
 
 const defaultOpts = {
-  width: 250,
-  height: 250,
+  width: 150,
+  height: 150,
   viewDistance: 5,
   lockNorth: false
 }

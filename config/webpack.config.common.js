@@ -27,6 +27,13 @@ module.exports = {
         test: /\.(js)$/,
         loader: 'babel-loader',
         include: paths.src
+      },
+      {
+        test: /\.(glsl|vs|fs|vert|frag)$/,
+        use: [
+          'raw-loader',
+          'glslify-loader'
+        ]
       }
     ]
   },
