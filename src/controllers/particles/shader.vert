@@ -15,12 +15,15 @@ void main() {
 
   float l = vLife * bornData.z;
   float scale = (
-    when_eq(vType, 0.) * 2. * (1. - (max(0.05, abs(vLife - 0.5)) - 0.05) / 0.45) + 0.2
-    + when_eq(vType, 1.) * 1. * (1. - (max(0.1, abs(vLife - 0.5)) - 0.1) / 0.4)
+    when_eq(vType, 1.) * 1. * (1. - (max(0.1, abs(vLife - 0.5)) - 0.1) / 0.4)
     + when_eq(vType, 2.) * 2.0 * vLife
-    + when_eq(vType, 3.) * 0.5 * vLife
+    + when_eq(vType, 3.) * 0.01 * l
     + when_eq(vType, 4.) * 0.6 * (1. - (max(0.05, abs(vLife - 0.5)) - 0.05) / 0.45) + 0.2
   );
+
+  if (vType == 0.) {
+    scale = 2. * (1. - (max(0.05, abs(vLife - 0.5)) - 0.05) / 0.45) + 0.2;
+  }
 
   if (vLife > 0.) {
     vRotation = vec2( cos(l + bornData.z), sin(l + bornData.z) );

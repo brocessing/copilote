@@ -104,6 +104,7 @@ $gui-minimap-road-width: 0.7px;
 
   .gui-minimap-cop {
     position: absolute;
+    z-index: 11;
     // border-radius: 100%;
     background: $color-cop-1;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
