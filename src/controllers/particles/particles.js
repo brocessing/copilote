@@ -68,7 +68,16 @@ function update (dt) {
     const type = aBornData[i * 3]
     const lifeSpeed = aBornData[i * 3 + 1]
     const life = aLife[i]
-    if (type === 1) {
+    if (type === 0 || type === 4) {
+      // aVelocity[i * 3 + 0] *= 1.01
+      // aVelocity[i * 3 + 1] -= BLAST_GRAVITY * 0.001
+      // if (aPosition[i * 3 + 1] <= 0.01) aVelocity[i * 3 + 1] *= -0.8
+      // aVelocity[i * 3 + 2] *= 1.01
+      // aVelocity[i * 3 + 2] *= 0.9
+      aPosition[i * 3 + 0] += aVelocity[i * 3 + 0] * (1 - life)
+      aPosition[i * 3 + 1] += aVelocity[i * 3 + 1]
+      aPosition[i * 3 + 2] += aVelocity[i * 3 + 2] * (1 - life)
+    } else if (type === 1) {
       // aVelocity[i * 3 + 0] *= 1.01
       // aVelocity[i * 3 + 1] -= BLAST_GRAVITY * 0.001
       // if (aPosition[i * 3 + 1] <= 0.01) aVelocity[i * 3 + 1] *= -0.8
@@ -110,7 +119,14 @@ function initParticle (i, x, y, z, type) {
   aPosition[i * 3 + 2] = z
   aBornData[i * 3 + 0] = type
 
-  if (type === 1) {
+  if (type === 0) {
+    aBornData[i * 3 + 1] = 0.01 + (prng.random() * 2 - 1) * 0.001
+    aBornData[i * 3 + 2] = (prng.random(0, 1) * 2 - 1) * Math.PI
+    const m = Math.floor(Math.abs(x) / 1)
+    aVelocity[i * 3 + 0] = (prng.hash2d(m, m) * 2 - 1) * 0.009
+    aVelocity[i * 3 + 1] = prng.random() * 0.001 + 0.001
+    aVelocity[i * 3 + 2] = aVelocity[i * 3 + 0]
+  } else if (type === 1) {
     aBornData[i * 3 + 1] = 0.02 + (prng.random() * 2 - 1) * 0.001
     aBornData[i * 3 + 2] = (prng.random(0, 1) * 2 - 1) * Math.PI
     const m = Math.floor(Math.abs(x) / 1000)
@@ -129,6 +145,13 @@ function initParticle (i, x, y, z, type) {
     aVelocity[i * 3 + 0] = (prng.random(0, 1) * 2 - 1) * 0.03
     aVelocity[i * 3 + 1] = (prng.random(0, 1)) * 0.01
     aVelocity[i * 3 + 2] = (prng.random(0, 1) * 2 - 1) * 0.03
+  } else if (type === 4) {
+    aBornData[i * 3 + 1] = 0.04 + (prng.random() * 2 - 1) * 0.001
+    aBornData[i * 3 + 2] = (prng.random(0, 1) * 2 - 1) * Math.PI
+    const m = Math.floor(Math.abs(x) / 1)
+    aVelocity[i * 3 + 0] = 0
+    aVelocity[i * 3 + 1] = prng.random() * 0.002 + 0.003
+    aVelocity[i * 3 + 2] = 0
   }
 
   geometry.attributes.position.needsUpdate = true

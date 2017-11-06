@@ -20,7 +20,7 @@ export default class Rock extends ThreeComponent {
       store.get('geo.caillou'),
       !config.lofi ? store.get('mat.caillou') : store.get('mat.wireframe')
     )
-    // this.group.scale.set(1, 4, 1)
+    // this.group.scale.set(1, prng, 1)
     // this.group.position.y = 2
     this.body = new p2.Body({
       position: [-(cx + x + 0.5), cy + y + 0.5],

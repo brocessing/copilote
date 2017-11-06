@@ -9,7 +9,7 @@ const LOFI = (window.location.hash && window.location.hash === '#lofi')
 
 export default {
   lofi: LOFI, // Special case for RNO melting computer
-  enableSpeech: false, //true, // Disable this to test on others navigators
+  enableSpeech: true, //true, // Disable this to test on others navigators
   quickstart: 'fr',
   speechDebug: false,
   locDebug: false,
@@ -169,7 +169,7 @@ export default {
       const scale = 0.5
       geo.rotateY(Math.PI / 4)
       geo.scale(scale, scale * 2, scale)
-      geo.translate(-0.5, 0, -0.5)
+      geo.translate(0, 0.01, 0)
       store.set('geo.caillou', geo)
     }
   },
@@ -177,7 +177,7 @@ export default {
   // autoload chunks
   chunks: {
     folder: 'chunks',
-    count: 4,
+    count: 7,
     onchunkload: function (id, obj) {
       if (!store.get('map.chunks')) store.set('map.chunks', [])
       store.get('map.chunks')[id] = obj

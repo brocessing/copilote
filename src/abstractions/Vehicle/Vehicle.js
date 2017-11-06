@@ -7,12 +7,13 @@ import nmod from 'utils/nmod'
 import store from 'utils/store'
 import particles from 'controllers/particles/particles'
 import prng from 'utils/prng'
-
+import map from 'controllers/map/map'
 export default class Vehicle extends ThreeComponent {
   constructor (opts) {
     super(opts)
     this.speed = 0
     this.maxSpeed = this.maxSpeed !== undefined ? this.maxSpeed : 1
+    this.speedMult = 1
     this.dead = false
 
     // conf
@@ -38,7 +39,7 @@ export default class Vehicle extends ThreeComponent {
     this.bodyVel = this.body.velocity
 
     this.waypoints = new WaypointManager({
-      isPlayer: true,
+      isPlayer: !!this.isPlayer,
       debug: !!this.debugWaypoints,
       improvise: !!this.improvise,
       improvisationTreshold: this.improvisationTreshold,
@@ -55,14 +56,23 @@ export default class Vehicle extends ThreeComponent {
     this.smokeDensity = 0
     this.smokeTimer = 0
     this.smokeCycle = 300
+
+    this.sandDensity = 0
+    this.sandTimer = 0
+    this.sandCycle = 300
+
+    this.steerSmokeDensity = 0
+    this.steerSmokeTimer = 0
+    this.steerSmokeCycle = 10
   }
 
   limitSpeed () {
-    if (this.speed > this.maxSpeed) {
-      const mult = this.maxSpeed / this.speed
+    const max = this.maxSpeed * (this.isPlayer ? this.speedMult : 1)
+    if (this.speed > max) {
+      const mult = max / this.speed
       this.bodyVel[0] *= mult
       this.bodyVel[1] *= mult
-      this.speed = this.maxSpeed
+      this.speed = max
     }
   }
 
@@ -99,30 +109,99 @@ export default class Vehicle extends ThreeComponent {
   }
 
   smokeUpdate (dt) {
-    if (this.smokeDensity <= 0) return
-    if (this.smokeTimer > this.smokeCycle) {
-      particles.emit({
-        x: this.group.position.x + (prng.random() * 2 - 1) * 0.05,
-        y: 0.05,
-        z: this.group.position.z + (prng.random() * 2 - 1) * 0.05,
-        type: 1,
-        amount: Math.min(2, Math.max(1, 1 * this.smokeDensity))
-      })
-      this.smokeTimer = 0
-    } else {
-      this.smokeTimer += dt * this.smokeDensity
+    if (this.smokeDensity > 0) {
+      if (this.smokeTimer > this.smokeCycle) {
+        particles.emit({
+          x: this.group.position.x + (prng.random() * 2 - 1) * 0.05,
+          y: 0.05,
+          z: this.group.position.z + (prng.random() * 2 - 1) * 0.05,
+          type: 1,
+          amount: Math.min(2, Math.max(1, 1 * this.smokeDensity))
+        })
+        this.smokeTimer = 0
+      } else {
+        this.smokeTimer += dt * this.smokeDensity
+      }
+    }
+    if (this.sandDensity > 0) {
+      if (this.sandTimer > this.sandCycle) {
+        const vec = this.chassis.localToWorld(new THREE.Vector3(-0.04, 0, -0.06))
+        const vec2 = this.chassis.localToWorld(new THREE.Vector3(0.04, 0, -0.06))
+        particles.emit({
+          x: vec.x,
+          y: 0,
+          z: vec.z,
+          type: 0,
+          amount: Math.min(6, Math.max(1, 1 * this.sandDensity))
+        })
+        particles.emit({
+          x: vec2.x,
+          y: 0,
+          z: vec2.z,
+          type: 0,
+          amount: Math.min(6, Math.max(1, 1 * this.sandDensity))
+        })
+        this.sandTimer = 0
+      } else {
+        this.sandTimer += dt * this.sandDensity
+      }
+    }
+    if (this.steerSmokeDensity > 0) {
+      if (this.steerSmokeTimer > this.steerSmokeCycle) {
+        const vec = this.chassis.localToWorld(new THREE.Vector3(-0.04, 0, -0.06))
+        const vec2 = this.chassis.localToWorld(new THREE.Vector3(0.04, 0, -0.06))
+        particles.emit({
+          x: vec.x,
+          y: 0,
+          z: vec.z,
+          type: 4,
+          amount: Math.min(6, Math.max(1, 1 * this.steerSmokeDensity))
+        })
+        particles.emit({
+          x: vec2.x,
+          y: 0,
+          z: vec2.z,
+          type: 4,
+          amount: Math.min(6, Math.max(3, 1 * this.steerSmokeDensity))
+        })
+        this.steerSmokeTimer = 0
+      } else {
+        this.steerSmokeTimer += dt * this.steerSmokeDensity
+      }
     }
   }
 
   update (dt) {
     super.update(dt)
 
+    const road = map.getRoadFromThreePos(this.group.position.x, this.group.position.z)
+
+    if (!road) {
+      this.sandDensity = 17 * this.speed
+      this.speedMult = 0.7
+      if (this.isPlayer) this.backWheel.setSideFriction(2.4)
+    } else if (road.c === 15) {
+      this.sandDensity = 9 * this.speed
+      this.speedMult = 0.8
+      if (this.isPlayer) this.backWheel.setSideFriction(2.4)
+    } else {
+      this.sandDensity = 0
+      this.speedMult = 1
+      if (this.isPlayer) this.backWheel.setSideFriction(2.9)
+    }
+
+
     // update & limit speed
     this.speed = (this.bodyVel[0] ** 2 + this.bodyVel[1] ** 2) / 2
     this.limitSpeed()
     this.angularVelocity = this.body.angularVelocity
 
+    const angVel = Math.abs(this.angularVelocity)
+    this.steerSmokeDensity = (angVel * 0.2) * (angVel > 1.6)
+
     this.smokeUpdate(dt)
+
+
 
     if (this.dead) {
       this.deadUpdate(dt)
@@ -184,7 +263,7 @@ export default class Vehicle extends ThreeComponent {
 
       parallelAng = wpNormAng - carNormAng
       if (Math.abs(wpNormAng - carNormAng) >= Math.PI) {
-        parallelAng -= Math.sign(wpNormAng - carNormAng) * (Math.PI * 2)
+        parallelAng -= Math.sign(wpNormAng - carNormAng) * (Math.PI * 1.9)
       }
     }
 

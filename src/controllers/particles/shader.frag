@@ -15,7 +15,11 @@ void main() {
   vec4 color = texture2D(tex, rotated);
 
   if (color.w < 0.5) discard;
-
+  if (vType == 0.) {
+    color.r = color.r + (1. - color.r) * 0.7;
+    color.g = color.g + (1. - color.g) * 0.4;
+    color.b = color.b - (1. - color.b) * 0.2;
+  }
   if (vType == 1.) {
     float life = (1. - vLife) * 0.1;
     color = vec4(color.rgb - life, 1.0);
@@ -28,6 +32,9 @@ void main() {
   }
   if (vType == 3.) {
     color = vec4(color.rgb * 0.7, 1.0);
+  }
+  if (vType == 4.) {
+    color = vec4(color.rgb + 0.4, 0.8);
   }
   gl_FragColor = color;
 }

@@ -25,8 +25,8 @@ function setup (el) {
   el.appendChild(renderer.domElement)
 
   world.on('impact', onImpact)
-  world.solver.iterations = 4
-  world.solver.tolerance = 0.5
+  // world.solver.iterations = 4
+  // world.solver.tolerance = 0.5
   console.log(world)
 }
 

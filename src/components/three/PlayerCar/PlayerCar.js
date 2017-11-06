@@ -93,6 +93,8 @@ export default class PlayerCar extends Vehicle {
     this.backWheel.setBrakeForce(3)
     this.manualControls = true
     kbctrl(this.frontWheel, this.backWheel)
+
+    this.isPlayer = true
   }
 
   damage (val = 10) {

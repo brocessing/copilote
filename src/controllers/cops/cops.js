@@ -11,7 +11,7 @@ let lastId = -1
 const aliveCops = []
 const deadCops = []
 
-const maxCops = 0
+const maxCops = 8
 let copsNeeded = 0
 let timerTrigger = 3000
 let currentTimer = 2000
