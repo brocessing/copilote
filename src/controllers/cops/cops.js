@@ -23,6 +23,7 @@ function setup () {
 
 function addCop () {
   const pos = store.get('player.position').slice()
+
   pos[0] += ((prng.random() > 0.5) ? 1 : -1) * chunkSize
   pos[1] += ((prng.random() > 0.5) ? 1 : -1) * chunkSize
   const chunk = map.getChunkFromThreePos(pos[0], pos[1])
@@ -34,7 +35,7 @@ function addCop () {
   const cop = new Cop({
     id: ++lastId,
     x: chunk.x + road.p[0] + 0.5,
-    y: chunk.x + road.p[1] + 0.5,
+    y: chunk.y + road.p[1] + 0.5,
     angle: road.r * (Math.PI / 2),
     onDeath: onCopDeath,
     onRemoved: onCopRemoved
@@ -65,7 +66,7 @@ function onCopRemoved (cop) {
 }
 
 function update (dt) {
-  if (aliveCops.length + copsNeeded < maxCops) {
+  if ((aliveCops.length + copsNeeded) < maxCops) {
     copsNeeded = maxCops - aliveCops.length
   }
 

@@ -12,6 +12,7 @@ import three from 'controllers/three/three'
 import Homescreen from 'components/dom/Homescreen/Homescreen'
 import GameGUI from 'components/dom/GameGUI/GameGUI'
 import Main from 'components/three/Main/Main'
+import sfx from 'controllers/sfx/sfx'
 
 prng.setSeed(0)
 
@@ -33,6 +34,7 @@ Promise.resolve()
   .then(preloader.loadObjects)
   .then(preloader.loadChunks)
   .then(threeSetup)
+  .then(sfx.setup)
   .then(() => config.enableSpeech && speech.start())
   .then(() => config.enableSpeech && volume.start())
   .then(() => home.hydrate(document.querySelector('.homescreen')))

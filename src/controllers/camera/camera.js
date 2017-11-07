@@ -9,10 +9,11 @@ import gui from 'controllers/datgui/datgui'
 import config from 'config'
 import cops from 'controllers/cops/cops'
 import prng from 'utils/prng'
+import sfx from 'controllers/sfx/sfx'
 
 const minCameraDist = 1.1
-const cameraDistMult = 1.2
-let relPos = [0, 1, -0.8]
+const cameraDistMult = 1.3
+let relPos = [0, 0.9, -0.8]
 
 // lerp value
 const lerps = {
@@ -91,11 +92,6 @@ function setup () {
     window.innerWidth / window.innerHeight,
     config.cullingMin, config.cullingMax
   )
-  three.getScene().fog = new THREE.Fog(
-    config.background,
-    config.cullingMax / 3,
-    config.cullingMax / 2
-  )
 
   shakeVec = new THREE.Vector3(0, 0, 0)
   targetShakeVec = new THREE.Vector3(0, 0, 0)
@@ -143,6 +139,8 @@ function update (dt) {
   // angularVelocity += (target.angularVelocity - angularVelocity) * lerps.angVel
   // camera.rotation.y += angularVelocity / 10
   // this.camera.rotation.y += dangvel / 100
+
+  sfx.updateCoords(camera.position, camera.rotation.y)
 
   if (!isShaking) return
   const f = shake / maxShake

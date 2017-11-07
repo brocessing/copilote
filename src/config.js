@@ -2,8 +2,7 @@
 
 import store from 'utils/store'
 import tilePlane from 'utils/tilePlane'
-import caillouVert from './shaders/caillou.vert'
-import caillouFrag from './shaders/caillou.frag'
+
 
 const LOFI = (window.location.hash && window.location.hash === '#lofi')
 
@@ -12,7 +11,7 @@ export default {
   enableSpeech: true, //true, // Disable this to test on others navigators
   quickstart: 'fr',
   speechDebug: false,
-  locDebug: false,
+  locDebug: true,
   debug: true,
   fpsCounter: true,
   p2steps: 1 / 60,
@@ -45,11 +44,6 @@ export default {
     store.set('mat.wireframe', new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true }))
     store.set('mat.wfwhite', new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true }))
     store.set('mat.wfgray', new THREE.MeshBasicMaterial({ color: 0x999999, wireframe: true }))
-
-    store.set('mat.caillou', new THREE.ShaderMaterial({
-      vertexShader: caillouVert,
-      fragmentShader: caillouFrag
-    }))
   },
 
   // create commonly used geometries

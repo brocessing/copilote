@@ -8,7 +8,7 @@ import prng from 'utils/prng'
 
 export default class Rock extends ThreeComponent {
   setup ({ x, y, cx, cy }) {
-    console.log('Caillou')
+    // console.log('Caillou')
 
     // console.log(x, y)
     this.cx = cx

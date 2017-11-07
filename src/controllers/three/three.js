@@ -7,6 +7,9 @@ import config from 'config'
 import BodyViewer from 'components/three/BodyViewer/BodyViewer'
 import cameraController from 'controllers/camera/camera'
 
+import caillouVert from '../../shaders/caillou.vert'
+import caillouFrag from '../../shaders/caillou.frag'
+
 let scene, renderer, world, camera
 let components = []
 
@@ -28,6 +31,22 @@ function setup (el) {
   // world.solver.iterations = 4
   // world.solver.tolerance = 0.5
   console.log(world)
+
+  scene.fog = new THREE.Fog(
+    config.background,
+    config.cullingMax / 3,
+    config.cullingMax / 2
+  )
+
+  store.set('mat.caillou', new THREE.ShaderMaterial({
+    vertexShader: caillouVert,
+    fragmentShader: caillouFrag,
+    uniforms: {
+      fogColor: { type: 'c', value: scene.fog.color },
+      fogNear: { type: 'f', value: scene.fog.near },
+      fogFar: { type: 'f', value: scene.fog.far }
+    }
+  }))
 }
 
 function onImpact (data) {

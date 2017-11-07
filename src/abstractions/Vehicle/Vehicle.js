@@ -175,6 +175,8 @@ export default class Vehicle extends ThreeComponent {
     super.update(dt)
 
     const road = map.getRoadFromThreePos(this.group.position.x, this.group.position.z)
+    this.onRoad = !!road
+    this.onSand = !road || (road.c === 15)
 
     if (!road) {
       this.sandDensity = 17 * this.speed
@@ -237,7 +239,7 @@ export default class Vehicle extends ThreeComponent {
       (this.frontWheel.targetSteerValue - this.frontWheel.steerValue) *
       (!this.target ? this.lerpSteerValue : 0.4)
     )
-    this.targetRot = this.body.angularVelocity / 80 * -(this.body.velocity[0] + this.body.velocity[1])
+    this.targetRot = this.body.angularVelocity / 30 * -(this.body.velocity[0] + this.body.velocity[1])
     this.chassis.rotation.z += (this.targetRot - this.chassis.rotation.z) * 0.2
     this.targetRot = this.body.angularVelocity / 100 * -(this.body.velocity[0] + this.body.velocity[1])
     this.chassis.rotation.x += (this.targetRot - this.chassis.rotation.x) * 0.1

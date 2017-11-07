@@ -11,6 +11,7 @@ import kbctrl from 'utils/keyboardControls'
 import cam from 'controllers/camera/camera'
 import particles from 'controllers/particles/particles'
 import gui from 'controllers/datgui/datgui'
+import sfx from 'controllers/sfx/sfx'
 /*
   this.group = position sync with the p2 body position
   this.chassis = angle sync with the p2 angle
@@ -128,9 +129,12 @@ export default class PlayerCar extends Vehicle {
 
     this.meshes.shadow.rotation.z = this.chassis.rotation.y
 
+    store.set('player.velocity', this.body.velocity)
     store.set('player.position', [this.group.position.x, this.group.position.z])
     store.set('player.angle', this.chassis.rotation.y)
     map.updateCenter(this.group.position.x, this.group.position.z)
+
+    sfx.updateEngine(this.body.velocity, this.body.angularVelocity, !!this.dead)
   }
 
   onOrder (data) {

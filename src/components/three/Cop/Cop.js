@@ -12,6 +12,7 @@ import noop from 'utils/noop'
 import EasyStarJS from 'easystarjs'
 import cam from 'controllers/camera/camera'
 import particles from 'controllers/particles/particles'
+import sfx from 'controllers/sfx/sfx'
 
 const EasyStar = EasyStarJS.js
 /*
@@ -158,6 +159,8 @@ export default class Cop extends Vehicle {
 
     this.meshes.shadow.rotation.z = this.chassis.rotation.y
 
+    sfx.updateCop(this.id, this.group.position, this.dead)
+
     if (!this.dead) {
       events.emit('cop.move', { id: this.id, position: [this.group.position.x, this.group.position.z] })
 
@@ -187,7 +190,7 @@ export default class Cop extends Vehicle {
       }
     }
 
-    if (this.dist > 1000) this.onRemoved(this)
+    if (this.dist > 800) this.onRemoved(this)
   }
 
   destroy () {

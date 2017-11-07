@@ -1,6 +1,10 @@
 varying vec3 vPos;
 varying vec3 vNorm;
 
+uniform vec3 fogColor;
+uniform float fogNear;
+uniform float fogFar;
+
 float random (vec2 s) {
   return fract(sin(dot(s.xy,vec2(12.9898,78.233)))*43758.5453123);
 }
@@ -40,5 +44,9 @@ void main() {
     - vec3(0, r * 0.1, r * 0.4) * sandValue * 0.7
     - vec3(0.1, r * 0.3, r * 0.7) * 0.2 * (1. - sandValue)
   );
+
 	gl_FragColor = vec4(color, 1.0 );
+	float depth = gl_FragCoord.z / gl_FragCoord.w;
+	float fogFactor = smoothstep( fogNear, fogFar, depth );
+	gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );
 }
