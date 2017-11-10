@@ -2,7 +2,9 @@ varying float vY;
 varying float vLife;
 varying float vType;
 varying vec2 vRotation;
-uniform sampler2D tex;
+
+uniform sampler2D texture;
+
 void main() {
   if (vLife <= 0. || vY < 0.) discard;
 
@@ -12,13 +14,13 @@ void main() {
     vRotation.x * (gl_PointCoord.y - mid) - vRotation.y * (gl_PointCoord.x - mid) + mid
   );
 
-  vec4 color = texture2D(tex, rotated);
+  vec4 color = texture2D(texture, rotated);
 
   if (color.w < 0.5) discard;
   if (vType == 0.) {
-    color.r = color.r + (1. - color.r) * 0.7;
-    color.g = color.g + (1. - color.g) * 0.4;
-    color.b = color.b - (1. - color.b) * 0.2;
+    color.r = color.r + (1. - color.r) * 0.9;
+    color.g = color.g + (1. - color.g) * 0.5;
+    color.b = color.b - (1. - color.b) * 0.8;
   }
   if (vType == 1.) {
     float life = (1. - vLife) * 0.1;

@@ -2,15 +2,14 @@
 
 import three from 'controllers/three/three'
 import store from 'utils/store'
-import frag from './shader.frag'
-import vert from './shader.vert'
 import prng from 'utils/prng'
+import smoke from 'shaders/smoke/smoke'
 
-const AMOUNT = 1000
+const AMOUNT = 800
 const BLAST_GRAVITY = 0.1
 
 let material, geometry
-let aPosition, aLife, aVelocity, aBornData
+let aPosition, aLife, aVelocity, aBornData, aScale
 let particles
 let dead = []
 let alive = []
@@ -18,24 +17,21 @@ let alive = []
 // bornData = 0: type / 1: speed / 2: baseRotation (seed ?)
 
 function setup () {
-  material = new THREE.ShaderMaterial({
-    uniforms: {
-      tex: { value: store.get('tex.smoke') }
-    },
-    vertexShader: vert,
-    fragmentShader: frag,
-    transparent: true
-  })
-
+  material = smoke.getMaterial()
   aVelocity = new Float32Array(AMOUNT * 3)
   aPosition = new Float32Array(AMOUNT * 3)
   aBornData = new Float32Array(AMOUNT * 3)
+  aScale = new Float32Array(AMOUNT)
   aLife = new Float32Array(AMOUNT)
 
   geometry = new THREE.BufferGeometry()
+  geometry.addAttribute('scale', new THREE.BufferAttribute(aScale, 1))
   geometry.addAttribute('bornData', new THREE.BufferAttribute(aBornData, 3))
-  geometry.addAttribute('position', new THREE.BufferAttribute(aPosition, 3))
-  geometry.addAttribute('life', new THREE.BufferAttribute(aLife, 1))
+
+  let attr = new THREE.BufferAttribute(aPosition, 3); attr.setDynamic(true)
+  geometry.addAttribute('position', attr)
+  attr = new THREE.BufferAttribute(aLife, 1); attr.setDynamic(true)
+  geometry.addAttribute('life', attr)
 
   particles = new THREE.Points(geometry, material)
   particles.frustumCulled = false
@@ -43,6 +39,7 @@ function setup () {
   for (var i = 0; i < AMOUNT; i++) killParticle(i)
 
   three.getScene().add(particles)
+  setScale(1)
 }
 
 function emit ({ x, y, z, type, amount }) {
@@ -105,7 +102,6 @@ function update (dt) {
       aPosition[i * 3 + 1] += aVelocity[i * 3 + 1]
       aPosition[i * 3 + 2] += aVelocity[i * 3 + 2]
     }
-
 
     aLife[i] -= lifeSpeed
     if (aLife[i] <= 0) killParticle(i)
@@ -173,4 +169,9 @@ function killParticle (i) {
   dead.push(i)
 }
 
-export default { setup, update, emit }
+function setScale (val) {
+  for (var i = 0; i < AMOUNT; i++) aScale[i] = val
+  geometry.attributes.scale.needsUpdate = true
+}
+
+export default { setup, update, emit, setScale }

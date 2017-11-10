@@ -135,6 +135,9 @@ $gui-minimap-road-width: 0.7px;
   }
 }
 
+canvas {
+  image-rendering: pixelated;
+}
 
 @keyframes changeColor {
   0% {

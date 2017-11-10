@@ -6,47 +6,62 @@ import store from 'utils/store'
 import config from 'config'
 import BodyViewer from 'components/three/BodyViewer/BodyViewer'
 import cameraController from 'controllers/camera/camera'
+import sky from 'controllers/sky/sky'
+import throttle from 'lodash/throttle'
 
-import caillouVert from '../../shaders/caillou.vert'
-import caillouFrag from '../../shaders/caillou.frag'
-
-let scene, renderer, world, camera
+let scene, renderer, world, camera, composer, composerEnabled
 let components = []
 
 function setup (el) {
+  sky.setup()
   world = new p2.World({ gravity: [0, 0] })
   scene = new THREE.Scene()
   cameraController.setup()
   camera = cameraController.getCamera()
 
   renderer = new THREE.WebGLRenderer({ antialias: !(config.lofi) })
-  renderer.setClearColor(config.background, 1)
-  renderer.setPixelRatio(config.lofi ? 0.5 : window.devicePixelRatio || 1)
+  renderer.setClearColor(0xcaf9b2, 1)
 
-  store.watch('size', resize)
+  store.set('pixelratio', config.lofi ? 0.5 : 1)//window.devicePixelRatio || 1)
+  renderer.setPixelRatio(store.get('pixelratio'))
+
+  // scene.fog = new THREE.Fog(
+  //   config.background,
+  //   config.cullingMax / 3,
+  //   config.cullingMax / 2
+  // )
+
+  setupPostProcessing()
+
+  const guiFn = {
+    toggleEffectComposer () { composerEnabled = !composerEnabled }
+  }
+
+  gui.add(guiFn, 'toggleEffectComposer')
+
+  const throttledResize = throttle(resize, 250)
+  store.watch('size', throttledResize)
   resize(store.get('size'))
   el.appendChild(renderer.domElement)
-
   world.on('impact', onImpact)
   // world.solver.iterations = 4
   // world.solver.tolerance = 0.5
-  console.log(world)
+  // console.log(world)
+  renderer.autoClear = false
 
-  scene.fog = new THREE.Fog(
-    config.background,
-    config.cullingMax / 3,
-    config.cullingMax / 2
-  )
+}
 
-  store.set('mat.caillou', new THREE.ShaderMaterial({
-    vertexShader: caillouVert,
-    fragmentShader: caillouFrag,
-    uniforms: {
-      fogColor: { type: 'c', value: scene.fog.color },
-      fogNear: { type: 'f', value: scene.fog.near },
-      fogFar: { type: 'f', value: scene.fog.far }
-    }
-  }))
+function setupPostProcessing () {
+  // Setup render pass
+  var renderPass = new THREE.RenderPass(scene, camera)
+  // Setup SSAO pass
+  // ssaoPass = new THREE.SSAOPass(scene, camera)
+  renderPass.renderToScreen = true
+  // Add pass to effect composer
+  composer = new THREE.EffectComposer(renderer)
+  composer.addPass(renderPass)
+
+  composerEnabled = false
 }
 
 function onImpact (data) {
@@ -81,7 +96,13 @@ function removeComponent (component) {
 function update (dt) {
   world.step(config.p2steps)
   components.forEach(component => component.update(dt))
+
+  renderer.clear()
+  renderer.render(sky.scene, sky.camera)
   renderer.render(scene, camera)
+  // composerEnabled
+  //   ? composer.render()
+  //   : renderer.render(sky.scene, sky.camera)
 }
 
 function resize (size) {
@@ -89,6 +110,12 @@ function resize (size) {
   camera.aspect = size.w / size.h
   camera.updateProjectionMatrix()
   renderer.setSize(size.w, size.h)
+
+  const pixelRatio = renderer.getPixelRatio()
+  const newWidth = Math.floor(size.w / pixelRatio) || 1
+  const newHeight = Math.floor(size.h / pixelRatio) || 1
+  composer.setSize(newWidth, newHeight)
+
   components.forEach(component => component.resize(size))
 }
 
@@ -105,6 +132,7 @@ function debugBody (body) {
 function getScene () { return scene || null }
 function getRenderer () { return renderer || null }
 function getWorld () { return world || null }
+
 
 export default {
   setup,

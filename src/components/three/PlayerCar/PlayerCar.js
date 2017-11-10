@@ -12,6 +12,7 @@ import cam from 'controllers/camera/camera'
 import particles from 'controllers/particles/particles'
 import gui from 'controllers/datgui/datgui'
 import sfx from 'controllers/sfx/sfx'
+import ground from 'shaders/ground/ground'
 /*
   this.group = position sync with the p2 body position
   this.chassis = angle sync with the p2 angle
@@ -31,11 +32,15 @@ export default class PlayerCar extends Vehicle {
     this.group.add(this.meshes.shadow)
     if (config.lofi) this.meshes.shadow.visible = false
 
-    this.meshes.ground = new THREE.Mesh(store.get('geo.plane'), store.get('mat.ground'))
-    const ground = this.meshes.ground
-    ground.scale.set(100, 100, 1)
-    ground.rotation.x = -Math.PI / 2
-    ground.position.set(0, -0.01, 0)
+    this.meshes.ground = new THREE.Mesh(new THREE.CircleBufferGeometry(5, 32), ground.getMaterial())
+    // this.meshes.ground.scale.set(0.95, 1, 10.9
+    this.meshes.ground.rotation.x = -Math.PI / 2
+    this.meshes.ground.position.set(0, -0.03, -1)
+
+    // this.meshes.ground = new THREE.Mesh(new THREE.PlaneGeometry(30, 30, 40, 40), ground.getMaterial())
+    // // this.meshes.ground.scale.set(100, 100, 1)
+    // this.meshes.ground.rotation.x = -Math.PI / 2
+    // this.meshes.ground.position.set(0, -0.01, 0)
     this.group.add(this.meshes.ground)
 
     // Vehicle: p2 main physic attributes

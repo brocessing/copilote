@@ -15,7 +15,10 @@ function bindDom (el) {
 function loadJS () {
   return new Promise((resolve, reject) => {
     if (!config.vendors || config.vendors.length < 1) return resolve()
-    loadjs(config.vendors, { success: resolve, error: reject })
+    loadjs(config.vendors, {
+      success () { loadjs(config.threeDependencies, { success: resolve, error: reject, async: false }) },
+      error: reject
+    })
   })
 }
 

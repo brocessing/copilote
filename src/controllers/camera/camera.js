@@ -10,15 +10,17 @@ import config from 'config'
 import cops from 'controllers/cops/cops'
 import prng from 'utils/prng'
 import sfx from 'controllers/sfx/sfx'
+import sky from 'controllers/sky/sky'
 
-const minCameraDist = 1.1
-const cameraDistMult = 1.3
-let relPos = [0, 0.9, -0.8]
+const a = true
+const minCameraDist = a ? 1.1 : 1.1
+const cameraDistMult = a ? 1.3 : 1.3
+let relPos = a ? [0, 0.9, -1.8] : [0, 0.9, -0.8]
 
 // lerp value
 const lerps = {
   pos: 1,
-  ang: 0.01,
+  ang: a ? 0.03 : 0.01,
   angVel: 0.04,
   lookAt: 0.8,
   cameraDist: 0.01
@@ -88,7 +90,7 @@ function setup () {
   relPos = new THREE.Vector3(relPos[0], relPos[1], [relPos[2]]).setLength(cameraDist)
 
   camera = new THREE.PerspectiveCamera(
-    75,
+    a ? 55 : 75,
     window.innerWidth / window.innerHeight,
     config.cullingMin, config.cullingMax
   )
@@ -141,6 +143,9 @@ function update (dt) {
   // this.camera.rotation.y += dangvel / 100
 
   sfx.updateCoords(camera.position, camera.rotation.y)
+  const vector = camera.getWorldDirection();
+  const theta = Math.atan2(vector.x,vector.z);
+  sky.setAngle(theta)
 
   if (!isShaking) return
   const f = shake / maxShake
@@ -153,6 +158,7 @@ function update (dt) {
   }
   shake -= dt * f
   shakeFreq += 1
+
 }
 
 function setTarget (vehicle) {

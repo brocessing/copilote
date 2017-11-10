@@ -5,6 +5,7 @@ import store from 'utils/store'
 import three from 'controllers/three/three'
 import ThreeComponent from 'abstractions/ThreeComponent/ThreeComponent'
 import prng from 'utils/prng'
+import basic from 'shaders/basic/basic'
 
 export default class Sign extends ThreeComponent {
   setup ({ x, y, cx, cy }) {
@@ -18,7 +19,7 @@ export default class Sign extends ThreeComponent {
 
     this.group = new THREE.Mesh(
       store.get('geo.sign' + type),
-      !config.lofi ? store.get('mat.sprites1') : store.get('mat.wireframe')
+      !config.lofi ? basic.getMaterial() : store.get('mat.wireframe')
     )
     // this.group.scale.set(1, 4, 1)
     // this.group.position.y = 2

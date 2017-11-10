@@ -1,15 +1,16 @@
 varying vec3 vPos;
 varying vec3 vNorm;
-
-uniform vec3 fogColor;
-uniform float fogNear;
-uniform float fogFar;
+varying float vFall;
+// uniform vec3 fogColor;
+// uniform float fogNear;
+// uniform float fogFar;
 
 float random (vec2 s) {
   return fract(sin(dot(s.xy,vec2(12.9898,78.233)))*43758.5453123);
 }
 
 void main() {
+	  if (vFall < -0.9) discard;
 	vec3 wpos = vPos;
 	// vec3 normal = normalize(cross(dFdx(vPos), dFdy(vPos)));
 	vec3 normal = vNorm;
@@ -46,7 +47,7 @@ void main() {
   );
 
 	gl_FragColor = vec4(color, 1.0 );
-	float depth = gl_FragCoord.z / gl_FragCoord.w;
-	float fogFactor = smoothstep( fogNear, fogFar, depth );
-	gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );
+	// float depth = gl_FragCoord.z / gl_FragCoord.w;
+	// float fogFactor = smoothstep( fogNear, fogFar, depth );
+	// gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );
 }

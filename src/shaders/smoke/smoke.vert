@@ -1,12 +1,13 @@
-attribute float life;
-attribute vec3 bornData;
+#pragma glslify: when_eq = require(glsl-conditionals/when_eq)
 
 varying float vY;
 varying float vLife;
 varying float vType;
 varying vec2 vRotation;
 
-#pragma glslify: when_eq = require(glsl-conditionals/when_eq)
+attribute float life;
+attribute float scale;
+attribute vec3 bornData;
 
 void main() {
   vType = bornData.x;
@@ -14,7 +15,7 @@ void main() {
   vY = (modelMatrix * vec4(position, 1.0)).y;
 
   float l = vLife * bornData.z;
-  float scale = (
+  float rscale = (
     when_eq(vType, 1.) * 1. * (1. - (max(0.1, abs(vLife - 0.5)) - 0.1) / 0.4)
     + when_eq(vType, 2.) * 2.0 * vLife
     + when_eq(vType, 3.) * 0.01 * l
@@ -22,7 +23,7 @@ void main() {
   );
 
   if (vType == 0.) {
-    scale = 2. * (1. - (max(0.05, abs(vLife - 0.5)) - 0.05) / 0.45) + 0.2;
+    rscale = 2. * (1. - (max(0.05, abs(vLife - 0.5)) - 0.05) / 0.45) + 0.2;
   }
 
   if (vLife > 0.) {
@@ -30,6 +31,6 @@ void main() {
   }
 
   vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-  gl_PointSize = scale * ( 100.0 / -mvPosition.z );
+  gl_PointSize = scale * rscale * ( 100.0 / -mvPosition.z );
   gl_Position = projectionMatrix * mvPosition;
 }

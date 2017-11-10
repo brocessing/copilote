@@ -13,7 +13,7 @@ import EasyStarJS from 'easystarjs'
 import cam from 'controllers/camera/camera'
 import particles from 'controllers/particles/particles'
 import sfx from 'controllers/sfx/sfx'
-
+import basic from 'shaders/basic/basic'
 const EasyStar = EasyStarJS.js
 /*
   this.group = position sync with the p2 body position
@@ -25,7 +25,7 @@ export default class Cop extends Vehicle {
     this.onDeath = opts.onDeath || noop
     this.onRemoved = opts.onRemoved || noop
     // Vehicle: three
-    this.chassis = new THREE.Mesh(store.get('geo.cop'), store.get('mat.sprites1'))
+    this.chassis = new THREE.Mesh(store.get('geo.cop'), basic.getMaterial())
     this.group.add(this.chassis)
 
     this.meshes.shadow = new THREE.Mesh(store.get('geo.plane'), store.get('mat.shadow'))

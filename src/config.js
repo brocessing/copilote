@@ -2,16 +2,16 @@
 
 import store from 'utils/store'
 import tilePlane from 'utils/tilePlane'
-
+import road from 'shaders/road/road'
 
 const LOFI = (window.location.hash && window.location.hash === '#lofi')
 
 export default {
   lofi: LOFI, // Special case for RNO melting computer
-  enableSpeech: true, //true, // Disable this to test on others navigators
+  enableSpeech: true, //true, //true, // Disable this to test on others navigators
   quickstart: 'fr',
   speechDebug: false,
-  locDebug: true,
+  locDebug: false,
   debug: true,
   fpsCounter: true,
   p2steps: 1 / 60,
@@ -25,9 +25,19 @@ export default {
   // autoload vendors libraries during the preloading phase
   vendors: [
     'vendors/dat.gui.min.js',
-    'vendors/three.min.js',
     'vendors/howler.min.js',
-    'vendors/p2.min.js'
+    'vendors/p2.min.js',
+    'vendors/three.min.js',
+  ],
+
+  threeDependencies: [
+    'vendors/three/EffectComposer.js',
+    'vendors/three/CopyShader.js',
+    'vendors/three/ShaderPass.js',
+    'vendors/three/RenderPass.js',
+    'vendors/three/OutlinePass.js',
+    'vendors/three/LuminosityHighPassShader.js',
+    'vendors/three/UnrealBloomPass.js'
   ],
 
   // create commonly used materials
@@ -68,6 +78,7 @@ export default {
       tex.magFilter = THREE.NearestFilter
       tex.minFilter = THREE.LinearFilter
       tex.needsUpdate = true
+      store.set('tex.spritesheet1', tex)
       store.set('mat.sprites1', new THREE.MeshBasicMaterial({
         transparent: true,
         map: tex,
@@ -87,6 +98,14 @@ export default {
         side: THREE.DoubleSide
       }))
     },
+    'textures/canyon.png': function (tex) {
+      tex.format = THREE.RGBFormat
+      tex.magFilter = THREE.NearestFilter
+      tex.minFilter = THREE.LinearFilter
+      tex.needsUpdate = true
+      tex.needsUpdate = true
+      store.set('tex.landscape', tex)
+    },
 
     'textures/roadsMap.png': function (tex) {
       const roads = []
@@ -99,11 +118,10 @@ export default {
       }
       tex.format = THREE.RGBFormat
       tex.magFilter = THREE.NearestFilter
+      tex.minFilter = THREE.LinearFilter
       tex.needsUpdate = true
-      store.set('mat.road', new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        map: tex
-      }))
+      store.set('tex.road', tex)
+      store.set('mat.road', road.getMaterial())
       roads[0] = tilePlane({ x: 1, y: 129, tileSize: 126, texSize: 512 })
       roads[1] = tilePlane({ x: 1, y: 385, tileSize: 126, texSize: 512 })
       roads[2] = tilePlane({ x: 129, y: 129, tileSize: 126, texSize: 512 })

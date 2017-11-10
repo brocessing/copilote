@@ -18,7 +18,8 @@ module.exports = {
       controllers: path.join(paths.src, 'controllers'),
       utils: path.join(paths.src, 'utils'),
       style: path.join(paths.src, 'style'),
-      config: path.join(paths.src, 'config.js')
+      config: path.join(paths.src, 'config.js'),
+      shaders: path.join(paths.src, 'shaders')
     }
   },
   module: {

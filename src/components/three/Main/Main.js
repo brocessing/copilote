@@ -11,6 +11,7 @@ import cops from 'controllers/cops/cops'
 import particles from 'controllers/particles/particles'
 
 import gui from 'controllers/datgui/datgui'
+import store from 'utils/store'
 
 export default class Main extends ThreeComponent {
   setup () {
@@ -19,11 +20,13 @@ export default class Main extends ThreeComponent {
     // const axisHelper = new THREE.AxisHelper( 5 )
     // this.group.add(axisHelper)
     cops.setup()
+
     this.playerCar = this.addComponent(new PlayerCar())
     this.terrain = this.addComponent(new Terrain())
     camera.setTarget(this.playerCar)
     particles.setup()
     // gui.add(this, 'addParticles').name('Spawn particles')
+    this.resize(store.get('size'))
   }
 
   update (dt) {
@@ -33,6 +36,10 @@ export default class Main extends ThreeComponent {
     camera.update(dt)
   }
 
-  addParticles () {
+  resize (size) {
+    super.resize(size)
+    const scale = (size.h / 750) * (store.get('pixelratio') / 2)
+    console.log(store.get('pixelratio'), scale, size.h)
+    particles.setScale(scale)
   }
 }

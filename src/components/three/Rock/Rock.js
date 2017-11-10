@@ -5,6 +5,7 @@ import store from 'utils/store'
 import three from 'controllers/three/three'
 import ThreeComponent from 'abstractions/ThreeComponent/ThreeComponent'
 import prng from 'utils/prng'
+import rock from 'shaders/rock/rock'
 
 export default class Rock extends ThreeComponent {
   setup ({ x, y, cx, cy }) {
@@ -18,7 +19,7 @@ export default class Rock extends ThreeComponent {
 
     this.group = new THREE.Mesh(
       store.get('geo.caillou'),
-      !config.lofi ? store.get('mat.caillou') : store.get('mat.wireframe')
+      !config.lofi ? rock.getMaterial() : store.get('mat.wireframe')
     )
     // this.group.scale.set(1, prng, 1)
     // this.group.position.y = 2
