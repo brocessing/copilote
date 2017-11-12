@@ -1,0 +1,113 @@
+$color-car: #ffffff;
+$color-background: #003f00;
+$color-road: #15700f;
+$color-cop-1: #FF3838;
+$color-cop-2: #27e0ff;
+
+$gui-minimap-car-size: 25px;
+$gui-minimap-cop-size: 4px;
+$gui-minimap-road-width: 0.7px;
+
+.gui-radar {
+  z-index: 20;
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+  image-rendering: pixelated;
+  margin: 0;
+  padding: 0;
+  transform-origin: 100% 100%;
+  transform: scale(2);
+  img {
+    display: block;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.gui-minimap {
+  z-index: 10;
+  position: absolute;
+  right: 110px;
+  bottom: 75px;
+
+  border: 3px solid $color-background;
+  background: rgba($color-background, 1);
+  border-radius: 100%;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  // transform: rotate3d(1, 0, 0, 25deg);
+  will-change: transform;
+
+  .gui-minimap-car {
+    z-index: 11;
+
+    position: absolute;
+    top: calc(50% - #{$gui-minimap-car-size / 2});
+    left: calc(50% - #{$gui-minimap-car-size / 2});
+    background: $color-car;
+    width: $gui-minimap-car-size;
+    height: $gui-minimap-car-size;
+    background: url('minimap_car.svg');
+    background-size: $gui-minimap-car-size $gui-minimap-car-size;
+    transform-origin: center center;
+    will-change: transform;
+  }
+
+  .gui-minimap-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    will-change: transform;
+  }
+
+  .gui-minimap-cop {
+    position: absolute;
+    z-index: 11;
+    // border-radius: 100%;
+    background: $color-cop-1;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+
+    width: $gui-minimap-cop-size;
+    height: $gui-minimap-cop-size;
+    margin-top: -#{$gui-minimap-cop-size / 2};
+    margin-left: -#{$gui-minimap-cop-size / 2};
+    will-change: transform;
+
+    animation: changeColor ease;
+    animation-iteration-count: infinite;
+    animation-duration: 1s;
+    animation-fill-mode: both;
+  }
+
+  .gui-minimap-chunk {
+    position: absolute;
+    transform: rotate(180deg);
+    padding: 1px;
+    path {
+      fill: none;
+      stroke: $color-road;
+      stroke-width: $gui-minimap-road-width;
+      // stroke-linejoin: round;
+      // stroke-linecap: round;
+    }
+  }
+}
+
+@keyframes changeColor {
+  0% {
+    background-color: $color-cop-1;
+  }
+
+  50% {
+    background-color: $color-cop-1;
+  }
+
+  50.001% {
+    background-color: $color-cop-2;
+  }
+
+  100% {
+    background-color: $color-cop-2;
+  }
+}

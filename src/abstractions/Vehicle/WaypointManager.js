@@ -4,6 +4,7 @@ import Waypoint from './Waypoint'
 import nmod from 'utils/nmod'
 import events from 'utils/events'
 import dirFromPos from './utils/directionFromPos'
+
 /*
   WAYPOINT TYPES
   1: user input
@@ -46,7 +47,7 @@ export default class WaypointManager {
   addWaypoint (opts) {
     const nopts = { debug: this.debug }
     if (this.isPlayer && !opts.improvised) {
-
+      events.emit('waypoints.add', { dir: opts.relr, x: opts.x, y: opts.y })
     }
     const waypoint = new Waypoint(Object.assign({}, nopts, opts))
     this.list.push(waypoint)
@@ -59,7 +60,8 @@ export default class WaypointManager {
       if (this.isPlayer) {
         // TODO: emit each user point reach
         // if main point reach is NOT user, emit for bad waypoints reach
-        // if (this.list[i].type === 1)
+        const w = this.list[i]
+        if (w.type === 1) events.emit('waypoints.reach', { x: w.x, y: w.y })
         // if (this.list[i].type < 0)
       }
       this.list[i].destroy()
@@ -73,9 +75,10 @@ export default class WaypointManager {
   }
 
   cancelWaypoint (index, mute = false) {
-    this.list[index].destroy()
+    const w = this.list[index]
+    w.destroy()
     if (this.isPlayer && !mute) {
-      // TODO: emit cancel event if waypoint is an user one
+      if (w.type === 1) events.emit('waypoints.cancel', { x: w.x, y: w.y })
     }
     this.list.splice(index, 1)
   }

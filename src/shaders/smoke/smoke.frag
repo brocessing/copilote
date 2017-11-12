@@ -16,7 +16,7 @@ void main() {
 
   vec4 color = texture2D(texture, rotated);
 
-  if (color.w < 0.5) discard;
+  if (color.r == 1. && color.g == 0.) discard;
   if (vType == 0.) {
     color.r = color.r + (1. - color.r) * 0.9;
     color.g = color.g + (1. - color.g) * 0.5;

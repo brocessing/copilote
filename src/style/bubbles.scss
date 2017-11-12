@@ -1,0 +1,21 @@
+.gui-bubbles {
+  z-index: 30;
+  position: absolute;
+  right: 40px;
+  bottom: 200px;
+  // border: 1px solid red;
+}
+
+
+.bubbles-bubble {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  // border: 1px solid red;
+  & img {
+    display: block;
+    width: auto;
+    height: 70px;
+    image-rendering: pixelated;
+  }
+}

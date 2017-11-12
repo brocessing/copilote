@@ -30,7 +30,23 @@ void main() {
     vRotation = vec2( cos(l + bornData.z), sin(l + bornData.z) );
   }
 
-  vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+  float attenuate = 0.0005;
+  float spread = 20.;
+
+  vec4 wpos = modelMatrix * vec4( position, 1.0 );
+	vec3 vPos = wpos.xyz;
+  vec3 cpos = cameraPosition.xyz;
+
+  float dx = wpos.x - cpos.x;
+  float dz = wpos.z - cpos.z;
+  float p = (dx * dx + dz * dz);
+
+  float distz = max(0., abs(attenuate - p) - spread);
+  wpos.y -= distz * distz * attenuate;
+
+
+
+  vec4 mvPosition = viewMatrix * wpos;
   gl_PointSize = scale * rscale * ( 100.0 / -mvPosition.z );
   gl_Position = projectionMatrix * mvPosition;
 }

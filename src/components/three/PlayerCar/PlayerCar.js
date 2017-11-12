@@ -12,7 +12,8 @@ import cam from 'controllers/camera/camera'
 import particles from 'controllers/particles/particles'
 import gui from 'controllers/datgui/datgui'
 import sfx from 'controllers/sfx/sfx'
-import ground from 'shaders/ground/ground'
+
+import player from 'shaders/player/player'
 /*
   this.group = position sync with the p2 body position
   this.chassis = angle sync with the p2 angle
@@ -21,8 +22,9 @@ import ground from 'shaders/ground/ground'
 export default class PlayerCar extends Vehicle {
   setup (opts) {
     // Vehicle: three
-    this.chassis = new THREE.Mesh(store.get('geo.bandit'), store.get('mat.sprites1'))
+    this.chassis = new THREE.Mesh(store.get('geo.bandit'), player.getMaterial())
     this.group.add(this.chassis)
+    this.group.position.y = 0.0195
 
     this.meshes.shadow = new THREE.Mesh(store.get('geo.plane'), store.get('mat.shadow'))
     const shadow = this.meshes.shadow
@@ -31,17 +33,6 @@ export default class PlayerCar extends Vehicle {
     shadow.position.set(0, 0.001, 0)
     this.group.add(this.meshes.shadow)
     if (config.lofi) this.meshes.shadow.visible = false
-
-    this.meshes.ground = new THREE.Mesh(new THREE.CircleBufferGeometry(5, 32), ground.getMaterial())
-    // this.meshes.ground.scale.set(0.95, 1, 10.9
-    this.meshes.ground.rotation.x = -Math.PI / 2
-    this.meshes.ground.position.set(0, -0.03, -1)
-
-    // this.meshes.ground = new THREE.Mesh(new THREE.PlaneGeometry(30, 30, 40, 40), ground.getMaterial())
-    // // this.meshes.ground.scale.set(100, 100, 1)
-    // this.meshes.ground.rotation.x = -Math.PI / 2
-    // this.meshes.ground.position.set(0, -0.01, 0)
-    this.group.add(this.meshes.ground)
 
     // Vehicle: p2 main physic attributes
     this.body = new p2.Body({ mass: 2, position: [0, 0.1] })
@@ -103,9 +94,11 @@ export default class PlayerCar extends Vehicle {
     this.isPlayer = true
   }
 
-  damage (val = 10) {
+  damage (val = 1) {
     this.life = Math.max(0, this.life - val)
-    this.smokeDensity = (1 - this.life / this.maxLife) * 5
+    const lifeIndice = this.life / this.maxLife
+    this.smokeDensity = (1 - lifeIndice) * 5
+    player.setLife(lifeIndice)
     if (this.life <= 0) this.explode()
   }
 

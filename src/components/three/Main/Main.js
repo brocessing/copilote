@@ -5,6 +5,8 @@ import three from 'controllers/three/three'
 
 import Terrain from 'components/three/Terrain/Terrain'
 import PlayerCar from 'components/three/PlayerCar/PlayerCar'
+import Ground from 'components/three/Ground/Ground'
+
 import camera from 'controllers/camera/camera'
 import cops from 'controllers/cops/cops'
 
@@ -21,8 +23,10 @@ export default class Main extends ThreeComponent {
     // this.group.add(axisHelper)
     cops.setup()
 
+    this.ground = this.addComponent(new Ground())
     this.playerCar = this.addComponent(new PlayerCar())
     this.terrain = this.addComponent(new Terrain())
+
     camera.setTarget(this.playerCar)
     particles.setup()
     // gui.add(this, 'addParticles').name('Spawn particles')

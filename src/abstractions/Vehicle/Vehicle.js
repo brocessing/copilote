@@ -8,6 +8,7 @@ import store from 'utils/store'
 import particles from 'controllers/particles/particles'
 import prng from 'utils/prng'
 import map from 'controllers/map/map'
+import camera from 'controllers/camera/camera'
 export default class Vehicle extends ThreeComponent {
   constructor (opts) {
     super(opts)
@@ -90,7 +91,6 @@ export default class Vehicle extends ThreeComponent {
       this.world.addBody(this.body)
       this.deadForceTimer = 800
       this.alreadyDead = true
-      this.chassis.material = store.get('mat.sprites2')
       this.didDie()
     }
 
@@ -111,6 +111,7 @@ export default class Vehicle extends ThreeComponent {
   smokeUpdate (dt) {
     if (this.smokeDensity > 0) {
       if (this.smokeTimer > this.smokeCycle) {
+        if (!this.visible) { this.smokeTimer = 0; return }
         particles.emit({
           x: this.group.position.x + (prng.random() * 2 - 1) * 0.05,
           y: 0.05,
@@ -125,6 +126,7 @@ export default class Vehicle extends ThreeComponent {
     }
     if (this.sandDensity > 0) {
       if (this.sandTimer > this.sandCycle) {
+        if (!this.visible) { this.sandTimer = 0; return }
         const vec = this.chassis.localToWorld(new THREE.Vector3(-0.04, 0, -0.06))
         const vec2 = this.chassis.localToWorld(new THREE.Vector3(0.04, 0, -0.06))
         particles.emit({
@@ -148,6 +150,7 @@ export default class Vehicle extends ThreeComponent {
     }
     if (this.steerSmokeDensity > 0) {
       if (this.steerSmokeTimer > this.steerSmokeCycle) {
+        if (!this.visible) { this.steerSmokeTimer = 0; return }
         const vec = this.chassis.localToWorld(new THREE.Vector3(-0.04, 0, -0.06))
         const vec2 = this.chassis.localToWorld(new THREE.Vector3(0.04, 0, -0.06))
         particles.emit({
@@ -173,6 +176,8 @@ export default class Vehicle extends ThreeComponent {
 
   update (dt) {
     super.update(dt)
+
+    this.visible = camera.isPointVisible(this.group.position)
 
     const road = map.getRoadFromThreePos(this.group.position.x, this.group.position.z)
     this.onRoad = !!road
@@ -202,7 +207,6 @@ export default class Vehicle extends ThreeComponent {
     this.steerSmokeDensity = (angVel * 0.2) * (angVel > 1.6)
 
     this.smokeUpdate(dt)
-
 
 
     if (this.dead) {

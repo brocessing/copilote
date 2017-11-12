@@ -1,52 +1,23 @@
-import orders from 'controllers/orders/orders'
-
 import DomComponent from 'abstractions/DomComponent/DomComponent'
 
 import Minimap from 'components/dom/Minimap/Minimap'
-import Bubble from 'components/dom/Bubble/Bubble'
-import volume from 'controllers/volume/volume'
+import BubbleManager from 'components/dom/BubbleManager/BubbleManager'
+import Radar from 'components/dom/Radar/Radar'
 
 export default class GameGUI extends DomComponent {
   didInit () {
-    this.minimap = new Minimap()
-    this.onOrder = this.onOrder.bind(this)
     this.bubbles = []
+    this.minimap = new Minimap()
+    this.bubbleManager = new BubbleManager()
+    this.radar = new Radar()
   }
 
-  // Called each time a new order is received
-  onOrder (data) { // 'data' is actually data we get from the voice recognition
-    if (
-      this.bubbles.length > 0 &&
-      this.bubbles[this.bubbles.length - 1].type === data.type
-    ) {
-      // do something if this is the same order as the last
-    } else {
-      // if not create a new bubble
-      const bubble = new Bubble({ type: data.type, msg: data.transcript }) // we pass the transcript into the bubble's object options
-      this.bubbles.push(bubble)
-      // mount to the base gui component (launch render funtion)
-      bubble.mount(this.refs.base)
-      // time end the bubble 3 seconds after
-      window.setTimeout(() => {
-        // remove from the bubbles array
-        const index = this.bubbles.indexOf(bubble)
-        if (~index) this.bubbles.splice(index, 1)
-        bubble.timeEnd()
-      }, 3000)
-    }
-  }
-
-  willMount (el) {
+  didMount (el) {
+    this.bubbleManager.mount(el)
     this.minimap.mount(el)
-  }
-
-  didMount () {
-    // GUI mounted, we started listening the orders because we can display bubbles
-    orders.on(':all', this.onOrder)
+    this.radar.mount(el)
   }
 
   willUnmount () {
-    // Stop listening orders
-    orders.off(':all', this.onOrder)
   }
 }

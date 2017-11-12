@@ -27,7 +27,7 @@ export default {
     'vendors/dat.gui.min.js',
     'vendors/howler.min.js',
     'vendors/p2.min.js',
-    'vendors/three.min.js',
+    'vendors/three.min.js'
   ],
 
   threeDependencies: [
@@ -39,6 +39,21 @@ export default {
     'vendors/three/LuminosityHighPassShader.js',
     'vendors/three/UnrealBloomPass.js'
   ],
+
+  // preload files as blob url
+  blobs: {
+  },
+
+  // preload images as dom nodes
+  images: {
+    'ui/radar.png': 'radar',
+    'ui/bubbles/straight.png': 'bubble.straight',
+    'ui/bubbles/right.png': 'bubble.right',
+    'ui/bubbles/uturn.png': 'bubble.uturn',
+    'ui/bubbles/left.png': 'bubble.left',
+    'ui/bubbles/speedup.png': 'bubble.speedup',
+    'ui/bubbles/speeddown.png': 'bubble.speeddown'
+  },
 
   // create commonly used materials
   initCommonMaterials: function () {
@@ -65,39 +80,29 @@ export default {
   // autoload textures during the preloading phase
   textures: {
     'textures/smoke.png': function (tex) {
-      tex.format = THREE.RGBAFormat
+      tex.format = THREE.RGBFormat
       tex.magFilter = THREE.NearestFilter
-      tex.minFilter = THREE.LinearFilter
+      tex.minFilter = THREE.NearestFilter
       tex.needsUpdate = true
       store.set('tex.smoke', tex)
     },
 
+    'textures/vehicles.png': function (tex) {
+      tex.format = THREE.RGBFormat
+      tex.magFilter = THREE.NearestFilter
+      tex.minFilter = THREE.LinearFilter
+      tex.needsUpdate = true
+      store.set('tex.vehicles', tex)
+    },
+
     'textures/texMap.png': function (tex) {
-      if (LOFI) return store.set('mat.sprites1', store.get('mat.wfwhite'))
-      tex.format = THREE.RGBAFormat
+      tex.format = THREE.RGBFormat
       tex.magFilter = THREE.NearestFilter
       tex.minFilter = THREE.LinearFilter
       tex.needsUpdate = true
       store.set('tex.spritesheet1', tex)
-      store.set('mat.sprites1', new THREE.MeshBasicMaterial({
-        transparent: true,
-        map: tex,
-        side: THREE.DoubleSide
-      }))
     },
 
-    'textures/texMap2.png': function (tex) {
-      if (LOFI) return store.set('mat.sprites2', store.get('mat.wfwhite'))
-      tex.format = THREE.RGBAFormat
-      tex.magFilter = THREE.NearestFilter
-      tex.minFilter = THREE.LinearFilter
-      tex.needsUpdate = true
-      store.set('mat.sprites2', new THREE.MeshBasicMaterial({
-        transparent: true,
-        map: tex,
-        side: THREE.DoubleSide
-      }))
-    },
     'textures/canyon.png': function (tex) {
       tex.format = THREE.RGBFormat
       tex.magFilter = THREE.NearestFilter

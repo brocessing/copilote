@@ -6,14 +6,15 @@ import store from 'utils/store'
 import config from 'config'
 import BodyViewer from 'components/three/BodyViewer/BodyViewer'
 import cameraController from 'controllers/camera/camera'
-import sky from 'controllers/sky/sky'
+
 import throttle from 'lodash/throttle'
+
+import skyScene from 'controllers/skyScene/skyScene'
 
 let scene, renderer, world, camera, composer, composerEnabled
 let components = []
 
 function setup (el) {
-  sky.setup()
   world = new p2.World({ gravity: [0, 0] })
   scene = new THREE.Scene()
   cameraController.setup()
@@ -32,6 +33,7 @@ function setup (el) {
   // )
 
   setupPostProcessing()
+  skyScene.setup()
 
   const guiFn = {
     toggleEffectComposer () { composerEnabled = !composerEnabled }
@@ -98,11 +100,11 @@ function update (dt) {
   components.forEach(component => component.update(dt))
 
   renderer.clear()
-  renderer.render(sky.scene, sky.camera)
+  renderer.render(skyScene.scene, skyScene.camera)
   renderer.render(scene, camera)
   // composerEnabled
   //   ? composer.render()
-  //   : renderer.render(sky.scene, sky.camera)
+  //   : renderer.render(skyScene.scene, skyScene.camera)
 }
 
 function resize (size) {

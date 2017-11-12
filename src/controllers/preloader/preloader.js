@@ -2,9 +2,10 @@
 
 import noop from 'utils/noop'
 import config from 'config'
+import store from 'utils/store'
 
 const loadjs = window.loadjs
-const api = { bindDom, hide, loadJS, loadTextures, loadObjects, loadChunks }
+const api = { bindDom, hide, loadJS, loadTextures, loadObjects, loadChunks, loadImages, loadBlobs }
 
 let $el
 
@@ -20,6 +21,43 @@ function loadJS () {
       error: reject
     })
   })
+}
+
+function loadBlobs () {
+  const p = []
+  for (let filepath in config.blobs) {
+    const key = config.blobs[filepath]
+    p.push(new Promise((resolve, reject) => {
+      const req = new window.XMLHttpRequest()
+      req.open('GET', filepath, true)
+      req.responseType = 'blob'
+      req.onload = function () {
+        if (this.status === 200) {
+          const blobFile = this.response
+          const blobUrl = window.URL.createObjectURL(blobFile)
+          store.set('blob.' + key, blobUrl)
+          resolve(blobUrl)
+        }
+      }
+      req.onerror = reject
+      req.send()
+    }))
+  }
+  return Promise.all(p)
+}
+
+function loadImages () {
+  const p = []
+  for (let filepath in config.images) {
+    const key = config.images[filepath]
+    p.push(new Promise((resolve) => {
+      const img = document.createElement('img')
+      img.onload = function () { store.set('img.' + key, img); resolve() }
+      img.src = filepath
+      if (img.complete) { store.set('img.' + key, img); resolve() }
+    }))
+  }
+  return Promise.all(p)
 }
 
 function loadTextures () {

@@ -1,10 +1,10 @@
 varying float vFall;
 varying vec2 vUv;
-varying vec3 vPos;
+// varying vec3 vPos;
 
 void main() {
   vec4 t = viewMatrix * modelMatrix * vec4( position, 1.0 );
-  vec3 vPos = t.xyz;
+  // vec3 vPos = t.xyz;
 
   vUv = uv;
 
@@ -22,7 +22,7 @@ void main() {
   wpos.y -= distz * distz * attenuate;
 
 
-  vFall = 0.05 + wpos.y;
+  vFall = 0.08 + wpos.y;
 
   gl_Position = projectionMatrix * viewMatrix * wpos;
 }

@@ -10,12 +10,12 @@ import config from 'config'
 import cops from 'controllers/cops/cops'
 import prng from 'utils/prng'
 import sfx from 'controllers/sfx/sfx'
-import sky from 'controllers/sky/sky'
+import skyScene from 'controllers/skyScene/skyScene'
 
 const a = true
-const minCameraDist = a ? 1.1 : 1.1
+const minCameraDist = a ? 1.6 : 1.1
 const cameraDistMult = a ? 1.3 : 1.3
-let relPos = a ? [0, 0.9, -1.8] : [0, 0.9, -0.8]
+let relPos = a ? [0, 1., -1.8] : [0, 0.9, -0.8]
 
 // lerp value
 const lerps = {
@@ -29,7 +29,7 @@ const lerps = {
 // lerped values
 let angularVelocity = 0
 let cameraDist = minCameraDist
-let camera, target
+let camera, target, frustum
 
 let fakeTarget
 let fakeTargetAngs = {
@@ -95,6 +95,8 @@ function setup () {
     config.cullingMin, config.cullingMax
   )
 
+  frustum = new THREE.Frustum()
+
   shakeVec = new THREE.Vector3(0, 0, 0)
   targetShakeVec = new THREE.Vector3(0, 0, 0)
 }
@@ -143,22 +145,32 @@ function update (dt) {
   // this.camera.rotation.y += dangvel / 100
 
   sfx.updateCoords(camera.position, camera.rotation.y)
-  const vector = camera.getWorldDirection();
-  const theta = Math.atan2(vector.x,vector.z);
-  sky.setAngle(theta)
+  const vector = camera.getWorldDirection()
+  const theta = Math.atan2(vector.x, vector.z)
+  skyScene.setAngle(theta)
 
-  if (!isShaking) return
-  const f = shake / maxShake
-  // console.log('YOUPI')
-  if (!(shakeFreq % (Math.floor(3 * (1 - f))))) {
-    // console.log('allo ?')
-    targetShakeVec.x = f * (prng.random() * 2 - 1) * 2.5 * shakeMult
-    targetShakeVec.y = f * (prng.random() * 2 - 1) * 1.9 * shakeMult
-    targetShakeVec.z = f * (prng.random() * 2 - 1) * 2.5 * shakeMult
+  // camera shake
+  if (isShaking) {
+    const f = shake / maxShake
+    // console.log('YOUPI')
+    if (!(shakeFreq % (Math.floor(3 * (1 - f))))) {
+      // console.log('allo ?')
+      targetShakeVec.x = f * (prng.random() * 2 - 1) * 2.5 * shakeMult
+      targetShakeVec.y = f * (prng.random() * 2 - 1) * 1.9 * shakeMult
+      targetShakeVec.z = f * (prng.random() * 2 - 1) * 2.5 * shakeMult
+    }
+    shake -= dt * f
+    shakeFreq += 1
   }
-  shake -= dt * f
-  shakeFreq += 1
 
+  camera.updateMatrix()
+  camera.updateMatrixWorld()
+  camera.matrixWorldInverse.getInverse(camera.matrixWorld)
+  frustum.setFromMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse))
+}
+
+function isPointVisible (vec) {
+  return frustum.containsPoint(vec)
 }
 
 function setTarget (vehicle) {
@@ -175,5 +187,6 @@ export default {
   update,
   setTarget,
   addCameraShake,
+  isPointVisible,
   getCamera () { return camera }
 }

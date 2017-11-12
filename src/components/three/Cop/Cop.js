@@ -13,7 +13,10 @@ import EasyStarJS from 'easystarjs'
 import cam from 'controllers/camera/camera'
 import particles from 'controllers/particles/particles'
 import sfx from 'controllers/sfx/sfx'
+
 import basic from 'shaders/basic/basic'
+import deadcop from 'shaders/deadcop/deadcop'
+
 const EasyStar = EasyStarJS.js
 /*
   this.group = position sync with the p2 body position
@@ -27,13 +30,14 @@ export default class Cop extends Vehicle {
     // Vehicle: three
     this.chassis = new THREE.Mesh(store.get('geo.cop'), basic.getMaterial())
     this.group.add(this.chassis)
+    this.group.position.y = 0.0195
 
-    this.meshes.shadow = new THREE.Mesh(store.get('geo.plane'), store.get('mat.shadow'))
-    const shadow = this.meshes.shadow
-    shadow.scale.set(0.135, 0.280, 1)
-    shadow.rotation.x = -Math.PI / 2
-    shadow.position.set(0, 0.001, 0)
-    this.group.add(this.meshes.shadow)
+    // this.meshes.shadow = new THREE.Mesh(store.get('geo.plane'), store.get('mat.shadow'))
+    // const shadow = this.meshes.shadow
+    // shadow.scale.set(0.135, 0.280, 1)
+    // shadow.rotation.x = -Math.PI / 2
+    // shadow.position.set(0, 0.001, 0)
+    // this.group.add(this.meshes.shadow)
     if (config.lofi) this.meshes.shadow.visible = false
 
     // Vehicle: p2 main physic attributes
@@ -127,6 +131,7 @@ export default class Cop extends Vehicle {
   }
 
   didDie () {
+    this.chassis.material = deadcop.getMaterial()
     const maxdist = 8
     const f = 1 - ((Math.min(maxdist + 1, Math.max(1, this.dist)) - 1) / maxdist)
     // blast depending on the distance from the player
@@ -157,7 +162,7 @@ export default class Cop extends Vehicle {
     const ppos = store.get('player.position')
     this.dist = Math.pow(ppos[0] - this.group.position.x, 2) + Math.pow(ppos[1] - this.group.position.z, 2)
 
-    this.meshes.shadow.rotation.z = this.chassis.rotation.y
+    // this.meshes.shadow.rotation.z = this.chassis.rotation.y
 
     sfx.updateCop(this.id, this.group.position, this.dead)
 
