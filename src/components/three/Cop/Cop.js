@@ -14,7 +14,7 @@ import cam from 'controllers/camera/camera'
 import particles from 'controllers/particles/particles'
 import sfx from 'controllers/sfx/sfx'
 
-import basic from 'shaders/basic/basic'
+import props from 'shaders/props/props'
 import deadcop from 'shaders/deadcop/deadcop'
 
 const EasyStar = EasyStarJS.js
@@ -28,7 +28,7 @@ export default class Cop extends Vehicle {
     this.onDeath = opts.onDeath || noop
     this.onRemoved = opts.onRemoved || noop
     // Vehicle: three
-    this.chassis = new THREE.Mesh(store.get('geo.cop'), basic.getMaterial())
+    this.chassis = new THREE.Mesh(store.get('geo.cop'), props.getMaterial())
     this.group.add(this.chassis)
     this.group.position.y = 0.0195
 
@@ -49,7 +49,7 @@ export default class Cop extends Vehicle {
     this.body.propType = 'cop'
     const self = this
     this.body.impactCallback = function (opts) {
-      if (opts.impactType === 'player') {
+      if (opts.impactType === 'player' || opts.impactType === 'cop') {
         self.explode()
       }
     }

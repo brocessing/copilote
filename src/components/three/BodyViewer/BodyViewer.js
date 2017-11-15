@@ -12,6 +12,7 @@ export default class BodyViewer extends ThreeComponent {
     const cube = store.get('geo.box')
     this.boxes = []
     body.shapes.forEach(shape => {
+      console.log('SHAPE', shape)
       const box = new THREE.Mesh(cube, wire)
       box.scale.set(shape.width, 1, shape.height)
       three.bodyCopy(shape, box)

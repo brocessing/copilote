@@ -5,48 +5,49 @@ import store from 'utils/store'
 import three from 'controllers/three/three'
 import ThreeComponent from 'abstractions/ThreeComponent/ThreeComponent'
 import prng from 'utils/prng'
-import rock from 'shaders/rock/rock'
+import props from 'shaders/props/props'
+
+const TYPES = {
+  0: 'large',
+  1: 'medium',
+  2: 'small'
+}
 
 export default class Rock extends ThreeComponent {
   setup ({ x, y, cx, cy }) {
-    // console.log('Caillou')
-
-    // console.log(x, y)
-    this.cx = cx
-    this.cy = cy
-
-    // const type = prng.hash2dInt(x - cx, y - cy, 1, 3)
+    const type = prng.hash2dInt(x + cx, y + cy, 0, 2)
 
     this.group = new THREE.Mesh(
-      store.get('geo.caillou'),
-      !config.lofi ? rock.getMaterial() : store.get('mat.wireframe')
+      store.get('geo.rock.' + TYPES[type]),
+      props.getMaterial()
     )
-    // this.group.scale.set(1, prng, 1)
-    // this.group.position.y = 2
+
+    const posx = x + 0.5
+    const posy = 0.012
+    const posz = y + 0.5
+    const angle = prng.random() * Math.PI * 2 + Math.PI / 2
+
     this.body = new p2.Body({
-      position: [-(cx + x + 0.5), cy + y + 0.5],
-      // angle: prng.random() * Math.PI * 2
+      position: [-(cx + posx), cy + posz],
+      angle: angle
     })
 
-    // this.body.addShape(new p2.Box({ width: 0.06, height: 0.06 }), [-0.05, 0.13])
-    // this.body.addShape(new p2.Box({ width: 0.06, height: 0.06 }), [0.11, -0.07])
-    // this.body.addShape(new p2.Box({ width: 0.06, height: 0.06 }), [-0.08, -0.15])
-    // this.shape.material = new p2.Material()
-    // this.contactMaterials.push(new p2.ContactMaterial(store.get('car.p2material'), this.shape.material, {
-    //   restitution: 0.6,
-    //   stiffness: Number.MAX_VALUE
-    // }))
-    // this.group.castShadow = true
-    // console.log(store.get('car.p2material'))
+    this.body.propType = 'prop'
+
+    if (type === 0) this.shapeA = this.body.addShape(new p2.Box({ width: 0.77, height: 0.77 }), [0.0, 0.0], 0)
+    else if (type === 1) this.shapeA = this.body.addShape(new p2.Box({ width: 0.35, height: 0.35 }), [0.0, -0.1], -0.3)
+    else if (type === 2) this.shapeA = this.body.addShape(new p2.Box({ width: 0.65, height: 0.7 }), [0.0, 0.0], -0.6)
+
+    this.group.position.x = -this.body.position[0] - cx
+    this.group.position.y = posy
+    this.group.position.z = this.body.position[1] - cy
+    this.group.rotation.y = this.body.angle
+
     // three.debugBody(this.body)
   }
 
   update (dt) {
-    super.update(dt)
-    // this.body.velocity[0] *= 0.95
-    // this.body.velocity[1] *= 0.95
-    // this.body.angularVelocity *= 0.95
-    three.bodyCopy(this.body, this.group, this.cx, this.cy)
+    // no need updates for fixed props
   }
 
   destroy () {

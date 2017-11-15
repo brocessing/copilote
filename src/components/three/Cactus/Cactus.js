@@ -6,7 +6,7 @@ import three from 'controllers/three/three'
 import ThreeComponent from 'abstractions/ThreeComponent/ThreeComponent'
 import prng from 'utils/prng'
 
-import basic from 'shaders/basic/basic'
+import props from 'shaders/props/props'
 
 export default class Cactus extends ThreeComponent {
   setup ({ x, y, cx, cy }) {
@@ -17,7 +17,7 @@ export default class Cactus extends ThreeComponent {
     this.cy = cy
     this.group = new THREE.Mesh(
       store.get('geo.cactus'),
-      !config.lofi ? basic.getMaterial() : store.get('mat.wireframe')
+      !config.lofi ? props.getMaterial() : store.get('mat.wireframe')
     )
     // this.group.scale.set(1, 4, 1)
     // this.group.position.y = 2

@@ -55,11 +55,14 @@
     "webpack-merge": "^4.1.0"
   },
   "dependencies": {
+    "animejs": "^2.2.0",
+    "browser-locale": "^1.0.3",
     "copilote-tile-converter": "brocessing/copilote-tile-converter",
     "easystarjs": "^0.4.1",
     "fast-random": "^2.0.4",
     "glsl-conditionals": "^1.0.0",
     "glslify-loader": "pqml/glslify-loader",
+    "js-cookie": "^2.2.0",
     "lodash": "^4.17.4",
     "mitt": "^1.1.2",
     "raf": "pqml/raf",

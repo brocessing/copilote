@@ -9,7 +9,7 @@ $gui-minimap-cop-size: 4px;
 $gui-minimap-road-width: 0.7px;
 
 .gui-radar {
-  z-index: 20;
+  z-index: 32;
   position: absolute;
   right: 0px;
   bottom: 0px;
@@ -26,7 +26,7 @@ $gui-minimap-road-width: 0.7px;
 }
 
 .gui-minimap {
-  z-index: 10;
+  z-index: 30;
   position: absolute;
   right: 110px;
   bottom: 75px;
@@ -40,7 +40,7 @@ $gui-minimap-road-width: 0.7px;
   will-change: transform;
 
   .gui-minimap-car {
-    z-index: 11;
+    z-index: 31;
 
     position: absolute;
     top: calc(50% - #{$gui-minimap-car-size / 2});

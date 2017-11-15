@@ -39,6 +39,10 @@ export default class PlayerCar extends Vehicle {
     this.body.propType = 'player'
     const self = this
     this.body.impactCallback = function (opts) {
+      if (opts.impactType === 'prop') {
+        self.body.velocity[0] *= -1000000
+        self.body.velocity[1] *= -1000000
+      }
       if (opts.impactType === 'cop') {
         self.damage(10)
       }

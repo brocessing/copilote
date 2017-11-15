@@ -19,6 +19,7 @@ module.exports = {
       utils: path.join(paths.src, 'utils'),
       style: path.join(paths.src, 'style'),
       config: path.join(paths.src, 'config.js'),
+      loc: path.join(paths.src, 'loc.js'),
       shaders: path.join(paths.src, 'shaders')
     }
   },

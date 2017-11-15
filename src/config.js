@@ -8,9 +8,9 @@ const LOFI = (window.location.hash && window.location.hash === '#lofi')
 
 export default {
   lofi: LOFI, // Special case for RNO melting computer
-  enableSpeech: true, //true, //true, // Disable this to test on others navigators
-  quickstart: 'fr',
-  speechDebug: false,
+  enableSpeech: true,
+  quickstart: true,
+  speechDebug: true,
   locDebug: false,
   debug: true,
   fpsCounter: true,
@@ -42,6 +42,10 @@ export default {
 
   // preload files as blob url
   blobs: {
+    'ui/button.gif': 'cta',
+    'ui/button-back.gif': 'cta.shadow',
+    'ui/button-ground.gif': 'cta.ground',
+    'ui/logo.gif': 'logo'
   },
 
   // preload images as dom nodes
@@ -95,12 +99,12 @@ export default {
       store.set('tex.vehicles', tex)
     },
 
-    'textures/texMap.png': function (tex) {
+    'textures/props.png': function (tex) {
       tex.format = THREE.RGBFormat
       tex.magFilter = THREE.NearestFilter
       tex.minFilter = THREE.LinearFilter
       tex.needsUpdate = true
-      store.set('tex.spritesheet1', tex)
+      store.set('tex.props', tex)
     },
 
     'textures/canyon.png': function (tex) {
@@ -112,7 +116,7 @@ export default {
       store.set('tex.landscape', tex)
     },
 
-    'textures/roadsMap.png': function (tex) {
+    'textures/roads.png': function (tex) {
       const roads = []
       store.set('geo.roads', roads)
       if (LOFI) {
@@ -155,46 +159,66 @@ export default {
       geo.translate(0, 0, 0)
       store.set('geo.cop', geo)
     },
-    'models/cactus.json': function (geo, mats) {
-      // const scale = 0.4
-      // geo.scale(scale, scale, scale)
-      // geo.translate(0, 0, 0)
-      store.set('geo.cactus', geo)
-    },
-    'models/sign1.json': function (geo, mats) {
+    'models/bank.json': function (geo, mats) {
       const scale = 0.5
-      geo.rotateY(Math.PI / 4)
       geo.scale(scale, scale, scale)
-      // geo.translate(0, 0, 0)
-      store.set('geo.sign1', geo)
+      geo.translate(0, 0, 1.0)
+      store.set('geo.bank', geo)
     },
-    'models/sign2.json': function (geo, mats) {
+    'models/farm.json': function (geo, mats) {
       const scale = 0.5
-      geo.rotateY(Math.PI / 4)
       geo.scale(scale, scale, scale)
-      // geo.translate(0, 0, 0)
-      store.set('geo.sign1', geo)
+      geo.translate(-2.0, 0, -1.0)
+      store.set('geo.farm', geo)
     },
-    'models/sign3.json': function (geo, mats) {
+    'models/hangar.json': function (geo, mats) {
       const scale = 0.5
-      geo.rotateY(Math.PI / 4)
       geo.scale(scale, scale, scale)
-      // geo.translate(0, 0, 0)
-      store.set('geo.sign1', geo)
+      geo.translate(-2.0, 0, 1.0)
+      store.set('geo.hangar', geo)
     },
-    'models/caillou.json': function (geo, mats) {
+    'models/station.json': function (geo, mats) {
       const scale = 0.5
-      geo.rotateY(Math.PI / 4)
-      geo.scale(scale, scale * 2, scale)
-      geo.translate(0, 0.01, 0)
-      store.set('geo.caillou', geo)
+      geo.scale(scale, scale, scale)
+      geo.translate(-1.0, 0, 1.0)
+      store.set('geo.station', geo)
+    },
+    'models/house.json': function (geo, mats) {
+      const scale = 0.5
+      geo.scale(scale, scale, scale)
+      geo.translate(4.0, 0, 1.0)
+      store.set('geo.house', geo)
+    },
+    'models/trashyard.json': function (geo, mats) {
+      const scale = 0.5
+      geo.scale(scale, scale, scale)
+      geo.translate(1.0, 0, -1.0)
+      store.set('geo.trashyard', geo)
+    },
+    'models/rock_large.json': function (geo, mats) {
+      const scale = 0.5
+      geo.scale(scale, scale, scale)
+      geo.translate(4.0, 0, -1.0)
+      store.set('geo.rock.large', geo)
+    },
+    'models/rock_medium.json': function (geo, mats) {
+      const scale = 0.5
+      geo.scale(scale, scale, scale)
+      geo.translate(3.0, 0, -1.0)
+      store.set('geo.rock.medium', geo)
+    },
+    'models/rock_small.json': function (geo, mats) {
+      const scale = 0.5
+      geo.scale(scale, scale, scale)
+      geo.translate(2.0, 0, -1.0)
+      store.set('geo.rock.small', geo)
     }
   },
 
   // autoload chunks
   chunks: {
     folder: 'chunks',
-    count: 7,
+    count: 2,
     onchunkload: function (id, obj) {
       if (!store.get('map.chunks')) store.set('map.chunks', [])
       store.get('map.chunks')[id] = obj

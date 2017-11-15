@@ -4,37 +4,40 @@ import config from 'config'
 import store from 'utils/store'
 import three from 'controllers/three/three'
 import ThreeComponent from 'abstractions/ThreeComponent/ThreeComponent'
+import prng from 'utils/prng'
+import props from 'shaders/props/props'
 
 export default class House extends ThreeComponent {
   setup ({ x, y, cx, cy }) {
-    // console.log(x, y)
-    this.cx = cx
-    this.cy = cy
     this.group = new THREE.Mesh(
-      store.get('geo.box'),
-      !config.lofi ? store.get('mat.orange') : store.get('mat.wireframe')
+      store.get('geo.house'),
+      props.getMaterial()
     )
-    this.group.scale.set(1, 4, 1)
-    this.group.position.y = 2
-    this.body = new p2.Body({ position: [-(cx + x + 0.5), cy + y + 0.5] })
-    this.shape = new p2.Box({ width: 1, height: 1 })
-    this.body.addShape(this.shape)
-    this.shape.material = new p2.Material()
-    this.contactMaterials.push(new p2.ContactMaterial(store.get('car.p2material'), this.shape.material, {
-      restitution: 0.6,
-      stiffness: Number.MAX_VALUE
-    }))
-    // this.group.castShadow = true
-    // console.log(store.get('car.p2material'))
+
+    const posx = x + 0.5
+    const posy = 0.012
+    const posz = y + 0.5
+    const angle = prng.random() * Math.PI * 2 + Math.PI
+
+    this.body = new p2.Body({
+      position: [-(cx + posx), cy + posz],
+      angle: angle
+    })
+
+    this.body.propType = 'prop'
+    this.shapeA = this.body.addShape(new p2.Box({ width: 0.4, height: 0.34 }), [0.01, -0.03])
+    this.shapeB = this.body.addShape(new p2.Box({ width: 0.03, height: 0.03 }), [0.36, 0.45])
+
+    this.group.position.x = -this.body.position[0] - cx
+    this.group.position.y = posy
+    this.group.position.z = this.body.position[1] - cy
+    this.group.rotation.y = this.body.angle
+
     // three.debugBody(this.body)
   }
 
   update (dt) {
-    super.update(dt)
-    // this.body.velocity[0] *= 0.95
-    // this.body.velocity[1] *= 0.95
-    // this.body.angularVelocity *= 0.95
-    three.bodyCopy(this.body, this.group, this.cx, this.cy)
+    // no need updates for fixed props
   }
 
   destroy () {

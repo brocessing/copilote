@@ -1,0 +1,40 @@
+.preloader-loading {
+  .loading-char {
+    display: inline-block;
+    animation: bouncy 1000ms infinite;
+    animation-timing-function: cubic-bezier(0.625, 0.095, 0.255, 0.935);
+
+    @for $i from 1 through 10 {
+      &:nth-child(#{$i}) { animation-delay: #{($i - 1) * 100}ms; }
+    }
+  }
+}
+
+.preloader-permission {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 600px;
+  width: 100%;
+  line-height: 35px;
+  text-align: center;
+}
+
+.preloader-permission .permission-message::after {
+  width: 100%;
+  text-align: center;
+}
+
+.preloader-permission .permission-refresh {
+  color: #fffd88;
+  font-size: 26px;
+  & a {
+    color: #ed5029;
+  }
+  &::after {
+    font-size: 26px;
+    width: 100%;
+    text-align: center;
+  }
+}

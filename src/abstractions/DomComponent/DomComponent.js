@@ -4,6 +4,7 @@ export default class DomComponent {
     this.refs = {}
     // Add your animejs animation to this.anims
     this.anims = {}
+    this.timers = []
     this.didInit(props)
   }
 
@@ -48,16 +49,41 @@ export default class DomComponent {
     this.didMount(el)
   }
 
+  bindFuncs (funcs) {
+    funcs.forEach(func => { this[func] = this[func].bind(this) })
+  }
+
+  // Quick helper for timer in promises
+  timer (delay, cb) {
+    return new Promise((resolve, reject) => {
+      const self = this
+      if (cb) cb = cb.bind(self)
+      const timer = window.setTimeout(callback, delay)
+      self.timers.push(timer)
+      function callback () {
+        const index = self.timers.indexOf(timer)
+        if (~index) self.timers.splice(index, 1)
+        resolve()
+        if (cb) cb()
+      }
+    })
+  }
+
   // Remove the DOM and destroy the component
   destroy () {
     if (!this.mounted) return
     this.willUnmount(this.refs.base)
-    this.refs.base.parentNode && this.refs.base.parentNode.removeChild(this.refs.base)
+    this.refs.base && this.refs.base.parentNode && this.refs.base.parentNode.removeChild(this.refs.base)
     for (let k in this.refs) delete this.refs[k]
     for (let k in this.anims) {
       if (typeof this.anims[k].pause === 'function') this.anims[k].pause()
       delete this.anims[k]
     }
+    // remove all non-finished timers
+    this.timers.forEach(timer => window.clearTimeout(timer))
+    this.anims = undefined
+    this.timers = undefined
+    this.refs = undefined
     this.mounted = false
   }
 }

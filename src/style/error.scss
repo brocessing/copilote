@@ -1,0 +1,46 @@
+.error {
+  z-index: 50;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #ee5f36;
+}
+
+.error-message {
+  background: #ec4620;
+  border-top: 10px solid #ef7740;
+  border-right: 10px solid #ef7740;
+  padding: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  max-width: 600px;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  box-shadow: -10px 10px 0px -1px #ca2500;
+
+  .message-title {
+    text-transform: uppercase;
+    line-height: 0.8em;
+  }
+
+  .message-subtitle {
+    font-size: 32px;
+    line-height: 0.8em;
+  }
+
+  .message-subtitle::after {
+    font-size: 32px;
+  }
+
+  .message-title::after,
+  .message-subtitle::after {
+    width: 100%;
+    text-align: center;
+  }
+}

@@ -15,6 +15,8 @@ import particles from 'controllers/particles/particles'
 import gui from 'controllers/datgui/datgui'
 import store from 'utils/store'
 
+import intro from 'controllers/introduction/introduction'
+
 export default class Main extends ThreeComponent {
   setup () {
     // const gridHelper = new THREE.GridHelper(map.getChunkSize() * 3, map.getChunkSize() * 3)
@@ -28,9 +30,20 @@ export default class Main extends ThreeComponent {
     this.terrain = this.addComponent(new Terrain())
 
     camera.setTarget(this.playerCar)
+
     particles.setup()
     // gui.add(this, 'addParticles').name('Spawn particles')
     this.resize(store.get('size'))
+
+    this.introduction()
+    const guiFn = { normalView () { camera.normalView() }, bankView () { camera.bankView() } }
+    gui.add(guiFn, 'normalView')
+    gui.add(guiFn, 'bankView')
+  }
+
+  introduction () {
+    this.intro = true
+    camera.bankView(true)
   }
 
   update (dt) {
@@ -38,6 +51,10 @@ export default class Main extends ThreeComponent {
     cops.update(dt)
     particles.update(dt)
     camera.update(dt)
+
+    if (this.intro) {
+      if (camera.specialTarget.dist < 0.2) camera.specialTarget.dist += 0.0001
+    }
   }
 
   resize (size) {

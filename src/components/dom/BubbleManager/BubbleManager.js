@@ -5,6 +5,7 @@ import Bubble from 'components/dom/Bubble/Bubble'
 export default class GameGUI extends DomComponent {
   didInit () {
     this.bubbles = {}
+    // this.player = store.get('player')
   }
 
   render () {
@@ -17,16 +18,39 @@ export default class GameGUI extends DomComponent {
     console.warn('ADD', e)
     const id = e.x + '.' + e.y
     if (this.bubbles[id] || !this.refs.base) return
+    this.offsetBubbles()
     this.bubbles[id] = new Bubble({ type: e.dir })
     this.bubbles[id].mount(this.refs.base)
   }
 
+  offsetBubbles (off = 0) {
+    let i = 0
+    let len = Object.keys(this.bubbles).length
+    for (let k in this.bubbles) {
+      const j = len - i + off
+      console.log('OFFF', j)
+      const bubble = this.bubbles[k]
+      bubble.offset(j)
+      i++
+    }
+  }
+
   reachWaypoint (e) {
-    console.warn('REACH', e)
+    const id = e.x + '.' + e.y
+    if (!this.bubbles[id] || !this.refs.base) return
+    const bubble = this.bubbles[id]
+    delete this.bubbles[id]
+    this.offsetBubbles(-1)
+    bubble.hide().then(() => bubble.destroy())
   }
 
   cancelWaypoint (e) {
-    console.warn('CANCEL', e)
+    const id = e.x + '.' + e.y
+    if (!this.bubbles[id] || !this.refs.base) return
+    const bubble = this.bubbles[id]
+    delete this.bubbles[id]
+    this.offsetBubbles(-1)
+    bubble.hide().then(() => bubble.destroy())
   }
 
   willMount (el) {

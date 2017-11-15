@@ -12,7 +12,7 @@ function setup () {
     vertexShader,
     fragmentShader,
     uniforms: {
-      texture: { type: 't', value: store.get('tex.vehicles') }
+      texture: { type: 't', value: store.get('tex.props') }
     }
   })
 }

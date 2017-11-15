@@ -5,13 +5,7 @@ import config from 'config'
 import store from 'utils/store'
 
 const loadjs = window.loadjs
-const api = { bindDom, hide, loadJS, loadTextures, loadObjects, loadChunks, loadImages, loadBlobs }
-
-let $el
-
-function bindDom (el) {
-  if (el) $el = el
-}
+const api = { loadJS, loadTextures, loadObjects, loadChunks, loadImages, loadBlobs }
 
 function loadJS () {
   return new Promise((resolve, reject) => {
@@ -112,14 +106,6 @@ function loadChunks () {
     }))
   }
   return Promise.all(p)
-}
-
-function hide () {
-  if (!$el) return
-  return new Promise((resolve, reject) => {
-    $el.parentNode && $el.parentNode.removeChild($el)
-    resolve()
-  })
 }
 
 export default api

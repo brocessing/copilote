@@ -20,6 +20,7 @@ const REBOOTDELAY = 20000
 let recognizing = false
 let pending = false
 let keepTimer = null
+let currentLang = 'fr'
 
 // Directly Instanciate the speech API for convenience.
 let recognition = isAvailable() ? new SpeechRecognition() : null
@@ -86,7 +87,7 @@ function start (lang) {
     if (!recognition) return reject(new Error('Web Speech API unavailable.'))
     if (recognizing || pending === 'start') return reject(new Error('Speech already started.'))
 
-    if (lang) setLang(lang)
+    setLang(currentLang)
 
     function onStart () {
       emitter.off('error', onError)
@@ -136,8 +137,13 @@ function stop () {
 
 // Change the language used. (from the languages list)
 function setLang (lang) {
+  console.warn('LANG', lang)
   if (!lang || !languages[lang] || !recognition) return
+  currentLang = lang
   recognition.lang = languages[lang]
+  stop()
+    .then(start)
+    .catch(() => {})
 }
 
 // Getters for safety

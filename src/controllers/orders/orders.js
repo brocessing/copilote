@@ -1,8 +1,14 @@
 import speech from 'controllers/speech/speech'
 import french from './lang.fr'
+import english from './lang.en'
 import mitt from 'mitt'
 
 import config from 'config'
+
+const languages = {
+  'fr': french,
+  'en': english
+}
 
 const emitter = mitt()
 const DEBUG = config.speechDebug
@@ -27,8 +33,13 @@ if (DEBUG) {
   console.log(french)
 }
 
+let currentLanguage = languages['fr']
 let cachedMatches = []
 let buffer = []
+
+function setLang (lang = 'fr') {
+  currentLanguage = languages[lang]
+}
 
 function listen () {
   speech.on('result', onResult)
@@ -84,7 +95,7 @@ function processResult (index, result, last) {
 function analyze (newStr, finale = false) {
   newStr = newStr.toLowerCase()
 
-  french.replacers.forEach(obj => {
+  currentLanguage.replacers.forEach(obj => {
     newStr = newStr.replace(obj.reg, obj.to)
   })
 
@@ -92,11 +103,11 @@ function analyze (newStr, finale = false) {
     newStr = newStr.replace(match, ' ')
   })
 
-  for (let i = 0; i < french.max; i++) {
-    for (let k in french.orders) {
-      if (i >= french.maxs[k]) continue
-      const regex = french.orders[k][i].regex
-      const opts = french.orders[k][i].opts
+  for (let i = 0; i < currentLanguage.max; i++) {
+    for (let k in currentLanguage.orders) {
+      if (i >= currentLanguage.maxs[k]) continue
+      const regex = currentLanguage.orders[k][i].regex
+      const opts = currentLanguage.orders[k][i].opts
       if (!opts.continuous && !finale) continue
       if (opts.capture) {
         let match = regex.exec(newStr)
@@ -136,4 +147,4 @@ function analyze (newStr, finale = false) {
   }
 }
 
-export default { listen, on: emitter.on, off: emitter.off }
+export default { listen, on: emitter.on, off: emitter.off, setLang }

@@ -7,7 +7,7 @@ void main() {
   // vec3 vPos = t.xyz;
 
   vUv = uv;
-  vUv.x += 0.5;
+  vUv.x += .17578125;
 
   float attenuate = 0.0005;
   float spread = 20.;

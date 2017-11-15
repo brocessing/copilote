@@ -46,8 +46,10 @@ function setup (el) {
   resize(store.get('size'))
   el.appendChild(renderer.domElement)
   world.on('impact', onImpact)
-  // world.solver.iterations = 4
-  // world.solver.tolerance = 0.5
+
+  // avoid being stuck inside shape
+  world.solver.iterations = 4
+  world.solver.tolerance = 2
   // console.log(world)
   renderer.autoClear = false
 
@@ -67,6 +69,7 @@ function setupPostProcessing () {
 }
 
 function onImpact (data) {
+  console.log(data)
   const bodyA = data.bodyA
   const bodyB = data.bodyB
   // console.log(data)
@@ -74,6 +77,11 @@ function onImpact (data) {
 
   const propTypeA = bodyA.propType
   const propTypeB = bodyB.propType
+
+  if (propTypeA === propTypeB) {
+    if (bodyA.impactCallback) bodyA.impactCallback({ impactType: propTypeB })
+    else if (bodyB.impactCallback) bodyB.impactCallback({ impactType: propTypeA })
+  }
 
   if (bodyA.impactCallback) bodyA.impactCallback({ impactType: propTypeB })
   if (bodyB.impactCallback) bodyB.impactCallback({ impactType: propTypeA })

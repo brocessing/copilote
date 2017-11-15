@@ -26,7 +26,7 @@ export default class WaypointManager {
     this.chaoticImprovisation = !!(this.improvisationMode === 1)
   }
 
-  improviseFrom (position, direction, quantity) {
+  improviseFrom (position, direction, quantity, firstTurnBack = false) {
     for (let i = 0; i < quantity; i++) {
       let next = getNextWaypoint(position, direction, undefined, this.chaoticImprovisation)
       if (next) {
@@ -34,10 +34,11 @@ export default class WaypointManager {
           x: next.position[0],
           y: next.position[1],
           r: next.direction,
-          relr: next.relativeDirection,
-          type: next.type,
-          improvised: true
+          relr: firstTurnBack ? 2 : next.relativeDirection,
+          type: firstTurnBack ? 1 : next.type,
+          improvised: !firstTurnBack
         })
+        if (firstTurnBack) firstTurnBack = false
       }
       direction = next.direction
       position = next.position
@@ -246,7 +247,7 @@ export default class WaypointManager {
     const quantity = this.improvisationTreshold > 3 ? this.improvisationTreshold : 3
     this.preLastReachPos = null
     this.lastReachPos = null
-    this.improviseFrom(fromPos, fromDir, quantity)
+    this.improviseFrom(fromPos, fromDir, quantity, true)
     this.preLastReachPos = [this.list[0].x, this.list[0].y]
     this.lastReachPos = [this.list[1].x, this.list[1].y]
   }
