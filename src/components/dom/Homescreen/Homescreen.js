@@ -55,7 +55,7 @@ export default class Homescreen extends DomComponent {
       img.src = store.get('blob.logo')
       this.refs.logo.appendChild(img)
       this.refs.logoImg = img
-      this.timer(1400).then(() => this.showMenu())
+      this.timer(800).then(() => this.showMenu())
     })
   }
 
