@@ -7,7 +7,7 @@ import ThreeComponent from 'abstractions/ThreeComponent/ThreeComponent'
 import prng from 'utils/prng'
 import props from 'shaders/props/props'
 
-export default class Nature2x extends ThreeComponent {
+export default class Bank extends ThreeComponent {
   setup ({ x, y, cx, cy }) {
     this.group = new THREE.Mesh(
       store.get('geo.nature2x'),

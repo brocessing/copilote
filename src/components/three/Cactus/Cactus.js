@@ -17,7 +17,7 @@ export default class Cactus extends ThreeComponent {
     const posx = x + 0.5
     const posy = 0.012
     const posz = y + 0.5
-    const angle = prng.random() * Math.PI * 2 + Math.PI / 2
+    const angle = 0 // prng.random() * Math.PI * 2 + Math.PI / 2
 
     this.body = new p2.Body({
       position: [-(cx + posx), cy + posz],

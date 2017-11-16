@@ -21,13 +21,13 @@ const BUILDINGS = {
   3: { Instance: Hangar },
   4: { Instance: Station },
   5: { Instance: House },
-  6: { Instance: Trashyard },
-  7: { Instance: Cactus },
-  8: { Instance: Nature2x }
+  6: { Instance: Trashyard }
 }
 
 const PROPS = {
-  1: { Instance: Rock }
+  1: { Instance: Rock },
+  2: { Instance: Cactus },
+  3: { Instance: Nature2x }
 }
 
 export default class Chunk extends ThreeComponent {
