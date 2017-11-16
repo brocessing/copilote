@@ -76,8 +76,27 @@ function mockChunk () {
 }
 
 function reset () {
-  for (let id in loadedChunks) { emitter.emit('chunk-removed', loadedChunks[id]) }
-  init(true)
+  const keys = Object.keys(loadedChunks)
+  keys.forEach(id => {
+    emitter.emit('chunk-removed', loadedChunks[id])
+    delete loadedChunks[id]
+  })
+  prevPos = [0, 0]
+  const minChunkX = -CHUNKDISTFROMCENTER
+  const maxChunkX = CHUNKDISTFROMCENTER
+  const minChunkY = -CHUNKDISTFROMCENTER
+  const maxChunkY = CHUNKDISTFROMCENTER
+  for (let absChunkX = minChunkX; absChunkX <= maxChunkX; absChunkX++) {
+    for (let absChunkY = minChunkY; absChunkY <= maxChunkY; absChunkY++) {
+      const id = absChunkX + '.' + absChunkY
+      loadedChunks[id] = getChunkFromPool(absChunkX, absChunkY)
+      emitter.emit('chunk-added', loadedChunks[id])
+    }
+  }
+  // console.log('salut')
+  currentMiddleChunk = getChunkFromPos(0, 0)
+  regenerateWalkMap()
+  updateCenter(0, 0, true)
 }
 
 function init (reset = false) {
