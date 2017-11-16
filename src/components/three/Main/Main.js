@@ -21,7 +21,7 @@ import orders from 'controllers/orders/orders'
 import config from 'config'
 import map from 'controllers/map/map'
 import prng from 'utils/prng'
-
+import sfx from 'controllers/sfx/sfx'
 import stress from 'controllers/stress/stress'
 
 export default class Main extends ThreeComponent {
@@ -41,6 +41,8 @@ export default class Main extends ThreeComponent {
     setTimeout(() => {
       if (config.quickstart) this.reboot()
       else this.gameOverlay()
+      sfx.startBg()
+      sfx.updateBgVolume(0.06, true)
     }, 1)
 
     this.scoreNeedsUpdate = false
@@ -71,6 +73,7 @@ export default class Main extends ThreeComponent {
 
   orderOnce () {
     console.warn('YO')
+    sfx.updateBgVolume(0.17)
     this.scoreNeedsUpdate = true
     this.timerBeforeWakeup = null
     overlay.onWakeup()
@@ -130,7 +133,7 @@ export default class Main extends ThreeComponent {
       if (score !== this.score) store.set('score.value', score)
 
       // stress update
-      if (stress.panic) stress.remove(0.002)
+      if (stress.panic) stress.remove(0.004)
       else stress.remove(0.00004)
     }
 
@@ -145,12 +148,14 @@ export default class Main extends ThreeComponent {
   onDead (isDead) {
     if (!isDead) return
     this.scoreNeedsUpdate = false
+    sfx.updateBgVolume(0.032)
     overlay.gameOver(store.get('score.value'))
   }
 
   reboot () {
     stress.remove(1)
     this.score = 0
+    sfx.updateBgVolume(0.06, true)
     this.scoreNeedsUpdate = false
     store.set('score.value', this.score)
     prng.setSeed(+(new Date()))

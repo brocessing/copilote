@@ -7,17 +7,17 @@ import ThreeComponent from 'abstractions/ThreeComponent/ThreeComponent'
 import prng from 'utils/prng'
 import props from 'shaders/props/props'
 
-export default class Cactus extends ThreeComponent {
+export default class Nature2x extends ThreeComponent {
   setup ({ x, y, cx, cy }) {
     this.group = new THREE.Mesh(
-      store.get('geo.cactus'),
+      store.get('geo.nature2x'),
       props.getMaterial()
     )
 
     const posx = x + 0.5
     const posy = 0.012
     const posz = y + 0.5
-    const angle = prng.random() * Math.PI * 2 + Math.PI / 2
+    const angle = 0 // Math.PI / 2
 
     this.body = new p2.Body({
       position: [-(cx + posx), cy + posz],
@@ -25,7 +25,7 @@ export default class Cactus extends ThreeComponent {
     })
 
     this.body.propType = 'prop'
-    this.shapeA = this.body.addShape(new p2.Box({ width: 0.27, height: 0.27 }), [0, 0])
+    this.shapeA = this.body.addShape(new p2.Box({ width: 1.4, height: 1.5 }), [0.4, -0.5])
 
     this.group.position.x = -this.body.position[0] - cx
     this.group.position.y = posy

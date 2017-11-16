@@ -12,6 +12,8 @@ import Hangar from 'components/three/Hangar/Hangar'
 import Station from 'components/three/Station/Station'
 import Trashyard from 'components/three/Trashyard/Trashyard'
 import Rock from 'components/three/Rock/Rock'
+import Cactus from 'components/three/Cactus/Cactus'
+import Nature2x from 'components/three/Nature2x/Nature2x'
 
 const BUILDINGS = {
   1: { Instance: Bank },
@@ -19,7 +21,9 @@ const BUILDINGS = {
   3: { Instance: Hangar },
   4: { Instance: Station },
   5: { Instance: House },
-  6: { Instance: Trashyard }
+  6: { Instance: Trashyard },
+  7: { Instance: Cactus },
+  8: { Instance: Nature2x }
 }
 
 const PROPS = {

@@ -9,6 +9,8 @@ import particles from 'controllers/particles/particles'
 import prng from 'utils/prng'
 import map from 'controllers/map/map'
 import camera from 'controllers/camera/camera'
+import sfx from 'controllers/sfx/sfx'
+
 export default class Vehicle extends ThreeComponent {
   constructor (opts) {
     super(opts)
@@ -368,6 +370,8 @@ export default class Vehicle extends ThreeComponent {
   }
 
   explode () {
+    if (this.dead) return
+    sfx.blast(this.group.position)
     this.dead = true
     if (this.body) { this.body.propType = 'dead'; this.body.impactCallback = undefined }
   }

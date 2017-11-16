@@ -8,10 +8,10 @@ const LOFI = (window.location.hash && window.location.hash === '#lofi')
 
 export default {
   lofi: LOFI, // Special case for RNO melting computer
-  datgui: false,
-  fpsCounter: false,
+  datgui: true, // false,
+  fpsCounter: true,
   enableSpeech: true,
-  quickstart: false,
+  quickstart: true, // false,
   speechDebug: false,
   locDebug: false,
   debug: true,
@@ -219,6 +219,12 @@ export default {
       geo.scale(scale, scale, scale)
       geo.translate(2.0, 0, -1.0)
       store.set('geo.rock.small', geo)
+    },
+    'models/nature_2x.json': function (geo, mats) {
+      const scale = 0.5
+      geo.scale(scale, scale, scale)
+      geo.translate(-4.0, 0, -2.0)
+      store.set('geo.nature2x', geo)
     }
   },
 

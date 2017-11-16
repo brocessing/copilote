@@ -96,9 +96,9 @@ export default class PlayerCar extends Vehicle {
   onImpact (opts) {
     if (opts.impactType === 'cop') {
       this.damage(10)
-      events.emit('stress.add', 0.09)
-    } else {
       events.emit('stress.add', 0.04)
+    } else {
+      events.emit('stress.add', 0.02)
     }
   }
 

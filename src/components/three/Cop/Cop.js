@@ -77,7 +77,7 @@ export default class Cop extends Vehicle {
     this.manualControls = false
     this.id = opts.id
 
-    this.maxSpeed = 1 + (prng.random() * 2 - 1) * 0.2
+    this.maxSpeed = 0.9 + (prng.random() * 2 - 1) * 0.2
     this.backWheelFriction = 3.3
     this.maxSteer = Math.PI / 4
 
@@ -92,6 +92,7 @@ export default class Cop extends Vehicle {
     this.findTimer = 0
     this.findTimerStart = 3000
     this.dist = 0
+    sfx.addCop(this.id)
   }
 
   searchPlayer () {
@@ -132,6 +133,7 @@ export default class Cop extends Vehicle {
   }
 
   didDie () {
+    sfx.removeCop(this.id)
     this.chassis.material = deadcop.getMaterial()
     const maxdist = 8
     const f = 1 - ((Math.min(maxdist + 1, Math.max(1, this.dist)) - 1) / maxdist)
@@ -165,9 +167,8 @@ export default class Cop extends Vehicle {
 
     // this.meshes.shadow.rotation.z = this.chassis.rotation.y
 
-    sfx.updateCop(this.id, this.group.position, this.dead)
-
     if (!this.dead) {
+      sfx.updateCop(this.id, this.group.position, dt)
       events.emit('cop.move', { id: this.id, position: [this.group.position.x, this.group.position.z] })
 
       if (this.findTimer < 1 && !this.target && !playerDead) {
@@ -200,6 +201,7 @@ export default class Cop extends Vehicle {
   }
 
   destroy () {
+    sfx.removeCop(this.id)
     if (this.astarInstance !== undefined) this.astar.cancelPath(this.astarInstance)
     this.astar = undefined
     this.pos = undefined

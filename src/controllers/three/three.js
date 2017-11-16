@@ -69,7 +69,7 @@ function setupPostProcessing () {
 }
 
 function onImpact (data) {
-  console.log(data)
+  // console.log(data)
   const bodyA = data.bodyA
   const bodyB = data.bodyB
   // console.log(data)
