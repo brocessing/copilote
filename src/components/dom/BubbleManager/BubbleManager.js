@@ -56,8 +56,8 @@ export default class GameGUI extends DomComponent {
   reset () {
     const keys = Object.keys(this.bubbles)
     keys.forEach(k => {
-      const bubble = this.bubbles[id]
-      delete this.bubbles[id]
+      const bubble = this.bubbles[k]
+      delete this.bubbles[k]
       bubble.hide().then(() => bubble.destroy())
     })
   }

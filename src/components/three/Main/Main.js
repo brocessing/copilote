@@ -39,8 +39,8 @@ export default class Main extends ThreeComponent {
     this.resize(store.get('size'))
     overlay.mount()
     setTimeout(() => {
-      this.reboot()
-      //  this.gameOverlay()
+      if (config.quickstart) this.reboot()
+      else this.gameOverlay()
     }, 1)
 
     this.scoreNeedsUpdate = false

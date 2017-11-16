@@ -10,7 +10,7 @@ export default class Status extends DomComponent {
     this.player = store.get('player.vehicle')
     this.lifeId = 0
     this.stressId = 0
-    this.bumpTimerMax = 400
+    this.bumpTimerMax = 600
     this.bumpTimer = 0
     this.tang = 0
     this.ang = 0
