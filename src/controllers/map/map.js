@@ -75,10 +75,15 @@ function mockChunk () {
   return data
 }
 
-function init () {
+function reset () {
+  for (let id in loadedChunks) { emitter.emit('chunk-removed', loadedChunks[id]) }
+  init(true)
+}
+
+function init (reset = false) {
   chunksPool = store.get('map.chunks')
   // for (let i = 0; i < 6; i++) { chunksPool.push(mockChunk()) }
-  allocateWalkMap()
+  if (!reset) allocateWalkMap()
   const minChunkX = -CHUNKDISTFROMCENTER
   const maxChunkX = CHUNKDISTFROMCENTER
   const minChunkY = -CHUNKDISTFROMCENTER
@@ -339,5 +344,7 @@ export default {
 
   getWalkMap,
   copyWalkMap,
-  on: emitter.on
+  on: emitter.on,
+
+  reset
 }

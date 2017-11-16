@@ -8,12 +8,13 @@ const LOFI = (window.location.hash && window.location.hash === '#lofi')
 
 export default {
   lofi: LOFI, // Special case for RNO melting computer
+  datgui: false,
+  fpsCounter: false,
   enableSpeech: true,
-  quickstart: true,
-  speechDebug: true,
+  quickstart: false,
+  speechDebug: false,
   locDebug: false,
   debug: true,
-  fpsCounter: true,
   p2steps: 1 / 60,
   viewDistance: 3,
   chunkSize: 11,
@@ -50,6 +51,12 @@ export default {
 
   // preload images as dom nodes
   images: {
+    'ui/faces/face-0-0.gif': 'face.0.0',
+    'ui/faces/face-0-3.gif': 'face.0.3',
+
+    'ui/strip-left.gif': 'strip.left',
+    'ui/stress-low.gif': 'stress.low',
+    'ui/stress-panic.gif': 'stress.panic',
     'ui/radar.png': 'radar',
     'ui/bubbles/straight.png': 'bubble.straight',
     'ui/bubbles/right.png': 'bubble.right',

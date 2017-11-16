@@ -1,23 +1,24 @@
 import DomComponent from 'abstractions/DomComponent/DomComponent'
 
-import Minimap from 'components/dom/Minimap/Minimap'
+import Status from 'components/dom/Status/Status'
 import BubbleManager from 'components/dom/BubbleManager/BubbleManager'
-import Radar from 'components/dom/Radar/Radar'
-import intro from 'controllers/introduction/introduction'
+import RadarWrapper from 'components/dom/RadarWrapper/RadarWrapper'
+import Score from 'components/dom/Score/Score'
 
 export default class GameGUI extends DomComponent {
   didInit () {
     this.bubbles = []
-    this.minimap = new Minimap()
+    this.status = new Status()
     this.bubbleManager = new BubbleManager()
-    this.radar = new Radar()
+    this.radarWrapper = new RadarWrapper()
+    this.score = new Score()
   }
 
   didMount (el) {
-    intro.mountComponent(el)
     this.bubbleManager.mount(el)
-    this.minimap.mount(el)
-    this.radar.mount(el)
+    this.radarWrapper.mount(el)
+    this.status.mount(el)
+    this.score.mount(el)
   }
 
   willUnmount () {

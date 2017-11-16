@@ -1,5 +1,7 @@
 /* global dat */
 
+import config from 'config'
+
 let gui
 
 function init () {
@@ -8,6 +10,7 @@ function init () {
   gui.close()
   console.log(gui.domElement)
   gui.domElement.parentNode.style.zIndex = '1000'
+  if (!config.datgui) gui.domElement.parentNode.parentNode.removeChild(gui.domElement.parentNode)
 }
 
 function add (obj, key) {

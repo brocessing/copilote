@@ -137,7 +137,6 @@ function stop () {
 
 // Change the language used. (from the languages list)
 function setLang (lang) {
-  console.warn('LANG', lang)
   if (!lang || !languages[lang] || !recognition) return
   currentLang = lang
   recognition.lang = languages[lang]
@@ -157,6 +156,7 @@ export default {
   stop,
   setLang,
   getInstance,
+  getPending () { return pending },
   on: emitter.on,
   off: emitter.off
 }

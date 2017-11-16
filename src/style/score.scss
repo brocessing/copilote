@@ -1,0 +1,41 @@
+.gui-score {
+  z-index: 30;
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  width: 320px;
+  overflow: auto;
+  margin: 0 auto;
+
+  opacity: 0;
+  transition: opacity 400ms;
+  &.hidden {
+    opacity: 0;
+  }
+  &.transparent {
+    opacity: 0.4;
+  }
+  &.visible {
+    opacity: 1;
+  }
+}
+
+.gui-score .score-content {
+  font-size: 50px;
+  text-align: right;
+  padding-right: 5px;
+  background: -webkit-linear-gradient(#eee, #f2ee66);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  &::after {
+    background: black;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    z-index: 2;
+    width: 100%;
+    left: auto;
+    right: 0;
+    padding-right: 5px;
+    text-align: right;
+  }
+}

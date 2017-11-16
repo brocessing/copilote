@@ -35,11 +35,11 @@ function setup (el) {
   setupPostProcessing()
   skyScene.setup()
 
-  const guiFn = {
-    toggleEffectComposer () { composerEnabled = !composerEnabled }
-  }
+  // const guiFn = {
+  //   toggleEffectComposer () { composerEnabled = !composerEnabled }
+  // }
 
-  gui.add(guiFn, 'toggleEffectComposer')
+  // gui.add(guiFn, 'toggleEffectComposer')
 
   const throttledResize = throttle(resize, 250)
   store.watch('size', throttledResize)
@@ -48,7 +48,7 @@ function setup (el) {
   world.on('impact', onImpact)
 
   // avoid being stuck inside shape
-  world.solver.iterations = 4
+  // world.solver.iterations = 4
   world.solver.tolerance = 2
   // console.log(world)
   renderer.autoClear = false

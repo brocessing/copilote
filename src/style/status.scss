@@ -1,0 +1,80 @@
+.gui-status {
+  z-index: 30;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 400ms;
+  &.hidden {
+    opacity: 0;
+  }
+  &.transparent {
+    opacity: 0.4;
+  }
+  &.visible {
+    opacity: 1;
+  }
+
+  & .status-background {
+    z-index: 0;
+    position: absolute;
+    bottom: 37px;
+    left: 130px;
+    display: block;
+    image-rendering: pixelated;
+    margin: 0;
+    padding: 0;
+    transform-origin: 100% 100%;
+    transform: scale(2);
+  }
+
+
+  & .status-stressbar {
+    z-index: 2;
+    position: absolute;
+    bottom: -5px;
+    left: 0px;
+    display: block;
+    image-rendering: pixelated;
+    margin: 0;
+    padding: 0;
+    & .stressbar-img {
+      transform-origin: 0% 100%;
+      transform: scale(2);
+    }
+
+    & .stressbar-level {
+      z-index: 3;
+      position: absolute;
+      bottom: 50px;
+      left: 78px;
+      width: 184px;
+      height: 20px;
+      transform-origin: 0% 100%;
+      transform: scaleX(0);
+      transition: transform 50ms;
+      background: #c3fba4;
+      &.panic {
+        background: #e8ba5f;
+      }
+    }
+  }
+
+  & .status-face {
+    z-index: 1;
+    position: absolute;
+    bottom: 25px;
+    left: 20px;
+    display: block;
+    image-rendering: pixelated;
+    // border: 1px solid red;
+    transform-origin: 100% 100%;
+    margin: 0;
+    padding: 0;
+    will-change: transform;
+    & .face-img {
+      transform-origin: 0% 100%;
+      transform: scale(1.7);
+    }
+  }
+}

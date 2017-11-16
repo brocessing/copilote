@@ -13,6 +13,7 @@ const languages = {
 const emitter = mitt()
 const DEBUG = config.speechDebug
 let dom, logevent
+let listening = false
 
 if (DEBUG) {
   dom = document.createElement('div')
@@ -30,7 +31,6 @@ if (DEBUG) {
   logevent = document.createElement('pre')
   dom.appendChild(logevent)
   document.body.appendChild(dom)
-  console.log(french)
 }
 
 let currentLanguage = languages['fr']
@@ -42,8 +42,17 @@ function setLang (lang = 'fr') {
 }
 
 function listen () {
+  if (listening) return
   speech.on('result', onResult)
   speech.on('end', flushBuffer)
+  listening = true
+}
+
+function unlisten () {
+  if (!listening) return
+  speech.off('result', onResult)
+  speech.off('end', flushBuffer)
+  listening = false
 }
 
 function flushBuffer () {
@@ -54,6 +63,7 @@ function flushBuffer () {
 }
 
 function onResult (event) {
+  if (!listening) return
   for (let i = event.resultIndex; i < event.results.length; i++) {
     processResult(i, event.results[i], (i + 1) >= event.results.length)
   }
@@ -147,4 +157,4 @@ function analyze (newStr, finale = false) {
   }
 }
 
-export default { listen, on: emitter.on, off: emitter.off, setLang }
+export default { listen, unlisten, on: emitter.on, off: emitter.off, setLang }

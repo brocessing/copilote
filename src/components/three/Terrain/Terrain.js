@@ -32,11 +32,13 @@ export default class Terrain extends ThreeComponent {
 
   chunkAdded (data) {
     // console.log(data)
+    // console.warn('CHUNK ADDED', data.id)
     if (this.chunks[data.id]) this.removeChunk(data.id)
     this.addChunk(data.id, data)
   }
 
   chunkRemoved (data) {
+    // console.warn('CHUNK REMOVED', data.id)
     if (this.chunks[data.id]) this.removeChunk(data.id, data)
   }
 

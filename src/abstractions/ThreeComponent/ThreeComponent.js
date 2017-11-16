@@ -31,6 +31,10 @@ export default class ThreeComponent {
     return null
   }
 
+  bindFuncs (funcs) {
+    funcs.forEach(func => { this[func] = this[func].bind(this) })
+  }
+
   setup () {}
   update (dt) { this.components.forEach(component => component.update(dt)) }
   resize (size) { this.components.forEach(component => component.resize(size)) }

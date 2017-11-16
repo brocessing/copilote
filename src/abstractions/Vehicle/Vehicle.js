@@ -86,9 +86,11 @@ export default class Vehicle extends ThreeComponent {
       this.frontWheel.steerValue = 0
       this.frontWheel.engineForce = 0
       // console.log(this.body)
-      if (this.vehicle) this.vehicle.removeFromWorld()
-      this.vehicle = undefined
-      this.world.addBody(this.body)
+      if (!this.isPlayer) {
+        if (this.vehicle) this.vehicle.removeFromWorld()
+        this.vehicle = undefined
+        this.world.addBody(this.body)
+      }
       this.deadForceTimer = 800
       this.alreadyDead = true
       this.didDie()
@@ -174,7 +176,7 @@ export default class Vehicle extends ThreeComponent {
     }
   }
 
-  update (dt) {
+  update (dt, panic = false) {
     super.update(dt)
 
     this.visible = camera.isPointVisible(this.group.position)
@@ -219,20 +221,27 @@ export default class Vehicle extends ThreeComponent {
       this.waypoints.update(this.bodyPos, this.body.angle)
     }
 
-    if (this.running && this.target) {
-      this.goto(this.target[0], this.target[1])
-    } else if ((this.running || this.manualControls) && this.waypoints.list.length > 0) {
-      const closest = this.waypoints.getClosest(-this.bodyPos[0], this.bodyPos[1])
-      // console.log(closest.point)
-      // console.log(closest.distance)
-      // const point = closest.distance < 1.1 ? closest.point : this.waypoints[0]
-      this.goto(closest.point)
-    } else if (!this.manualControls) {
-      this.frontWheel.targetSteerValue = 0
-      this.engineForce = 0
-      this.backWheel.setBrakeForce(4)
+    if (panic) {
+      this.frontWheel.steerValue = 0
+      this.frontWheel.engineForce = 0
+      this.backWheel.setBrakeForce(3)
     }
 
+    if (!panic) {
+      if (this.running && this.target) {
+        this.goto(this.target[0], this.target[1])
+      } else if ((this.running || this.manualControls) && this.waypoints.list.length > 0) {
+        const closest = this.waypoints.getClosest(-this.bodyPos[0], this.bodyPos[1])
+        // console.log(closest.point)
+        // console.log(closest.distance)
+        // const point = closest.distance < 1.1 ? closest.point : this.waypoints[0]
+        this.goto(closest.point)
+      } else if (!this.manualControls) {
+        this.frontWheel.targetSteerValue = 0
+        this.engineForce = 0
+        this.backWheel.setBrakeForce(4)
+      }
+    }
     // copy p2 body parameters to the three group & car
     this.group.position.x = -this.bodyPos[0]
     this.group.position.z = this.bodyPos[1]

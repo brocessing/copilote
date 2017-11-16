@@ -10,11 +10,10 @@ import getDefaultLoc from 'utils/getDefaultLoc'
 import loader from 'controllers/preloader/preloader'
 import speech from 'controllers/speech/speech'
 import volume from 'controllers/volume/volume'
-import orders from 'controllers/orders/orders'
+
 import three from 'controllers/three/three'
 import sfx from 'controllers/sfx/sfx'
 import transition from 'controllers/transitionOverlay/transitionOverlay'
-import introduction from 'controllers/introduction/introduction'
 
 import Preloader from 'components/dom/Preloader/Preloader'
 import Homescreen from 'components/dom/Homescreen/Homescreen'
@@ -43,7 +42,7 @@ for (let i = 0; i < noscripts.length; i++) {
 noscripts = undefined
 
 // Choose a seed for the prng
-prng.setSeed(0)
+prng.setSeed(+(new Date()))
 
 // Initialize main components
 const gameGui = new GameGUI()
@@ -74,7 +73,6 @@ Promise.resolve()
   .then(loader.loadObjects)
   .then(loader.loadChunks)
 
-  .then(threeSetup)
   .then(sfx.setup)
 
   .then(() => preloader.beginPerm())
@@ -127,15 +125,13 @@ function startExperience () {
   const lang = store.get('lang')
   // TODO: Order setlang method?
   Promise.resolve()
+    .then(threeSetup)
     .then(() => !config.quickstart ? transition.show() : true)
     .then(() => config.enableSpeech && speech.setLang(lang))
-    .then(() => config.enableSpeech && orders.setLang(lang))
-    .then(() => config.enableSpeech && orders.listen())
     // initiate the GUI just before leaving the Home
     // and just after start listening to orders
     .then(() => gameGui.hydrate(document.querySelector('.game-gui')))
     .then(three.start)
-    .then(introduction.setup)
     .then(() => !config.quickstart ? home.destroy() : document.querySelector('.homescreen').parentNode.removeChild(document.querySelector('.homescreen')))
     .then(() => !config.quickstart ? transition.hide() : true)
 }

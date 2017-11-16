@@ -13,7 +13,7 @@ import sfx from 'controllers/sfx/sfx'
 import skyScene from 'controllers/skyScene/skyScene'
 
 const a = true
-let minCameraDist = a ? 2.1 : 1.1
+let minCameraDist = a ? 1.1 : 1.1
 const cameraDistMult = a ? 1.3 : 1.3
 let relPos = a ? [0, 0.9, -1.8] : [0, 0.9, -0.8]
 
@@ -53,8 +53,6 @@ let shakeFreq = 0
 let shakeVec, targetShakeVec
 let shakeMult = 2
 
-const guiFn = { switchToPlayer, switchToCop, explodeCop, explodePlayer }
-
 function addCameraShake (val = shakeMult) {
   shake = maxShake
   shakeMult = val
@@ -63,37 +61,23 @@ function addCameraShake (val = shakeMult) {
   shakeFreq = 0
 }
 
-function switchToPlayer () {
-  const player = store.get('player.vehicle')
-  setTarget(player)
-}
+// function switchToPlayer () {
+//   const player = store.get('player.vehicle')
+//   setTarget(player)
+// }
 
-let currentCop = 0
-let currentCop_
-function switchToCop () {
-  const all = cops.getAlive()
-  if (all.length < 1) return
-  if (currentCop > all.length - 1) currentCop = 0
-  currentCop_ = all[currentCop]
-  setTarget(currentCop_)
-  currentCop = ((currentCop + 1) >= all.length) ? 0 : currentCop + 1
-}
-
-function explodeCop () {
-  if (!currentCop_) return
-  currentCop_.explode()
-}
-
-function explodePlayer () {
-  store.get('player.vehicle').explode()
-}
+// let currentCop = 0
+// let currentCop_
+// function switchToCop () {
+//   const all = cops.getAlive()
+//   if (all.length < 1) return
+//   if (currentCop > all.length - 1) currentCop = 0
+//   currentCop_ = all[currentCop]
+//   setTarget(currentCop_)
+//   currentCop = ((currentCop + 1) >= all.length) ? 0 : currentCop + 1
+// }
 
 function setup () {
-  gui.add(guiFn, 'switchToPlayer').name('Switch to player')
-  gui.add(guiFn, 'switchToCop').name('Switch to cop')
-  gui.add(guiFn, 'explodeCop').name('Explode cop')
-  gui.add(guiFn, 'explodePlayer').name('Explode player')
-
   fakeTarget = new THREE.Object3D()
   three.getScene().add(fakeTarget)
 
@@ -207,11 +191,14 @@ function setTarget (vehicle) {
   // this.angvel += (store.get('car.angvel') - this.angvel) * this.alerp
 }
 
-function normalView () {
+function normalView (instant = false) {
   specialTarget.use = false
-  lerps.curpos = 0
-  lerps.curlookAt = 0
-  lerps.curcameraDist = 0.06
+  if (instant) instantUpdate()
+  else {
+    lerps.curpos = 0
+    lerps.curlookAt = 0
+    lerps.curcameraDist = 0.06
+  }
 }
 
 function bankView (instant = false) {

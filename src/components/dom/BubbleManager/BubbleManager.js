@@ -53,21 +53,27 @@ export default class GameGUI extends DomComponent {
     bubble.hide().then(() => bubble.destroy())
   }
 
-  willMount (el) {
+  reset () {
+    const keys = Object.keys(this.bubbles)
+    keys.forEach(k => {
+      const bubble = this.bubbles[id]
+      delete this.bubbles[id]
+      bubble.hide().then(() => bubble.destroy())
+    })
   }
 
   didMount () {
-    this.addWaypoint = this.addWaypoint.bind(this)
-    this.reachWaypoint = this.reachWaypoint.bind(this)
-    this.cancelWaypoint = this.cancelWaypoint.bind(this)
+    this.bindFuncs(['addWaypoint', 'reachWaypoint', 'cancelWaypoint', 'reset'])
     events.on('waypoints.add', this.addWaypoint)
     events.on('waypoints.reach', this.reachWaypoint)
     events.on('waypoints.cancel', this.cancelWaypoint)
+    events.on('bubbles.reset', this.reset)
   }
 
   willUnmount () {
     events.off('waypoints.add', this.addWaypoint)
     events.off('waypoints.reach', this.reachWaypoint)
     events.off('waypoints.cancel', this.cancelWaypoint)
+    events.off('bubbles.reset', this.reset)
   }
 }

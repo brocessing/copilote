@@ -13,7 +13,7 @@ import EasyStarJS from 'easystarjs'
 import cam from 'controllers/camera/camera'
 import particles from 'controllers/particles/particles'
 import sfx from 'controllers/sfx/sfx'
-
+import prng from 'utils/prng'
 import props from 'shaders/props/props'
 import deadcop from 'shaders/deadcop/deadcop'
 
@@ -77,7 +77,7 @@ export default class Cop extends Vehicle {
     this.manualControls = false
     this.id = opts.id
 
-    this.maxSpeed = 1.2
+    this.maxSpeed = 1 + (prng.random() * 2 - 1) * 0.2
     this.backWheelFriction = 3.3
     this.maxSteer = Math.PI / 4
 
@@ -123,6 +123,7 @@ export default class Cop extends Vehicle {
         this.findTimer = this.findTimerStart
       })
     } catch (err) {
+      // console.warn(err)
       this.waypoints.cancelAll()
       this.waypoints.improvise = true
       this.astarInstance = undefined

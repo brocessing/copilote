@@ -8,8 +8,23 @@ $gui-minimap-car-size: 25px;
 $gui-minimap-cop-size: 4px;
 $gui-minimap-road-width: 0.7px;
 
-.gui-radar {
+.gui-radar-wrapper {
+  position: absolute;
   z-index: 32;
+  bottom: 0;
+  right: 0;
+  opacity: 0;
+  transition: opacity 400ms;
+  &.transparent {
+    opacity: 0.4;
+  }
+  &.visible {
+    opacity: 1;
+  }
+}
+
+.gui-radar {
+  z-index: 1;
   position: absolute;
   right: 0px;
   bottom: 0px;
@@ -26,7 +41,7 @@ $gui-minimap-road-width: 0.7px;
 }
 
 .gui-minimap {
-  z-index: 30;
+  z-index: 1;
   position: absolute;
   right: 110px;
   bottom: 75px;
@@ -40,7 +55,7 @@ $gui-minimap-road-width: 0.7px;
   will-change: transform;
 
   .gui-minimap-car {
-    z-index: 31;
+    z-index: 5;
 
     position: absolute;
     top: calc(50% - #{$gui-minimap-car-size / 2});
@@ -63,7 +78,7 @@ $gui-minimap-road-width: 0.7px;
 
   .gui-minimap-cop {
     position: absolute;
-    z-index: 11;
+    z-index: 4;
     // border-radius: 100%;
     background: $color-cop-1;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);

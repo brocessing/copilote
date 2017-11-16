@@ -50,11 +50,7 @@ export default class Minimap extends DomComponent {
   didInit (opts) {
     opts = Object.assign({}, defaultOpts, opts || {})
 
-    this.onPlayerMove = this.onPlayerMove.bind(this)
-    this.onPlayerRotate = this.onPlayerRotate.bind(this)
-    this.onCopAdded = this.onCopAdded.bind(this)
-    this.onCopMove = this.onCopMove.bind(this)
-    this.onCopRemoved = this.onCopRemoved.bind(this)
+    this.bindFuncs(['onPlayerMove', 'onPlayerRotate', 'onCopAdded', 'onCopMove', 'onCopRemoved', 'reset'])
 
     this.width = opts.width
     this.height = opts.height
@@ -100,6 +96,39 @@ export default class Minimap extends DomComponent {
     }
 
     return el
+  }
+
+  reset () {
+    // reset positions
+    this.previousChunk = [0, 0]
+    this.currentChunk = [0, 0]
+    this.playerPos = [0, 0]
+    this.playerAng = 0
+
+    // remove chunks
+    if (this.refs.chunks) {
+      for (let id in this.refs.chunks) {
+        removeNode(this.refs.chunks[id])
+      }
+      this.refs.chunks = []
+    }
+
+    // remove cops
+    if (this.refs.cops) {
+      for (let id in this.refs.cops) {
+        removeNode(this.refs.cops[id])
+      }
+      this.refs.cops = []
+    }
+
+    // re-render base chunks
+    for (let i = -this.chunkDistFromCenter; i <= this.chunkDistFromCenter; i++) {
+      for (let j = -this.chunkDistFromCenter; j <= this.chunkDistFromCenter; j++) {
+        this.addChunk(this.currentChunk[0] + i, this.currentChunk[1] + j)
+      }
+    }
+
+    this.update()
   }
 
   update () {
@@ -223,6 +252,7 @@ export default class Minimap extends DomComponent {
     events.on('cop.added', this.onCopAdded)
     events.on('cop.move', this.onCopMove)
     events.on('cop.removed', this.onCopRemoved)
+    events.on('minimap.reset', this.reset)
   }
 
   willUnmount () {
@@ -231,5 +261,6 @@ export default class Minimap extends DomComponent {
     events.off('cop.added', this.onCopAdded)
     events.off('cop.move', this.onCopMove)
     events.off('cop.removed', this.onCopRemoved)
+    events.off('minimap.reset', this.reset)
   }
 }

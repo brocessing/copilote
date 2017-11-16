@@ -7,6 +7,7 @@ import noop from 'utils/noop'
 
 export default class MiniButton extends DomComponent {
   didInit (options) {
+    this.class = options.class || ''
     this.locCode = options.label
     this.currentOff = [0, 0]
     this.targetOff = [0, 0]
@@ -39,7 +40,7 @@ export default class MiniButton extends DomComponent {
     this.refs.ground.classList.add('button-ground')
 
     const el = document.createElement('div')
-    el.classList.add('button')
+    el.className = this.class
     el.appendChild(this.refs.ground)
     el.appendChild(this.refs.back)
     el.appendChild(this.refs.front)
@@ -122,6 +123,7 @@ export default class MiniButton extends DomComponent {
     this.update = noop
     raf.remove(this.update)
     store.unwatch('lang', this.langChange)
+    this.onclick = noop
     this.refs.base.removeEventListener('click', this.click)
     this.refs.base.removeEventListener('mousemove', this.move)
     this.refs.base.removeEventListener('mouseout', this.out)

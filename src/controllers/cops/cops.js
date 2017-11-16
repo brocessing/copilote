@@ -8,13 +8,14 @@ import prng from 'utils/prng'
 
 let scene, chunkSize
 let lastId = -1
-const aliveCops = []
-const deadCops = []
+let aliveCops = []
+let deadCops = []
 
 const maxCops = 8
 let copsNeeded = 0
 let timerTrigger = 3000
-let currentTimer = 2000
+let currentTimer = 4000
+let spawnable = false
 
 function setup () {
   scene = three.getScene()
@@ -66,6 +67,7 @@ function onCopRemoved (cop) {
 }
 
 function update (dt) {
+  if (!spawnable) return
   if ((aliveCops.length + copsNeeded) < maxCops) {
     copsNeeded = maxCops - aliveCops.length
   }
@@ -80,7 +82,19 @@ function update (dt) {
   deadCops.forEach(cop => cop.update(dt))
 }
 
+function setSpawn (v) {
+  if (v) { spawnable = v; return }
+  spawnable = false
+  deadCops.forEach(cop => cop.destroy())
+  aliveCops.forEach(cop => cop.destroy())
+  aliveCops = []
+  deadCops = []
+  timerTrigger = 3000
+  currentTimer = 4000
+}
+
 export default {
+  setSpawn,
   setup,
   addCop,
   update,

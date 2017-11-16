@@ -1,0 +1,251 @@
+.gui-introduction {
+  z-index: 20;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transition: opacity 500ms;
+
+  &.visible {
+    opacity: 1;
+  }
+}
+
+.introduction-popin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0;
+  margin: 0;
+  height: auto;
+
+  // border-top: 5px solid #e1e1e1;
+  // border-right: 5px solid #e1e1e1;
+  // background: #2f3164;
+  // box-shadow:
+  //   -10px 0px 0px -5px #050624,
+  //   10px 0px 0px -5px #050624;
+  // border-top: 5px solid #57587c;
+  // border-bottom: 5px solid #040623;
+  width: 100%;
+  max-width: 800px;
+  text-align: center;
+  padding: 30px;
+  font-size: 36px;
+  pointer-events: none;
+
+  &.touchable {
+    pointer-events: auto;
+  }
+}
+
+.introduction-popin p {
+  line-height: 1em;
+  padding: 0;
+  margin: 0;
+  white-space: pre-line;
+
+  &::after {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.gui-introduction .popin-buttons {
+  margin: 35px auto 0px;
+}
+
+.gui-introduction .button {
+  display: inline-block;
+  font-size: 28px;
+  position: relative;
+  cursor: pointer;
+  text-align: center;
+  width: 85px;
+  height: 35px;
+  margin: 0 10px 10px;
+  line-height: 35px;
+  text-transform: uppercase;
+
+  & .button-front,
+  & .button-back,
+  & .button-ground {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    image-rendering: pixelated;
+  }
+
+  & .button-ground {
+    width: calc(100% + 8px);
+    top: 4px;
+    left: -4px;
+  }
+
+  & .button-back {
+    background: rgba(0, 0, 0, 0.6);
+    box-shadow:
+      -5px 0px 0px -2px rgba(0, 0, 0, 0.6),
+      5px 0px 0px -2px rgba(0, 0, 0, 0.6);
+  }
+
+  & .button-front {
+    top: -8px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid rgba(0, 0, 0, 0.3);
+  }
+
+  & .button-front::after {
+    width: 100%;
+    text-align: center;
+  }
+
+  &.button-skip .button-front {
+    background: #999;
+    color: #ccc;
+    box-shadow:
+      -5px 0px 0px -2px #999,
+      5px 0px 0px -2px #999;
+  }
+
+  &.button-next .button-front {
+    background: #55cc3c;
+    box-shadow:
+      -5px 0px 0px -2px #55cc3c,
+      5px 0px 0px -2px #55cc3c;
+  }
+}
+
+
+.introduction-popin p {
+  line-height: 1em;
+  padding: 0;
+  margin: 0;
+  white-space: pre-line;
+
+  &::after {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+
+.gameover-popin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0;
+  margin: 0;
+  height: auto;
+
+  // border-top: 5px solid #e1e1e1;
+  // border-right: 5px solid #e1e1e1;
+  // background: #2f3164;
+  // box-shadow:
+  //   -10px 0px 0px -5px #050624,
+  //   10px 0px 0px -5px #050624;
+  // border-top: 5px solid #57587c;
+  // border-bottom: 5px solid #040623;
+  width: 100%;
+  max-width: 800px;
+  text-align: center;
+  padding: 30px;
+  font-size: 36px;
+  pointer-events: none;
+
+  &.touchable {
+    pointer-events: auto;
+  }
+}
+
+.gameover-popin p {
+  line-height: 1em;
+  padding: 0;
+  margin: 0;
+  white-space: pre-line;
+  font-size: 120px;
+  &::after {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.gameover-popin .popin-score {
+  margin-top: 15px;
+  font-size: 45px;
+  color: #f18c7b;
+}
+
+.gameover-popin .popin-subtitle {
+  font-size: 28px;
+}
+
+.gameover-popin .button {
+  display: inline-block;
+  font-size: 32px;
+  position: relative;
+  cursor: pointer;
+  text-align: center;
+  width: 125px;
+  height: 50px;
+  margin: 30px 10px 10px;
+  line-height: 50px;
+  text-transform: uppercase;
+
+  & .button-front,
+  & .button-back,
+  & .button-ground {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    image-rendering: pixelated;
+  }
+
+  & .button-ground {
+    width: calc(100% + 8px);
+    top: 4px;
+    left: -4px;
+  }
+
+  & .button-back {
+    background: #1b93bf;
+    box-shadow:
+      -5px 0px 0px -2px #1b93bf,
+      5px 0px 0px -2px #1b93bf;
+  }
+
+  & .button-front {
+    top: -8px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid rgba(0, 0, 0, 0.3);
+  }
+
+  & .button-front::after {
+    width: 100%;
+    text-align: center;
+  }
+
+  &.button-restart .button-front {
+    background: #69eaea;
+    box-shadow:
+      -5px 0px 0px -2px #69eaea,
+      5px 0px 0px -2px #69eaea;
+  }
+}

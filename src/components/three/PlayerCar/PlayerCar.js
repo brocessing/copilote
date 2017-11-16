@@ -12,7 +12,8 @@ import cam from 'controllers/camera/camera'
 import particles from 'controllers/particles/particles'
 import gui from 'controllers/datgui/datgui'
 import sfx from 'controllers/sfx/sfx'
-
+import stress from 'controllers/stress/stress'
+import events from 'utils/events'
 import player from 'shaders/player/player'
 /*
   this.group = position sync with the p2 body position
@@ -37,16 +38,8 @@ export default class PlayerCar extends Vehicle {
     // Vehicle: p2 main physic attributes
     this.body = new p2.Body({ mass: 2, position: [0, 0.1] })
     this.body.propType = 'player'
-    const self = this
-    this.body.impactCallback = function (opts) {
-      if (opts.impactType === 'prop') {
-        self.body.velocity[0] *= -1000000
-        self.body.velocity[1] *= -1000000
-      }
-      if (opts.impactType === 'cop') {
-        self.damage(10)
-      }
-    }
+
+    this.body.impactCallback = this.onImpact.bind(this)
 
     const box = new p2.Box({ width: 0.1, height: 0.21 })
     box.material = new p2.Material()
@@ -68,8 +61,8 @@ export default class PlayerCar extends Vehicle {
     this.improvisationMode = 0
 
     // Misc options
-    this.debugSteering = true
-    this.debugWaypoints = true
+    this.debugSteering = false
+    this.debugWaypoints = false
     this.manualControls = false
 
     store.set('player.position', [0, 0])
@@ -82,6 +75,7 @@ export default class PlayerCar extends Vehicle {
 
     this.maxLife = 40
     this.life = this.maxLife
+    player.setLife(1)
     // three.debugBody(this.body)
 
     gui.add(this, 'damage').name('Damage Player')
@@ -96,13 +90,24 @@ export default class PlayerCar extends Vehicle {
     kbctrl(this.frontWheel, this.backWheel)
 
     this.isPlayer = true
+    this.maxSteer = Math.PI / 3.1
   }
 
-  damage (val = 1) {
+  onImpact (opts) {
+    if (opts.impactType === 'cop') {
+      this.damage(10)
+      events.emit('stress.add', 0.09)
+    } else {
+      events.emit('stress.add', 0.04)
+    }
+  }
+
+  damage (val = 5) {
     this.life = Math.max(0, this.life - val)
     const lifeIndice = this.life / this.maxLife
     this.smokeDensity = (1 - lifeIndice) * 5
     player.setLife(lifeIndice)
+    events.emit('player.damage')
     if (this.life <= 0) this.explode()
   }
 
@@ -127,7 +132,7 @@ export default class PlayerCar extends Vehicle {
   }
 
   update (dt) {
-    super.update(dt)
+    super.update(dt, stress.panic)
 
     this.meshes.shadow.rotation.z = this.chassis.rotation.y
 
@@ -141,28 +146,37 @@ export default class PlayerCar extends Vehicle {
 
   onOrder (data) {
     if (data.type === 'start') {
+      if (!store.get('order.once')) store.set('order.once', true)
       this.manualControls = false
       this.running = true
       return
     }
 
     if (data.type === 'goStraight') {
-      // if (this.running === false) return
+      if (!store.get('order.once')) store.set('order.once', true)
+      this.manualControls = false
+      this.running = true
       this.waypoints.goStraight()
     }
 
     if (data.type === 'goLeft') {
-      // if (this.running === false) return
+      if (!store.get('order.once')) store.set('order.once', true)
+      this.manualControls = false
+      this.running = true
       this.waypoints.turnLeft()
     }
 
     if (data.type === 'goRight') {
-      // if (this.running === false) return
+      if (!store.get('order.once')) store.set('order.once', true)
+      this.manualControls = false
+      this.running = true
       this.waypoints.turnRight()
     }
 
     if (data.type === 'turnBack') {
-      // if (this.running === false) return
+      if (!store.get('order.once')) store.set('order.once', true)
+      this.manualControls = false
+      this.running = true
       this.waypoints.turnBack()
     }
 
@@ -181,5 +195,61 @@ export default class PlayerCar extends Vehicle {
       this.manualControls = true
       kbctrl(this.frontWheel, this.backWheel)
     }
+  }
+
+  reset () {
+    this.body.position[0] = 0
+    this.body.position[1] = 0
+    this.group.position.x = 0
+    this.group.position.z = 0
+    this.body.velocity[0] = 0
+    this.body.velocity[1] = 0
+    this.frontWheel.targetSteerValue = 0
+    this.frontWheel.steerValue = 0
+    this.engineForce = 0
+    this.frontWheel.engineForce = 0
+    this.body.angle = 0
+    this.body.angularVelocity = 0
+    this.chassis.rotation.y = 0
+    this.chassis.rotation.x = 0
+    this.chassis.rotation.z = 0
+
+    store.set('player.velocity', this.body.velocity)
+    store.set('player.position', [this.group.position.x, this.group.position.z])
+    store.set('player.angle', this.chassis.rotation.y)
+    store.set('player.dead', false)
+
+    this.life = this.maxLife
+    player.setLife(1)
+    this.alreadyDead = false
+    this.dead = false
+    this.running = false
+
+    this.smokeDensity = 0
+    this.smokeTimer = 0
+    this.sandDensity = 0
+    this.sandTimer = 0
+    this.steerSmokeDensity = 0
+    this.steerSmokeTimer = 0
+
+    this.speed = 0
+
+    this.needsBackwardScore = 0
+    this.needsBackward = false
+    this.antiObstacleScore = 0
+    this.antiObstacle = false
+    this.antiObstacleDir = 1
+
+    this.body.propType = 'player'
+    this.body.impactCallback = this.onImpact.bind(this)
+
+    this.waypoints.cancelAll()
+    this.waypoints.preLastReachPos = null
+    this.waypoints.lastReachPos = null
+  }
+
+  destroy () {
+    orders.off(':all', this.onOrder)
+    super.destroy()
   }
 }
