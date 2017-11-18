@@ -157,6 +157,7 @@ export default class Main extends ThreeComponent {
   reboot () {
     stress.remove(1)
     this.score = 0
+    sfx.startBg()
     sfx.updateBgVolume(0.06, true)
     this.scoreNeedsUpdate = false
     store.set('score.value', this.score)

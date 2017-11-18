@@ -1,16 +1,16 @@
-  /* global Howl */
+/* global Howl */
 import anime from 'animejs'
 import store from 'utils/store'
 import nmod from 'utils/nmod'
 import camera from 'controllers/camera/camera'
 import prng from 'utils/prng'
 import raf from 'utils/raf'
+import orders from 'controllers/orders/orders'
 
 const sfx = {}
 const instances = {}
 let earPos = [0, 0]
 let earAng = 0
-
 
 function setup () {
   sfx.bg = new Howl({
@@ -53,6 +53,13 @@ function setup () {
     volume: 0.1,
     loop: true
   })
+  sfx.radio = new Howl({
+    src: ['sfx/1077.mp3'],
+    volume: 0.2,
+    onend: () => {
+      if (!store.get('player.dead')) startBg()
+    }
+  })
   raf.add(update)
 }
 
@@ -61,6 +68,15 @@ let rate = 0.5
 let targetEngineForce = 0.5
 let rapport = 0
 let anims = {}
+
+orders.on('radioOn', () => {
+  stopBg()
+  instances.radio = sfx.radio.play()
+})
+
+// store.watch('player.dead', (isDead) => {
+//   if (isDead && )
+// })
 
 function updateBgVolume (val, instant) {
   if (anims.bg) anims.bg.pause()
@@ -87,6 +103,7 @@ function stopBank () {
 }
 
 function startBg () {
+  if (instances.radio) { sfx.radio.stop(instances.radio); instances.radio = null }
   stopBg()
   instances.bg = sfx.bg.play()
   sfx.bg.volume(data.bgVol, instances.bg)

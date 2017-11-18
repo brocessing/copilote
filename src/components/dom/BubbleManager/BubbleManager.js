@@ -4,7 +4,7 @@ import Bubble from 'components/dom/Bubble/Bubble'
 import store from 'utils/store'
 import orders from 'controllers/orders/orders'
 
-let id = 0
+let ID = 0
 
 export default class GameGUI extends DomComponent {
   didInit () {
@@ -25,10 +25,11 @@ export default class GameGUI extends DomComponent {
     if (data.type === 'goManual') this.autoBubble('manual', 6)
     if (data.type === 'speedUp') this.autoBubble('speedup', 4)
     if (data.type === 'speedDown') this.autoBubble('speeddown', 5)
+    if (data.type === 'radioOn') this.autoBubble('radio', 7)
   }
 
   autoBubble (id, type, delay = 3000) {
-    id = id + (++id)
+    id = id + (++ID)
     if (this.bubbles[id] || !this.refs.base) return
     this.addBubble(id, type)
     setTimeout(() => {

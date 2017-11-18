@@ -5,7 +5,7 @@ import config from 'config'
 import store from 'utils/store'
 
 const loadjs = window.loadjs
-const api = { loadJS, loadTextures, loadObjects, loadChunks, loadImages, loadBlobs }
+const api = { loadJS, loadTextures, loadObjects, loadChunks, loadImages, loadBlobs, loadCube }
 
 function loadJS () {
   return new Promise((resolve, reject) => {
@@ -52,6 +52,16 @@ function loadImages () {
     }))
   }
   return Promise.all(p)
+}
+
+function loadCube () {
+  return
+  return new Promise(resolve => {
+    const cubemap = new THREE.CubeTextureLoader()
+      .load(config.cube, resolve)
+    cubemap.format = THREE.RGBFormat
+    store.set('cubemap', cubemap)
+  })
 }
 
 function loadTextures () {

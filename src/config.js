@@ -8,13 +8,13 @@ const LOFI = (window.location.hash && window.location.hash === '#lofi')
 
 export default {
   lofi: LOFI, // Special case for RNO melting computer
-  datgui: true,
-  fpsCounter: true,
+  datgui: false,
+  fpsCounter: false,
   enableSpeech: true,
-  quickstart: true,
-  speechDebug: true,
+  quickstart: false,
+  speechDebug: false,
   locDebug: false,
-  debug: true,
+  debug: false,
   p2steps: 1 / 60,
   viewDistance: 3,
   chunkSize: 11,
@@ -71,8 +71,16 @@ export default {
     'ui/bubbles/left.png': 'bubble.left',
     'ui/bubbles/speedup.png': 'bubble.speedup',
     'ui/bubbles/speeddown.png': 'bubble.speeddown',
-    'ui/bubbles/wheel.png': 'bubble.wheel'
+    'ui/bubbles/wheel.png': 'bubble.wheel',
+    'ui/bubbles/radio.png': 'bubble.radio'
   },
+
+  // used for cubemap
+  cube: [
+    'cube/px.jpg', 'cube/nx.jpg',
+    'cube/py.jpg', 'cube/ny.jpg',
+    'cube/pz.jpg', 'cube/nz.jpg'
+  ],
 
   // create commonly used materials
   initCommonMaterials: function () {

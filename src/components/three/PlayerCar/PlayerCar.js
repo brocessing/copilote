@@ -239,7 +239,7 @@ export default class PlayerCar extends Vehicle {
     }
 
     if (data.type === 'speedDown') {
-      this.speedLevel = this.speedLevel < 0 ? 0 : this.speedLevel - 1
+      this.speedLevel = this.speedLevel <= 0 ? 0 : this.speedLevel - 1
       this.updateSteerValue()
     }
   }

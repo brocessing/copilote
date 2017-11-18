@@ -17,14 +17,8 @@ french.order('goRight')
 french.order('goStraight')
   .add('tous droits|vas tout droit|tout droit|tous droit|droit devant|avance|tu dois|toulon')
 
-// french.order('speedUp')
-//   .add('à vence|accéléré|auxerre|fonce|foncer|va plus vite|plus vite|accélère|augmente la vitesse')
-
-// french.order('speedDown')
-//   .add('ralenti|ralentis|ralentir|moins vite|décélérer|décélére|en entier')
-
 french.order('goLeft')
-  .add('tourner à gauche|tourne à gauche|à gauche|gauche')
+  .add('tourner à gauche|tourne à gauche|à gauche|gauche|à cause')
 
 french.order('goManual')
   .add('passe-moi le volant|je prends le volant|je conduis', { continuous: false })
@@ -41,12 +35,12 @@ french.order('stop')
   .add('stop toi|stop|arrête|arrêter|arrête-toi')
 
 french.order('speedUp')
-  .add('accélèrer|accélère|plus vite')
+  .add('accélèrer|accélère|plus vite|foncer|foncer|va plus vite|augmente la vitesse')
 
 french.order('speedDown')
-  .add('ralenti|ralentir|ralentis|moins vite')
+  .add('ralenti|ralentir|ralentis|moins vite|en entier')
 
-// french.order('radioOn')
-//   .add('(?:mets|mais) la radio sur ([a-z0-9 ]+)', { continuous: false, capture: true })
+french.order('radioOn')
+  .add('allume la radio|mets la radio|radio|mets du son|active la radio', { continuous: false })
 
 export default french.toObj()

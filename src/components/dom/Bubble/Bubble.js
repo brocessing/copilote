@@ -11,7 +11,8 @@ const TYPES = {
   3: 'left',
   4: 'speedup',
   5: 'speeddown',
-  6: 'wheel'
+  6: 'wheel',
+  7: 'radio'
 }
 
 export default class Bubble extends DomComponent {
