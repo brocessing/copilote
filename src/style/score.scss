@@ -1,11 +1,13 @@
 .gui-score {
   z-index: 30;
   position: absolute;
-  top: 30px;
-  right: 30px;
+  top: 0;
+  right: 0;
   width: 320px;
   overflow: auto;
   margin: 0 auto;
+  transform-origin: 100% 100%;
+  transform: scale($ui-scale);
 
   opacity: 0;
   transition: opacity 400ms;
@@ -21,9 +23,11 @@
 }
 
 .gui-score .score-content {
-  font-size: 50px;
+  font-size: 60px;
   text-align: right;
-  padding-right: 5px;
+  padding-right: 4px * $ui-scale;
+  margin-top: 60px * $ui-scale;
+  margin-right: 40px * $ui-scale;
   background: -webkit-linear-gradient(#eee, #f2ee66);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -35,7 +39,7 @@
     width: 100%;
     left: auto;
     right: 0;
-    padding-right: 5px;
+    padding-right: 4px * $ui-scale;
     text-align: right;
   }
 }

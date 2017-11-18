@@ -1,8 +1,9 @@
 .gui-bubbles {
   z-index: 35;
   position: absolute;
-  right: 40px;
-  bottom: 200px;
+  right: 40px * $ui-scale;
+  bottom: 200px * $ui-scale;
+  transform: scale($ui-scale);
   // border: 1px solid red;
 }
 
@@ -17,7 +18,7 @@
   & img {
     display: block;
     width: auto;
-    height: 80px;
+    height: 120px;
     image-rendering: pixelated;
   }
 }

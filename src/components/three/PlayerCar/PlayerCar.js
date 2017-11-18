@@ -20,6 +20,28 @@ import player from 'shaders/player/player'
   this.chassis = angle sync with the p2 angle
 */
 
+const SPEEDLEVELS = {
+  0: 0,
+  1: 1.5
+}
+
+const STEERSPEED = {
+  0: 0.068,
+  1: 0.8
+}
+
+const BACKWHEELSPEED = {
+  0: 2.9,
+  1: 3.5
+}
+
+const MAXSTEERSPEED = {
+  0: Math.PI / 3.1,
+  1: Math.PI / 3.1
+}
+
+const SPEEDLEVELS_LEN = Object.keys(SPEEDLEVELS).length
+
 export default class PlayerCar extends Vehicle {
   setup (opts) {
     // Vehicle: three
@@ -75,6 +97,7 @@ export default class PlayerCar extends Vehicle {
 
     this.maxLife = 40
     this.life = this.maxLife
+    this.lifeIndice = this.life / this.maxLife
     player.setLife(1)
     // three.debugBody(this.body)
 
@@ -90,7 +113,8 @@ export default class PlayerCar extends Vehicle {
     kbctrl(this.frontWheel, this.backWheel)
 
     this.isPlayer = true
-    this.maxSteer = Math.PI / 3.1
+    this.speedLevel = 0
+    this.updateSteerValue()
   }
 
   onImpact (opts) {
@@ -102,11 +126,11 @@ export default class PlayerCar extends Vehicle {
     }
   }
 
-  damage (val = 5) {
+  damage (val = 10) {
     this.life = Math.max(0, this.life - val)
-    const lifeIndice = this.life / this.maxLife
-    this.smokeDensity = (1 - lifeIndice) * 5
-    player.setLife(lifeIndice)
+    this.lifeIndice = this.life / this.maxLife
+    this.smokeDensity = (1 - this.lifeIndice) * 5
+    player.setLife(this.lifeIndice)
     events.emit('player.damage')
     if (this.life <= 0) this.explode()
   }
@@ -131,7 +155,18 @@ export default class PlayerCar extends Vehicle {
     store.set('player.dead', true)
   }
 
+  limitSpeed () {
+    super.limitSpeed(SPEEDLEVELS[this.speedLevel])
+  }
+
   update (dt) {
+    // stress update
+    if (stress.panic) stress.remove(0.004)
+    else {
+      if (this.speedLevel === 0) stress.remove(0.0007)
+      else if (this.speedLevel === 1) stress.add(0.001)
+    }
+
     super.update(dt, stress.panic)
 
     this.meshes.shadow.rotation.z = this.chassis.rotation.y
@@ -141,7 +176,7 @@ export default class PlayerCar extends Vehicle {
     store.set('player.angle', this.chassis.rotation.y)
     map.updateCenter(this.group.position.x, this.group.position.z)
 
-    sfx.updateEngine(this.body.velocity, this.body.angularVelocity, !!this.dead)
+    sfx.updateEngine(this.body.velocity, this.body.angularVelocity, this.speedLevel, !!this.dead)
   }
 
   onOrder (data) {
@@ -195,6 +230,24 @@ export default class PlayerCar extends Vehicle {
       this.manualControls = true
       kbctrl(this.frontWheel, this.backWheel)
     }
+
+    if (data.type === 'speedUp') {
+      this.speedLevel = (this.speedLevel >= (SPEEDLEVELS_LEN - 1))
+        ? SPEEDLEVELS_LEN - 1
+        : this.speedLevel + 1
+      this.updateSteerValue()
+    }
+
+    if (data.type === 'speedDown') {
+      this.speedLevel = this.speedLevel < 0 ? 0 : this.speedLevel - 1
+      this.updateSteerValue()
+    }
+  }
+
+  updateSteerValue () {
+    this.lerpSteerValue = STEERSPEED[this.speedLevel]
+    this.backWheelFriction = BACKWHEELSPEED[this.speedLevel]
+    this.maxSteer = MAXSTEERSPEED[this.speedLevel]
   }
 
   reset () {
@@ -220,6 +273,7 @@ export default class PlayerCar extends Vehicle {
     store.set('player.dead', false)
 
     this.life = this.maxLife
+    this.lifeIndice = this.life / this.maxLife
     player.setLife(1)
     this.alreadyDead = false
     this.dead = false
@@ -233,6 +287,8 @@ export default class PlayerCar extends Vehicle {
     this.steerSmokeTimer = 0
 
     this.speed = 0
+    this.speedLevel = 0
+    this.updateSteerValue()
 
     this.needsBackwardScore = 0
     this.needsBackward = false

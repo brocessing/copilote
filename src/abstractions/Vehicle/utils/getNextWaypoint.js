@@ -78,7 +78,7 @@ export default function getNextWaypoint (currentPosition, currentDirection, orde
   // If for any reason there is no road we go straight forward
   // choice = createChoice(currentPosition, currentDirection, (prng.randomInt(0, 2) + 3) % 4)
   choice = createChoice(currentPosition, currentDirection, 0)
-  choice.type = -2
+  choice.type = 0
 
   return choice
 }

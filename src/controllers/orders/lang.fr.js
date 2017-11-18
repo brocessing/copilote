@@ -7,7 +7,9 @@ french
   .replacer('gauche-droite', 'gauche droite')
   .replacer('france', 'fonce')
   .replacer('annonce|ok morse|cadence', 'avance')
-  .replacer('aux lentilles|râle entier', 'ralenti')
+  .replacer('aux lentilles|râle entier|argentine', 'ralenti')
+  .replacer('accès|auxerre|quelle heure', 'accélère')
+  .replacer('accroché|accrocher', 'à gauche')
 
 french.order('goRight')
   .add('tourner à droite|tourne à droite|à droite|droite|20 droites')
@@ -37,6 +39,12 @@ french.order('start')
 french.order('stop')
   .add('coupe le (moteur|contact)', { continuous: false })
   .add('stop toi|stop|arrête|arrêter|arrête-toi')
+
+french.order('speedUp')
+  .add('accélèrer|accélère|plus vite')
+
+french.order('speedDown')
+  .add('ralenti|ralentir|ralentis|moins vite')
 
 // french.order('radioOn')
 //   .add('(?:mets|mais) la radio sur ([a-z0-9 ]+)', { continuous: false, capture: true })

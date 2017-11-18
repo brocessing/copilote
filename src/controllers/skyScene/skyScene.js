@@ -28,7 +28,6 @@ function setup () {
 
 let pang = 0
 function setAngle (nangle) {
-
   let d = pang - nangle
   if (d > Math.PI && pang >= 0 && nangle < 0) d = pang - (Math.PI + (Math.PI + nangle))
   else if (d < -Math.PI && pang < 0 && nangle >= 0) d = pang + (Math.PI + (Math.PI - nangle))

@@ -1,10 +1,16 @@
 import events from 'utils/events'
 import DomComponent from 'abstractions/DomComponent/DomComponent'
 import Bubble from 'components/dom/Bubble/Bubble'
+import store from 'utils/store'
+import orders from 'controllers/orders/orders'
+
+let id = 0
 
 export default class GameGUI extends DomComponent {
   didInit () {
+    this.bindFuncs(['onOrder'])
     this.bubbles = {}
+    orders.on(':all', this.onOrder)
     // this.player = store.get('player')
   }
 
@@ -14,13 +20,42 @@ export default class GameGUI extends DomComponent {
     return el
   }
 
-  addWaypoint (e) {
-    console.warn('ADD', e)
-    const id = e.x + '.' + e.y
+  onOrder (data) {
+    if (store.get('player.dead')) return
+    if (data.type === 'goManual') this.autoBubble('manual', 6)
+    if (data.type === 'speedUp') this.autoBubble('speedup', 4)
+    if (data.type === 'speedDown') this.autoBubble('speeddown', 5)
+  }
+
+  autoBubble (id, type, delay = 3000) {
+    id = id + (++id)
+    if (this.bubbles[id] || !this.refs.base) return
+    this.addBubble(id, type)
+    setTimeout(() => {
+      this.deleteBubble(id)
+    }, delay)
+  }
+
+  addBubble (id, type) {
     if (this.bubbles[id] || !this.refs.base) return
     this.offsetBubbles()
-    this.bubbles[id] = new Bubble({ type: e.dir })
+    this.bubbles[id] = new Bubble({ type })
     this.bubbles[id].mount(this.refs.base)
+  }
+
+  deleteBubble (id) {
+    if (!this.bubbles[id] || !this.refs.base) return
+    const bubble = this.bubbles[id]
+    delete this.bubbles[id]
+    this.offsetBubbles(-1)
+    bubble.hide().then(() => bubble.destroy())
+  }
+
+  addWaypoint (e) {
+    if (store.get('player.dead')) return
+    console.warn('ADD', e)
+    const id = e.x + '.' + e.y
+    this.addBubble(id, e.dir)
   }
 
   offsetBubbles (off = 0) {
@@ -37,11 +72,7 @@ export default class GameGUI extends DomComponent {
 
   reachWaypoint (e) {
     const id = e.x + '.' + e.y
-    if (!this.bubbles[id] || !this.refs.base) return
-    const bubble = this.bubbles[id]
-    delete this.bubbles[id]
-    this.offsetBubbles(-1)
-    bubble.hide().then(() => bubble.destroy())
+    this.deleteBubble(id)
   }
 
   cancelWaypoint (e) {

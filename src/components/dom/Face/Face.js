@@ -10,7 +10,7 @@ export default class Status extends DomComponent {
     this.player = store.get('player.vehicle')
     this.lifeId = 0
     this.stressId = 0
-    this.bumpTimerMax = 600
+    this.bumpTimerMax = 1000
     this.bumpTimer = 0
     this.tang = 0
     this.ang = 0
@@ -58,20 +58,25 @@ export default class Status extends DomComponent {
     this.ang += (this.tang - this.ang) * 0.3
     this.refs.base.style.transform = 'rotate(' + this.ang + 'rad)'
 
-    if (this.bumpTimer > 0) {
-      if (this.bumpTimer === this.bumpTimerMax) {
-        this.stressId = 3
-        this.swapFace()
-      }
-      this.bumpTimer -= dt
-      return
-    }
-
     const pStressId = this.stressId
     const pLifeId = this.lifeId
-    if (stress.panic) this.stressId = 3
-    else if (stress.value < 0.9) this.stressId = 0
-    else this.stressId = 3
+
+    if (this.bumpTimer > 0) {
+      if (this.bumpTimer === this.bumpTimerMax) {
+        this.stressId = 2
+      }
+      this.bumpTimer -= dt
+    } else {
+      if (stress.panic) this.stressId = 2
+      else if (stress.value < 0.3) this.stressId = 0
+      else if (stress.value < 0.75) this.stressId = 1
+      else this.stressId = 2
+    }
+
+    if (this.player.lifeIndice > 0.8) this.lifeId = 0
+    else if (this.player.lifeIndice > 0.3) this.lifeId = 1
+    else this.lifeId = 2
+
     if (pStressId !== this.stressId || pLifeId !== this.lifeId) this.swapFace()
   }
 

@@ -21,7 +21,7 @@ function setup (el) {
   camera = cameraController.getCamera()
 
   renderer = new THREE.WebGLRenderer({ antialias: !(config.lofi) })
-  renderer.setClearColor(0xcaf9b2, 1)
+  renderer.setClearColor(0x8cd19c, 1)
 
   store.set('pixelratio', config.lofi ? 0.5 : 1)//window.devicePixelRatio || 1)
   renderer.setPixelRatio(store.get('pixelratio'))

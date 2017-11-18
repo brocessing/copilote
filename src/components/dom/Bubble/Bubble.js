@@ -10,7 +10,8 @@ const TYPES = {
   2: 'uturn',
   3: 'left',
   4: 'speedup',
-  5: 'speeddown'
+  5: 'speeddown',
+  6: 'wheel'
 }
 
 export default class Bubble extends DomComponent {
@@ -40,13 +41,17 @@ export default class Bubble extends DomComponent {
   hide () {
     if (this.anims.show) { this.anims.show.pause(); delete this.anims.show }
     if (this.anims.offset) { this.anims.offset.pause(); delete this.anims.offset }
+    const ty = anime.getValue(this.refs.base, 'translateY')
+    const r = anime.getValue(this.refs.base, 'rotate')
     this.anims.hide = anime({
       targets: this.refs.base,
-      translateX: 10,
+      translateY: ty,
+      translateX: -60,
       opacity: 0,
-      rotate: 30,
-      scale: 0,
-      duration: 1500
+      rotate: [r, 0],
+      // scale: 0,
+      duration: 400,
+      easing: 'easeInOutQuad'
     })
     return this.anims.hide.finished
   }

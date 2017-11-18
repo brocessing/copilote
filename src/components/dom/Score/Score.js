@@ -20,7 +20,7 @@ export default class Score extends DomComponent {
   }
 
   updateScore (score) {
-    const val = padStart('' + score, 8, '0') + (+score > 2 ? 'pts' : 'pt')
+    const val = padStart('' + score, 5, '0') + (+score > 2 ? 'pts' : 'pt')
     this.refs.score.textContent = val
     this.refs.score.dataset.filltxt = val
   }

@@ -33,6 +33,7 @@ export default class Main extends ThreeComponent {
     this.playerCar = this.addComponent(new PlayerCar())
     this.terrain = this.addComponent(new Terrain())
     this.score = 0
+    this.firstframe = true
     camera.setTarget(this.playerCar)
     particles.setup()
 
@@ -131,10 +132,6 @@ export default class Main extends ThreeComponent {
       this.score = this.score + dt / 60
       const score = Math.floor(this.score)
       if (score !== this.score) store.set('score.value', score)
-
-      // stress update
-      if (stress.panic) stress.remove(0.004)
-      else stress.remove(0.00004)
     }
 
     super.update(dt)
@@ -143,6 +140,11 @@ export default class Main extends ThreeComponent {
     camera.update(dt)
 
     if (this.intro) this.introUpdate(dt)
+
+    if (this.firstframe) {
+      setTimeout(() => sfx.startBank(), 100)
+      this.firstframe = false
+    }
   }
 
   onDead (isDead) {

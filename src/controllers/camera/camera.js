@@ -14,6 +14,7 @@ import skyScene from 'controllers/skyScene/skyScene'
 
 const a = true
 let minCameraDist = a ? 1.1 : 1.1
+let maxCameraDist = 1.5
 const cameraDistMult = a ? 1.3 : 1.3
 let relPos = a ? [0, 0.9, -1.8] : [0, 0.9, -0.8]
 
@@ -61,21 +62,21 @@ function addCameraShake (val = shakeMult) {
   shakeFreq = 0
 }
 
-// function switchToPlayer () {
-//   const player = store.get('player.vehicle')
-//   setTarget(player)
-// }
+function switchToPlayer () {
+  const player = store.get('player.vehicle')
+  setTarget(player)
+}
 
-// let currentCop = 0
-// let currentCop_
-// function switchToCop () {
-//   const all = cops.getAlive()
-//   if (all.length < 1) return
-//   if (currentCop > all.length - 1) currentCop = 0
-//   currentCop_ = all[currentCop]
-//   setTarget(currentCop_)
-//   currentCop = ((currentCop + 1) >= all.length) ? 0 : currentCop + 1
-// }
+let currentCop = 0
+let currentCop_
+function switchToCop () {
+  const all = cops.getAlive()
+  if (all.length < 1) return
+  if (currentCop > all.length - 1) currentCop = 0
+  currentCop_ = all[currentCop]
+  setTarget(currentCop_)
+  currentCop = ((currentCop + 1) >= all.length) ? 0 : currentCop + 1
+}
 
 function setup () {
   fakeTarget = new THREE.Object3D()
@@ -95,6 +96,10 @@ function setup () {
 
   shakeVec = new THREE.Vector3(0, 0, 0)
   targetShakeVec = new THREE.Vector3(0, 0, 0)
+
+  const guiFn = { switchToCop, switchToPlayer }
+  gui.add(guiFn, 'switchToCop')
+  gui.add(guiFn, 'switchToPlayer')
 }
 
 function instantUpdate () {
@@ -105,7 +110,7 @@ function instantUpdate () {
   } else {
     fakeTarget.position.copy(target.group.position.clone())
     fakeTarget.rotation.y = target.chassis.rotation.y
-    cameraDist = Math.max(minCameraDist, target.speed * cameraDistMult)
+    cameraDist = Math.min(maxCameraDist, Math.max(minCameraDist, target.speed * cameraDistMult))
   }
 }
 
@@ -125,7 +130,7 @@ function update (dt) {
   } else {
     fakeTarget.position.lerp(target.group.position.clone(), lerps.curpos)
     fakeTarget.rotation.y += (target.chassis.rotation.y - fakeTarget.rotation.y) * lerps.ang
-    cameraDist += (Math.max(minCameraDist, target.speed * cameraDistMult) - cameraDist) * lerps.curcameraDist
+    cameraDist += (Math.min(maxCameraDist, Math.max(minCameraDist, target.speed * cameraDistMult)) - cameraDist) * lerps.curcameraDist
   }
 
   // stay behind the car

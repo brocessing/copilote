@@ -48,9 +48,15 @@ function setup () {
     src: ['sfx/police-3.mp3'],
     volume: 0.4
   })
+  sfx.bank = new Howl({
+    src: ['sfx/alarm-loop.mp3'],
+    volume: 0.1,
+    loop: true
+  })
+  raf.add(update)
 }
 
-let data = { bgVol: 1 }
+let data = { bgVol: 0 }
 let rate = 0.5
 let targetEngineForce = 0.5
 let rapport = 0
@@ -69,6 +75,17 @@ function updateBgVolume (val, instant) {
   })
 }
 
+let bankPos
+function startBank () {
+  stopBank()
+  instances.bank = sfx.bank.play()
+  bankPos = new THREE.Vector3(-1, 0, 0)
+}
+
+function stopBank () {
+  if (instances.bank) { sfx.bank.stop(instances.bank); instances.bank = null }
+}
+
 function startBg () {
   stopBg()
   instances.bg = sfx.bg.play()
@@ -85,16 +102,18 @@ function updateCoords (pos, ang) {
   earAng = ang
 }
 
-function updateEngine (vel, angvel, dead) {
+function updateEngine (vel, angvel, speedLevel = 0, dead) {
   if (!instances.engine && !dead) instances.engine = sfx.engine.play()
-  const speed = vel[0] * vel[0] + vel[1] * vel[1]
+  let speed = vel[0] * vel[0] + vel[1] * vel[1]
+  speed = speed - (Math.max(1, (speed * 1.6) / 2) - 1)
   const t = Math.max(0, speed - 1.91)
   targetEngineForce = (speed / 1.81 * 1.5 + 0.5 + t * 7) * !dead
+
   rate += (targetEngineForce - rate) * 0.08 + (Math.abs(angvel) % 1) * 0.04
 
   if (rate < 1) rapport = 0
-  else if (rate < 1.5) rapport = 1
-  else if (rate < 2) rapport = 2
+  else rapport = 1
+  // else if (rate < 2) rapport = 2
 
   rate = rate - rapport * 0.04
   sfx.engine.rate(rate, instances.engine)
@@ -126,9 +145,16 @@ function emitPoliceSkit (id) {
 
 function update (dt) {
   if (policeSkit.timer > 0) policeSkit.timer -= dt
+  if (instances.bank) {
+    let ndist = ((bankPos.x - earPos[0]) ** 2 + (bankPos.z - earPos[1]) ** 2)
+    let dist = (Math.max(0, ndist - 0.1)) * 0.04
+    dist = Math.max(0, Math.min(1, (1 / (dist)) * 0.04))
+    let dAng = camera.getCamera().worldToLocal(bankPos.clone()).normalize()
+    sfx.bank.volume(dist * 0.14, instances.bank)
+    sfx.bank.stereo(dAng.x, instances.bank)
+    // if (dist * 0.14 < 0.01) stopBank()
+  }
 }
-
-raf.add(update)
 
 function updateCop (id, pos, dt) {
   if (!cops[id]) return
@@ -197,5 +223,7 @@ export default {
   stopBg,
   startBg,
   updateBgVolume,
-  blast
+  blast,
+  startBank,
+  stopBank
 }

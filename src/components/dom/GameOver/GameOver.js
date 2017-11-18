@@ -28,7 +28,7 @@ export default class GameOver extends DomComponent {
 
     const score = document.createElement('p')
     score.classList.add('popin-score')
-    const val = padStart('' + this.score, 8, '0') + (+this.score > 2 ? 'pts' : 'pt')
+    const val = padStart('' + this.score, 5, '0') + (+this.score > 2 ? 'pts' : 'pt')
     score.innerHTML = val
     score.dataset.filltxt = val
 

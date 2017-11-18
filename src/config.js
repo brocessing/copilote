@@ -8,17 +8,17 @@ const LOFI = (window.location.hash && window.location.hash === '#lofi')
 
 export default {
   lofi: LOFI, // Special case for RNO melting computer
-  datgui: true, // false,
+  datgui: true,
   fpsCounter: true,
   enableSpeech: true,
-  quickstart: true, // false,
-  speechDebug: false,
+  quickstart: true,
+  speechDebug: true,
   locDebug: false,
   debug: true,
   p2steps: 1 / 60,
   viewDistance: 3,
   chunkSize: 11,
-  background: !LOFI ? 0xffda48 : 0x000000,
+  background: !LOFI ? 0x8cd19c : 0x000000,
   manualDrive: true,
   cullingMin: !LOFI ? 0.07 : 0.1,
   cullingMax: !LOFI ? 9 : 5,
@@ -52,18 +52,26 @@ export default {
   // preload images as dom nodes
   images: {
     'ui/faces/face-0-0.gif': 'face.0.0',
-    'ui/faces/face-0-3.gif': 'face.0.3',
+    'ui/faces/face-0-1.gif': 'face.0.1',
+    'ui/faces/face-0-2.gif': 'face.0.2',
+    'ui/faces/face-1-0.gif': 'face.1.0',
+    'ui/faces/face-1-1.gif': 'face.1.1',
+    'ui/faces/face-1-2.gif': 'face.1.2',
+    'ui/faces/face-2-0.gif': 'face.2.0',
+    'ui/faces/face-2-1.gif': 'face.2.1',
+    'ui/faces/face-2-2.gif': 'face.2.2',
 
-    'ui/strip-left.gif': 'strip.left',
-    'ui/stress-low.gif': 'stress.low',
-    'ui/stress-panic.gif': 'stress.panic',
-    'ui/radar.png': 'radar',
+    'ui/right.gui.gif': 'gui.right',
+    'ui/left.gui.gif': 'gui.left',
+    'ui/left.gui.panic.gif': 'gui.left.panic',
+
     'ui/bubbles/straight.png': 'bubble.straight',
     'ui/bubbles/right.png': 'bubble.right',
     'ui/bubbles/uturn.png': 'bubble.uturn',
     'ui/bubbles/left.png': 'bubble.left',
     'ui/bubbles/speedup.png': 'bubble.speedup',
-    'ui/bubbles/speeddown.png': 'bubble.speeddown'
+    'ui/bubbles/speeddown.png': 'bubble.speeddown',
+    'ui/bubbles/wheel.png': 'bubble.wheel'
   },
 
   // create commonly used materials
@@ -114,7 +122,7 @@ export default {
       store.set('tex.props', tex)
     },
 
-    'textures/canyon.png': function (tex) {
+    'textures/skybox.png': function (tex) {
       tex.format = THREE.RGBFormat
       tex.magFilter = THREE.NearestFilter
       tex.minFilter = THREE.LinearFilter
@@ -165,6 +173,12 @@ export default {
       geo.scale(scale, scale, scale)
       geo.translate(0, 0, 0)
       store.set('geo.cop', geo)
+    },
+    'models/siren.json': function (geo, mats) {
+      const scale = 0.4
+      geo.scale(scale, scale, scale)
+      geo.translate(0, 0, 0)
+      store.set('geo.siren', geo)
     },
     'models/bank.json': function (geo, mats) {
       const scale = 0.5

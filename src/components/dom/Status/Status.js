@@ -16,10 +16,6 @@ export default class Status extends DomComponent {
     const el = document.createElement('section')
     el.className = 'gui-status'
 
-    const img = store.get('img.strip.left').cloneNode()
-    img.className = 'status-background'
-    el.appendChild(img)
-
     const stressbar = document.createElement('div')
     stressbar.className = 'status-stressbar'
     el.appendChild(stressbar)
@@ -30,7 +26,7 @@ export default class Status extends DomComponent {
     stressbar.appendChild(stresslevel)
     this.refs.stresslevel = stresslevel
 
-    const stressimg = store.get('img.stress.low').cloneNode()
+    const stressimg = store.get('img.gui.left').cloneNode()
     stressimg.className = 'stressbar-img'
     stressbar.appendChild(stressimg)
     this.refs.stressimg = stressimg
@@ -51,7 +47,7 @@ export default class Status extends DomComponent {
     if (stress.panic && !this.panic) {
       this.refs.stresslevel.classList.add('panic')
       this.refs.stressbar.removeChild(this.refs.stressimg)
-      const stressimg = store.get('img.stress.panic').cloneNode()
+      const stressimg = store.get('img.gui.left.panic').cloneNode()
       stressimg.className = 'stressbar-img'
       this.refs.stressbar.appendChild(stressimg)
       this.refs.stressimg = stressimg
@@ -59,13 +55,13 @@ export default class Status extends DomComponent {
     } else if (!stress.panic && this.panic) {
       this.refs.stresslevel.classList.remove('panic')
       this.refs.stressbar.removeChild(this.refs.stressimg)
-      const stressimg = store.get('img.stress.low').cloneNode()
+      const stressimg = store.get('img.gui.left').cloneNode()
       stressimg.className = 'stressbar-img'
       this.refs.stressbar.appendChild(stressimg)
       this.refs.stressimg = stressimg
       this.panic = false
     }
-    this.refs.stresslevel.style.transform = 'scaleX(' + stress.value + ')'
+    this.refs.stresslevel.style.transform = 'scaleY(' + stress.value + ')'
   }
 
   statusChange (status) {

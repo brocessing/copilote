@@ -4,7 +4,13 @@
   bottom: 0;
   left: 0;
   opacity: 0;
+  margin: 0;
+  padding: 0;
   transition: opacity 400ms;
+  transform-origin: 0 100%;
+  transform: scale($ui-scale);
+  pointer-events: none;
+
   &.hidden {
     opacity: 0;
   }
@@ -18,7 +24,7 @@
   & .status-background {
     z-index: 0;
     position: absolute;
-    bottom: 37px;
+    bottom: 0px;
     left: 130px;
     display: block;
     image-rendering: pixelated;
@@ -32,7 +38,7 @@
   & .status-stressbar {
     z-index: 2;
     position: absolute;
-    bottom: -5px;
+    bottom: -20px;
     left: 0px;
     display: block;
     image-rendering: pixelated;
@@ -44,14 +50,14 @@
     }
 
     & .stressbar-level {
-      z-index: 3;
+      z-index: 5;
       position: absolute;
-      bottom: 50px;
-      left: 78px;
-      width: 184px;
-      height: 20px;
-      transform-origin: 0% 100%;
-      transform: scaleX(0);
+      bottom: 70px;
+      left: 24px;
+      width: 24px;
+      height: 181px;
+      transform-origin: 100% 100%;
+      transform: scaleY(0);
       transition: transform 50ms;
       background: #c3fba4;
       &.panic {
@@ -61,10 +67,10 @@
   }
 
   & .status-face {
-    z-index: 1;
+    z-index: 2;
     position: absolute;
-    bottom: 25px;
-    left: 20px;
+    bottom: -15px;
+    left: 35px;
     display: block;
     image-rendering: pixelated;
     // border: 1px solid red;

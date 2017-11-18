@@ -29,7 +29,10 @@ export default class Cop extends Vehicle {
     this.onRemoved = opts.onRemoved || noop
     // Vehicle: three
     this.chassis = new THREE.Mesh(store.get('geo.cop'), props.getMaterial())
+    this.meshes.siren = new THREE.Mesh(store.get('geo.siren'), props.getMaterial())
+    this.chassis.add(this.meshes.siren)
     this.group.add(this.chassis)
+    this.meshes.siren.position.y = 0.0
     this.group.position.y = 0.0195
 
     // this.meshes.shadow = new THREE.Mesh(store.get('geo.plane'), store.get('mat.shadow'))
@@ -93,6 +96,10 @@ export default class Cop extends Vehicle {
     this.findTimerStart = 3000
     this.dist = 0
     sfx.addCop(this.id)
+
+    this.sirenTimerMax = 300
+    this.sirenTimer = this.sirenTimerMax
+    this.sirenPing = true
   }
 
   searchPlayer () {
@@ -134,6 +141,9 @@ export default class Cop extends Vehicle {
 
   didDie () {
     sfx.removeCop(this.id)
+    this.body.mass = 1
+    this.body.updateMassProperties()
+    this.meshes.siren.material = deadcop.getMaterial()
     this.chassis.material = deadcop.getMaterial()
     const maxdist = 8
     const f = 1 - ((Math.min(maxdist + 1, Math.max(1, this.dist)) - 1) / maxdist)
@@ -194,6 +204,14 @@ export default class Cop extends Vehicle {
         if (this.astarInstance !== undefined) this.astar.cancelPath(this.astarInstance)
       } else {
         this.target = undefined
+      }
+
+      if (this.sirenTimer <= 0) {
+        this.sirenPing = !this.sirenPing
+        this.sirenTimer = this.sirenTimerMax
+        this.meshes.siren.rotation.y = this.sirenPing ? 0 : Math.PI
+      } else {
+        this.sirenTimer -= dt
       }
     }
 

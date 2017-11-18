@@ -6,7 +6,7 @@ export default class Radar extends DomComponent {
     const el = document.createElement('section')
     el.className = 'gui-radar'
 
-    const img = store.get('img.radar').cloneNode()
+    const img = store.get('img.gui.right').cloneNode()
     el.appendChild(img)
 
     return el

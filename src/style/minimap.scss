@@ -1,8 +1,8 @@
 $color-car: #ffffff;
 $color-background: #003f00;
-$color-road: #15700f;
-$color-cop-1: #FF3838;
-$color-cop-2: #27e0ff;
+$color-road: #4cab31;
+$color-cop-1: rgb(255, 4, 4);
+$color-cop-2: #63eaff;
 
 $gui-minimap-car-size: 25px;
 $gui-minimap-cop-size: 4px;
@@ -15,6 +15,9 @@ $gui-minimap-road-width: 0.7px;
   right: 0;
   opacity: 0;
   transition: opacity 400ms;
+  transform: scale($ui-scale);
+  transform-origin: 0 100%;
+  pointer-events: none;
   &.transparent {
     opacity: 0.4;
   }
@@ -43,8 +46,8 @@ $gui-minimap-road-width: 0.7px;
 .gui-minimap {
   z-index: 1;
   position: absolute;
-  right: 110px;
-  bottom: 75px;
+  right: 112px;
+  bottom: 77px;
 
   border: 3px solid $color-background;
   background: rgba($color-background, 1);

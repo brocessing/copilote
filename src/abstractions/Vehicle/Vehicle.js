@@ -16,6 +16,7 @@ export default class Vehicle extends ThreeComponent {
     super(opts)
     this.speed = 0
     this.maxSpeed = this.maxSpeed !== undefined ? this.maxSpeed : 1
+    this.limiter = this.maxSpeed
     this.speedMult = 1
     this.dead = false
 
@@ -69,13 +70,14 @@ export default class Vehicle extends ThreeComponent {
     this.steerSmokeCycle = 10
   }
 
-  limitSpeed () {
-    const max = this.maxSpeed * (this.isPlayer ? this.speedMult : 1)
-    if (this.speed > max) {
-      const mult = max / this.speed
+  limitSpeed (plus = 0) {
+    this.targetLimiter = this.maxSpeed * (this.isPlayer ? this.speedMult : 1) + plus
+    this.limiter += (this.targetLimiter - this.limiter) * 0.2
+    if (this.speed > this.limiter) {
+      const mult = this.limiter / this.speed
       this.bodyVel[0] *= mult
       this.bodyVel[1] *= mult
-      this.speed = max
+      this.speed = this.limiter
     }
   }
 
