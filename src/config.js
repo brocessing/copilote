@@ -11,7 +11,7 @@ export default {
   datgui: false,
   fpsCounter: false,
   enableSpeech: true,
-  quickstart: false,
+  quickstart: true,
   speechDebug: false,
   locDebug: false,
   debug: false,
@@ -224,11 +224,11 @@ export default {
       geo.translate(1.0, 0, -1.0)
       store.set('geo.trashyard', geo)
     },
-    'models/rock_large.json': function (geo, mats) {
+    'models/rock_2x.json': function (geo, mats) {
       const scale = 0.5
       geo.scale(scale, scale, scale)
-      geo.translate(4.0, 0, -1.0)
-      store.set('geo.rock.large', geo)
+      geo.translate(4.0, 0, -2.0)
+      store.set('geo.rock.2x', geo)
     },
     'models/rock_medium.json': function (geo, mats) {
       const scale = 0.5
@@ -253,6 +253,36 @@ export default {
       geo.scale(scale, scale, scale)
       geo.translate(-4.0, 0, -2.0)
       store.set('geo.nature2x', geo)
+    },
+    'models/ad.json': function (geo, mats) {
+      const scale = 0.5
+      geo.scale(scale, scale, scale)
+      geo.translate(2.0, 0, 1.0)
+      store.set('geo.ad', geo)
+    },
+    'models/sign.json': function (geo, mats) {
+      const scale = 0.5
+      geo.scale(scale, scale, scale)
+      geo.translate(1.0, 0, 1.0)
+      store.set('geo.sign', geo)
+    },
+    'models/accident.json': function (geo, mats) {
+      const scale = 0.5
+      geo.scale(scale, scale, scale)
+      geo.translate(3.0, 0, 1.0)
+      store.set('geo.accident', geo)
+    },
+    'models/motel.json': function (geo, mats) {
+      const scale = 0.5
+      geo.scale(scale, scale, scale)
+      geo.translate(-1.0, 0, -1.0)
+      store.set('geo.motel', geo)
+    },
+    'models/cigarette.json': function (geo, mats) {
+      const scale = 0.5
+      geo.scale(scale, scale, scale)
+      geo.translate(0.0, 0, -1.0)
+      store.set('geo.cigarette', geo)
     }
   },
 

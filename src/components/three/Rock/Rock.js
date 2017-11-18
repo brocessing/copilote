@@ -8,14 +8,13 @@ import prng from 'utils/prng'
 import props from 'shaders/props/props'
 
 const TYPES = {
-  0: 'large',
-  1: 'medium',
-  2: 'small'
+  0: 'medium',
+  1: 'small'
 }
 
 export default class Rock extends ThreeComponent {
   setup ({ x, y, cx, cy }) {
-    const type = prng.hash2dInt(x + cx, y + cy, 0, 2)
+    const type = prng.hash2dInt(x + cx, y + cy, 0, 1)
 
     this.group = new THREE.Mesh(
       store.get('geo.rock.' + TYPES[type]),
@@ -34,9 +33,8 @@ export default class Rock extends ThreeComponent {
 
     this.body.propType = 'prop'
 
-    if (type === 0) this.shapeA = this.body.addShape(new p2.Box({ width: 0.77, height: 0.77 }), [0.0, 0.0], 0)
-    else if (type === 1) this.shapeA = this.body.addShape(new p2.Box({ width: 0.35, height: 0.35 }), [0.0, -0.1], -0.3)
-    else if (type === 2) this.shapeA = this.body.addShape(new p2.Box({ width: 0.65, height: 0.7 }), [0.0, 0.0], -0.6)
+    if (type === 0) this.shapeA = this.body.addShape(new p2.Box({ width: 0.35, height: 0.35 }), [0.0, -0.1], -0.3)
+    else if (type === 1) this.shapeA = this.body.addShape(new p2.Box({ width: 0.65, height: 0.7 }), [0.0, 0.0], -0.6)
 
     this.group.position.x = -this.body.position[0] - cx
     this.group.position.y = posy

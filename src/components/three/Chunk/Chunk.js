@@ -14,6 +14,12 @@ import Trashyard from 'components/three/Trashyard/Trashyard'
 import Rock from 'components/three/Rock/Rock'
 import Cactus from 'components/three/Cactus/Cactus'
 import Nature2x from 'components/three/Nature2x/Nature2x'
+import Ad from 'components/three/Ad/Ad'
+import Sign from 'components/three/Sign/Sign'
+import Accident from 'components/three/Accident/Accident'
+import Motel from 'components/three/Motel/Motel'
+import Cigarette from 'components/three/Cigarette/Cigarette'
+import Rock2x from 'components/three/Rock2x/Rock2x'
 
 const BUILDINGS = {
   1: { Instance: Bank },
@@ -21,13 +27,19 @@ const BUILDINGS = {
   3: { Instance: Hangar },
   4: { Instance: Station },
   5: { Instance: House },
-  6: { Instance: Trashyard }
+  6: { Instance: Trashyard },
+  7: { Instance: Ad },
+  8: { Instance: Sign },
+  9: { Instance: Accident },
+  10: { Instance: Motel },
+  11: { Instance: Cigarette }
 }
 
 const PROPS = {
   1: { Instance: Rock },
   2: { Instance: Cactus },
-  3: { Instance: Nature2x }
+  3: { Instance: Nature2x },
+  4: { Instance: Rock2x }
 }
 
 export default class Chunk extends ThreeComponent {
