@@ -1335,8 +1335,8 @@ cookie@0.3.1:
   resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.3.1.tgz#e7e0a1f9ef43b4c8ba925c5c5a96e806d16873bb"
 
 copilote-tile-converter@brocessing/copilote-tile-converter:
-  version "0.3.0"
-  resolved "https://codeload.github.com/brocessing/copilote-tile-converter/tar.gz/228aa7a7b4e8ae1f73373bae36e50bac1119ae64"
+  version "0.3.1"
+  resolved "https://codeload.github.com/brocessing/copilote-tile-converter/tar.gz/1d0b2589f6a04e4a54d5dbe2367016d047a0e0c8"
   dependencies:
     fs-extra "^4.0.2"
     image-size "^0.6.1"

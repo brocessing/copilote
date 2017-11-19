@@ -33,7 +33,7 @@ export default class Accident extends ThreeComponent {
     this.group.position.z = this.body.position[1] - cy
     this.group.rotation.y = this.body.angle
 
-    three.debugBody(this.body)
+    // three.debugBody(this.body)
   }
 
   update (dt) {

@@ -19,8 +19,8 @@ void main() {
   if (color.r == 1. && color.g == 0.) discard;
   if (vType == 0.) {
     color.r = color.r + (1. - color.r) * 0.9;
-    color.g = color.g + (1. - color.g) * 0.5;
-    color.b = color.b - (1. - color.b) * 0.8;
+    color.g = color.g + (1. - color.g) * 0.4;
+    color.b = color.b - (1. - color.b) * 0.7;
   }
   if (vType == 1.) {
     float life = (1. - vLife) * 0.1;

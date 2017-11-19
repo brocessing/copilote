@@ -25,7 +25,7 @@ export default class Motel extends ThreeComponent {
     })
 
     this.body.propType = 'prop'
-    this.shapeA = this.body.addShape(new p2.Box({ width: 0.06, height: 0.06 }), [0, 0])
+    this.shapeA = this.body.addShape(new p2.Box({ width: 0.82, height: 0.56 }), [0, 0])
     // this.shapeB = this.body.addShape(new p2.Box({ width: 0.03, height: 0.03 }), [0.36, 0.45])
 
     this.group.position.x = -this.body.position[0] - cx
@@ -33,7 +33,7 @@ export default class Motel extends ThreeComponent {
     this.group.position.z = this.body.position[1] - cy
     this.group.rotation.y = this.body.angle
 
-    three.debugBody(this.body)
+    // three.debugBody(this.body)
   }
 
   update (dt) {

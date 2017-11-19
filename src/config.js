@@ -11,7 +11,7 @@ export default {
   datgui: false,
   fpsCounter: false,
   enableSpeech: true,
-  quickstart: true,
+  quickstart: false,
   speechDebug: false,
   locDebug: false,
   debug: false,
@@ -289,7 +289,7 @@ export default {
   // autoload chunks
   chunks: {
     folder: 'chunks',
-    count: 8,
+    count: 16,
     onchunkload: function (id, obj) {
       if (!store.get('map.chunks')) store.set('map.chunks', [])
       store.get('map.chunks')[id] = obj
