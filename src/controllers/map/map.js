@@ -85,6 +85,7 @@ function reset () {
   const minChunkX = -CHUNKDISTFROMCENTER
   const maxChunkX = CHUNKDISTFROMCENTER
   const minChunkY = -CHUNKDISTFROMCENTER
+
   const maxChunkY = CHUNKDISTFROMCENTER
   for (let absChunkX = minChunkX; absChunkX <= maxChunkX; absChunkX++) {
     for (let absChunkY = minChunkY; absChunkY <= maxChunkY; absChunkY++) {
@@ -123,11 +124,13 @@ function init (reset = false) {
 function getChunkFromPool (absChunkX, absChunkY) {
   const id = absChunkX + '.' + absChunkY
   const max = chunksPool.length - 2
-  const chunk = (id !== '0.0')
-    ? chunksPool[1 + prng.hash2dInt(absChunkX, absChunkY, 0, max)]
-    : chunksPool[0]
+  const poolId = (id !== '0.0')
+    ? 1 + prng.hash2dInt(absChunkX, absChunkY, 0, max)
+    : 0
+  const chunk = chunksPool[poolId]
   return {
     id,
+    poolId,
     chunkX: absChunkX,
     chunkY: absChunkY,
     x: absChunkX * CHUNKSIZE - CHUNKSIZE / 2,

@@ -10,8 +10,9 @@ import cameraController from 'controllers/camera/camera'
 import throttle from 'lodash/throttle'
 
 import skyScene from 'controllers/skyScene/skyScene'
+import threeStats from 'utils/threeStats'
 
-let scene, renderer, world, camera, composer, composerEnabled
+let scene, renderer, world, camera, stats, composer, composerEnabled
 let components = []
 
 function setup (el) {
@@ -26,6 +27,7 @@ function setup (el) {
   store.set('pixelratio', config.lofi ? 0.5 : 1)//window.devicePixelRatio || 1)
   renderer.setPixelRatio(store.get('pixelratio'))
 
+  if (config.fpsCounter) stats = threeStats(renderer)
   // scene.fog = new THREE.Fog(
   //   config.background,
   //   config.cullingMax / 3,
@@ -110,6 +112,7 @@ function update (dt) {
   renderer.clear()
   renderer.render(skyScene.scene, skyScene.camera)
   renderer.render(scene, camera)
+  stats && stats.update()
   // composerEnabled
   //   ? composer.render()
   //   : renderer.render(skyScene.scene, skyScene.camera)

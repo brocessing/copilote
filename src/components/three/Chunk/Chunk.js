@@ -1,3 +1,5 @@
+/* global THREE */
+
 import store from 'utils/store'
 import map from 'controllers/map/map'
 import ThreeComponent from 'abstractions/ThreeComponent/ThreeComponent'
@@ -42,6 +44,26 @@ const PROPS = {
   4: { Instance: Rock2x }
 }
 
+const mergedRoads = {}
+const mergedPBs = {}
+
+function mergeRoads (poolId, roads) {
+  let tiles = []
+  for (let k in roads) {
+    const road = roads[k]
+    const tile = new RoadTile(road, roads)
+    tiles.push(tile)
+  }
+  let geometry = new THREE.Geometry()
+  tiles.forEach(tile => {
+    geometry.mergeMesh(tile.group)
+    tile.destroy()
+    tile = undefined
+  })
+  tiles = undefined
+  mergedRoads[poolId] = geometry
+}
+
 export default class Chunk extends ThreeComponent {
   setup (opts) {
     opts.buildings.forEach(building => {
@@ -70,10 +92,9 @@ export default class Chunk extends ThreeComponent {
       this.addComponent(new PROPS[id].Instance(instanceOpts))
     })
 
-    for (let k in opts.road) {
-      const road = opts.road[k]
-      this.addComponent(new RoadTile(road, opts.road))
-    }
+    if (!mergedRoads[opts.poolId]) mergeRoads(opts.poolId, opts.road)
+    this.meshes.roads = new THREE.Mesh(mergedRoads[opts.poolId], store.get('mat.road'))
+    this.group.add(this.meshes.roads)
   }
 
   update (dt) {
