@@ -9,7 +9,7 @@ const LOFI = (window.location.hash && window.location.hash === '#lofi')
 export default {
   lofi: LOFI, // Special case for RNO melting computer
   datgui: false,
-  fpsCounter: false,
+  fpsCounter: 0,
   enableSpeech: true,
   quickstart: 0,
   manualDrive: 0,

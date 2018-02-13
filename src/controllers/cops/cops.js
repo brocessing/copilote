@@ -39,7 +39,7 @@ function addCop () {
   pos[0] += posInc[0] * chunkSize
   pos[1] += posInc[1] * chunkSize
 
-  let r = prng.random() < 0.4
+  let r = prng.random() < 2
   if (pos[0] === 0 && r) pos[0] += ((prng.random() > 0.5) ? 1 : -1) * chunkSize
   else if (pos[1] === 0 && r) pos[1] += ((prng.random() > 0.5) ? 1 : -1) * chunkSize
 

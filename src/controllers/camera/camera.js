@@ -86,10 +86,13 @@ function setup () {
   specialTarget.pos = new THREE.Vector3(0, 0, 0)
   specialTarget.lookAt = new THREE.Vector3(0, 0, 0)
 
+  let cullingMin = store.get('quality') === 'HD' ? 0.1 : 0.2
+  let cullingMax = store.get('quality') === 'HD' ? 9 : 7.2
+
   camera = new THREE.PerspectiveCamera(
     a ? 55 : 75,
     window.innerWidth / window.innerHeight,
-    config.cullingMin, config.cullingMax
+    cullingMin, cullingMax
   )
 
   frustum = new THREE.Frustum()
