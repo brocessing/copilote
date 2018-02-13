@@ -14,8 +14,8 @@ let deadCops = []
 
 const maxCops = 8
 let copsNeeded = 0
-let timerTrigger = 3000
-let currentTimer = 4000
+let timerTrigger = 4100
+let currentTimer = 5000
 let spawnable = false
 
 function setup () {
