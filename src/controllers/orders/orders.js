@@ -26,7 +26,7 @@ if (DEBUG) {
   dom.style.margin = '0'
   dom.style.padding = '10px'
   dom.style.color = 'white'
-  dom.style.background = 'rgba(0, 0, 0, 0.5)'
+  dom.style.background = 'rgba(0, 0, 0, 0.8)'
   dom.style.pointerEvents = 'none'
   logevent = document.createElement('pre')
   dom.appendChild(logevent)
@@ -74,7 +74,7 @@ function processResult (index, result, last) {
     buffer[index] = { value: '', matches: [], dom: null, final: false }
     if (DEBUG) {
       buffer[index].dom = document.createElement('pre')
-      buffer[index].dom.style.color = 'rgba(255, 255, 255, 0.4)'
+      buffer[index].dom.style.color = 'rgba(255, 255, 255, 0.8)'
       dom.appendChild(buffer[index].dom)
     }
   }
