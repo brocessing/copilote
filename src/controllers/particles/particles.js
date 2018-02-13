@@ -5,7 +5,6 @@ import store from 'utils/store'
 import prng from 'utils/prng'
 import smoke from 'shaders/smoke/smoke'
 
-const AMOUNT = 800
 const BLAST_GRAVITY = 0.1
 
 let material, geometry
@@ -13,16 +12,19 @@ let aPosition, aLife, aVelocity, aBornData, aScale
 let particles
 let dead = []
 let alive = []
-
+let amount = 800
+let hd = false
 // bornData = 0: type / 1: speed / 2: baseRotation (seed ?)
 
 function setup () {
+  hd = !!(store.get('quality') === 'HD')
+  amount = store.get('quality') === 'HD' ? 800 : 350
   material = smoke.getMaterial()
-  aVelocity = new Float32Array(AMOUNT * 3)
-  aPosition = new Float32Array(AMOUNT * 3)
-  aBornData = new Float32Array(AMOUNT * 3)
-  aScale = new Float32Array(AMOUNT)
-  aLife = new Float32Array(AMOUNT)
+  aVelocity = new Float32Array(amount * 3)
+  aPosition = new Float32Array(amount * 3)
+  aBornData = new Float32Array(amount * 3)
+  aScale = new Float32Array(amount)
+  aLife = new Float32Array(amount)
 
   geometry = new THREE.BufferGeometry()
   geometry.addAttribute('scale', new THREE.BufferAttribute(aScale, 1))
@@ -36,14 +38,14 @@ function setup () {
   particles = new THREE.Points(geometry, material)
   particles.frustumCulled = false
 
-  for (var i = 0; i < AMOUNT; i++) killParticle(i)
+  for (var i = 0; i < amount; i++) killParticle(i)
 
   three.getScene().add(particles)
   setScale(1)
 }
 
 function emit ({ x, y, z, type, amount }) {
-  let needed = amount
+  let needed = hd ? amount : Math.ceil(amount / 2)
   let newParticles = []
   if (dead.length > 0) newParticles = dead.splice(0, needed)
   needed -= newParticles.length
@@ -170,7 +172,7 @@ function killParticle (i) {
 }
 
 function setScale (val) {
-  for (var i = 0; i < AMOUNT; i++) aScale[i] = val
+  for (var i = 0; i < amount; i++) aScale[i] = val
   geometry.attributes.scale.needsUpdate = true
 }
 

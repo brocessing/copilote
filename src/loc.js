@@ -34,8 +34,8 @@ en['home.cta'] = 'play!'
 fr['home.lang'] = ['français', 'anglais']
 en['home.lang'] = ['french', 'english']
 
-fr['home.quality'] = ['basse qualité', 'qualité normale', 'haute définition']
-en['home.quality'] = ['low quality', 'medium quality', 'high quality']
+fr['home.quality'] = ['basse qualité', 'haute définition']
+en['home.quality'] = ['low quality', 'high quality']
 
 // BUTTONS
 fr['intro.button.next'] = `Suivant`

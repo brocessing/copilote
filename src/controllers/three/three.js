@@ -24,7 +24,10 @@ function setup (el) {
   renderer = new THREE.WebGLRenderer({ antialias: !(config.lofi) })
   renderer.setClearColor(0x8cd19c, 1)
 
-  store.set('pixelratio', config.lofi ? 0.5 : 1)//window.devicePixelRatio || 1)
+  store.set('pixelratio', store.get('quality') === 'HD'
+    ? Math.min(window.devicePixelRatio, 1.5)
+    : 1
+  )
   renderer.setPixelRatio(store.get('pixelratio'))
 
   if (config.fpsCounter) stats = threeStats(renderer)

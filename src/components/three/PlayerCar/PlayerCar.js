@@ -109,8 +109,7 @@ export default class PlayerCar extends Vehicle {
     this.backWheel.targetSteerValue = 0
     this.engineForce = 0
     this.backWheel.setBrakeForce(3)
-    this.manualControls = true
-    kbctrl(this.frontWheel, this.backWheel)
+    this.manualControls = false
 
     this.isPlayer = true
     this.speedLevel = 0

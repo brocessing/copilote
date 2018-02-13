@@ -123,6 +123,13 @@ function threeSetup () {
 
 function startExperience () {
   const lang = store.get('lang')
+
+  const quality = {
+    0: 'SD',
+    1: 'HD'
+  }
+  store.set('quality', quality[store.get('quality')] || quality[1])
+
   // TODO: Order setlang method?
   Promise.resolve()
     .then(threeSetup)
