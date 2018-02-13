@@ -11,7 +11,8 @@ export default {
   datgui: false,
   fpsCounter: false,
   enableSpeech: true,
-  quickstart: false,
+  quickstart: 0,
+  manualDrive: 0,
   speechDebug: false,
   locDebug: false,
   debug: false,
@@ -19,7 +20,6 @@ export default {
   viewDistance: 3,
   chunkSize: 11,
   background: !LOFI ? 0x8cd19c : 0x000000,
-  manualDrive: false,
   cullingMin: !LOFI ? 0.07 : 0.1,
   cullingMax: !LOFI ? 9 : 5,
 

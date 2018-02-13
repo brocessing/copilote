@@ -40,8 +40,15 @@ export default class Main extends ThreeComponent {
     this.resize(store.get('size'))
     overlay.mount()
     setTimeout(() => {
-      if (config.quickstart) this.reboot()
-      else this.gameOverlay()
+      if (config.quickstart) {
+        this.reboot()
+        if (config.manualDrive) {
+          setTimeout(() => store.set('order.once', true), 10)
+          this.timerBeforeCopSpawn = 0
+        }
+      } else {
+        this.gameOverlay()
+      }
       sfx.startBg()
       sfx.updateBgVolume(0.06, true)
     }, 1)

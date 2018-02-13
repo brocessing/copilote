@@ -38,5 +38,5 @@ void main() {
   if (vType == 4.) {
     color = vec4(color.rgb + 0.4, 0.8);
   }
-  gl_FragColor = color;
+  gl_FragColor = clamp(color, 0., 1.);
 }

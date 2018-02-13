@@ -34,6 +34,7 @@ export default class Cop extends Vehicle {
     this.group.add(this.chassis)
     this.meshes.siren.position.y = 0.0
     this.group.position.y = 0.0195
+    this.timeAlive = 0
 
     // this.meshes.shadow = new THREE.Mesh(store.get('geo.plane'), store.get('mat.shadow'))
     // const shadow = this.meshes.shadow
@@ -213,9 +214,12 @@ export default class Cop extends Vehicle {
       } else {
         this.sirenTimer -= dt
       }
+
+      this.timeAlive += dt
     }
 
-    if (this.dist > 800) this.onRemoved(this)
+    if (this.timeAlive > 6000 && this.dist > 130) this.onRemoved(this)
+    else if (this.dist > 700) this.onRemoved(this)
   }
 
   destroy () {

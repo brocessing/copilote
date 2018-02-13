@@ -5,6 +5,7 @@ import Cop from 'components/three/Cop/Cop'
 import events from 'utils/events'
 import store from 'utils/store'
 import prng from 'utils/prng'
+import nmod from 'utils/nmod'
 
 let scene, chunkSize
 let lastId = -1
@@ -22,12 +23,28 @@ function setup () {
   chunkSize = map.getChunkSize()
 }
 
+function getDirFromAngle (ang) {
+  return Math.floor(nmod(-ang + Math.PI + Math.PI / 4, Math.PI * 2) / (Math.PI / 2)) % 4
+}
+
 function addCop () {
   const pos = store.get('player.position').slice()
+  const angIndex = getDirFromAngle(store.get('player.angle'))
+  let posInc = [0, 0]
+  if (angIndex === 0) posInc[1] = -1
+  else if (angIndex === 1) posInc[0] = 1
+  else if (angIndex === 2) posInc[1] = 1
+  else if (angIndex === 3) posInc[0] = -1
 
-  pos[0] += ((prng.random() > 0.5) ? 1 : -1) * chunkSize
-  pos[1] += ((prng.random() > 0.5) ? 1 : -1) * chunkSize
+  pos[0] += posInc[0] * chunkSize
+  pos[1] += posInc[1] * chunkSize
+
+  let r = prng.random() < 0.4
+  if (pos[0] === 0 && r) pos[0] += ((prng.random() > 0.5) ? 1 : -1) * chunkSize
+  else if (pos[1] === 0 && r) pos[1] += ((prng.random() > 0.5) ? 1 : -1) * chunkSize
+
   const chunk = map.getChunkFromThreePos(pos[0], pos[1])
+
   const kroads = Object.keys(chunk.road)
   // console.log(chunk)
   const road = chunk.road[kroads[prng.randomInt(0, kroads.length - 1)]]
