@@ -168,7 +168,7 @@ export default class PlayerCar extends Vehicle {
     // stress update
     if (stress.panic) stress.remove(0.004)
     else {
-      if (this.speedLevel === 0) stress.remove(0.0007)
+      if (this.speedLevel === 0) stress.remove(0.0006)
       else if (this.speedLevel === 1) stress.add(0.001)
     }
 

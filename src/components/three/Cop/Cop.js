@@ -16,6 +16,7 @@ import sfx from 'controllers/sfx/sfx'
 import prng from 'utils/prng'
 import props from 'shaders/props/props'
 import deadcop from 'shaders/deadcop/deadcop'
+import spiral from 'utils/spiralIterator'
 
 const EasyStar = EasyStarJS.js
 /*
@@ -115,6 +116,22 @@ export default class Cop extends Vehicle {
     const middleX = middleChunk.chunkX
     const middleY = middleChunk.chunkY
     middleChunk = undefined
+
+    if (map.getWalkMap()[toPos[1]][toPos[0]] === 0) {
+      let tm = map.getWalkMap()
+      for (let i = 0; i < 30; i++) {
+        const spos = spiral(i)
+        const y = toPos[1] + spos[1]
+        const x = toPos[0] + spos[0]
+        if (tm[y][x]) {
+          toPos[1] = y
+          toPos[0] = x
+          break
+        }
+      }
+      tm = null
+    }
+
     try {
       this.astarInstance = this.astar.findPath(fromPos[0], fromPos[1], toPos[0], toPos[1], (path) => {
         if (!path) {
@@ -220,8 +237,10 @@ export default class Cop extends Vehicle {
     if (this.dead) this.timeDead += dt
     else this.timeAlive += dt
 
-    if (!this.dead && this.timeAlive > 20000) this.explode()
-    if (this.dead && this.timeDead > 10000) this.onRemoved(this)
+    if (!this.dead && this.timeAlive > 30000) this.explode()
+
+    if (this.dead && this.dist > 80) this.onRemoved(this)
+    else if (this.dead && this.timeDead > 10000) this.onRemoved(this)
 
     if (this.timeAlive > 8000 && this.dist > 130) this.onRemoved(this)
     else if (this.timeAlive > 12000 && this.dist > 80) this.onRemoved(this)

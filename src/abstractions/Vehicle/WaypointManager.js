@@ -63,7 +63,7 @@ export default class WaypointManager {
         // if main point reach is NOT user, emit for bad waypoints reach
         const w = this.list[i]
         if (w.type === 1) events.emit('waypoints.reach', { x: w.x, y: w.y })
-        if (w.type === -1) events.emit('stress.add', 0.09)
+        if (w.type === -1) events.emit('stress.add', 0.14)
         if (w.type === -2) events.emit('stress.add', 0.15)
         // if (this.list[i].type < 0)
       }
