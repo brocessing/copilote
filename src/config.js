@@ -174,115 +174,134 @@ export default {
       const scale = 0.4
       geo.scale(scale, scale, scale)
       geo.translate(0, 0, 0)
-      store.set('geo.bandit', geo)
+      const geo2 = new THREE.BufferGeometry().fromGeometry(geo)
+      store.set('geo.bandit', geo2)
     },
     'models/cop.json': function (geo, mats) {
       const scale = 0.4
       geo.scale(scale, scale, scale)
       geo.translate(0, 0, 0)
-      store.set('geo.cop', geo)
+      const geo2 = new THREE.BufferGeometry().fromGeometry(geo)
+      store.set('geo.cop', geo2)
     },
     'models/siren.json': function (geo, mats) {
       const scale = 0.4
       geo.scale(scale, scale, scale)
       geo.translate(0, 0, 0)
-      store.set('geo.siren', geo)
+      const geo2 = new THREE.BufferGeometry().fromGeometry(geo)
+      store.set('geo.siren', geo2)
     },
     'models/bank.json': function (geo, mats) {
       const scale = 0.5
       geo.scale(scale, scale, scale)
       geo.translate(0, 0, 1.0)
-      store.set('geo.bank', geo)
+      const geo2 = new THREE.BufferGeometry().fromGeometry(geo)
+      store.set('geo.bank', geo2)
     },
     'models/farm.json': function (geo, mats) {
       const scale = 0.5
       geo.scale(scale, scale, scale)
       geo.translate(-2.0, 0, -1.0)
-      store.set('geo.farm', geo)
+      const geo2 = new THREE.BufferGeometry().fromGeometry(geo)
+      store.set('geo.farm', geo2)
     },
     'models/hangar.json': function (geo, mats) {
       const scale = 0.5
       geo.scale(scale, scale, scale)
       geo.translate(-2.0, 0, 1.0)
-      store.set('geo.hangar', geo)
+      const geo2 = new THREE.BufferGeometry().fromGeometry(geo)
+      store.set('geo.hangar', geo2)
     },
     'models/station.json': function (geo, mats) {
       const scale = 0.5
       geo.scale(scale, scale, scale)
       geo.translate(-1.0, 0, 1.0)
-      store.set('geo.station', geo)
+      const geo2 = new THREE.BufferGeometry().fromGeometry(geo)
+      store.set('geo.station', geo2)
     },
     'models/house.json': function (geo, mats) {
       const scale = 0.5
       geo.scale(scale, scale, scale)
       geo.translate(4.0, 0, 1.0)
-      store.set('geo.house', geo)
+      const geo2 = new THREE.BufferGeometry().fromGeometry(geo)
+      store.set('geo.house', geo2)
     },
     'models/trashyard.json': function (geo, mats) {
       const scale = 0.5
       geo.scale(scale, scale, scale)
       geo.translate(1.0, 0, -1.0)
-      store.set('geo.trashyard', geo)
+      const geo2 = new THREE.BufferGeometry().fromGeometry(geo)
+      store.set('geo.trashyard', geo2)
     },
     'models/rock_2x.json': function (geo, mats) {
       const scale = 0.5
       geo.scale(scale, scale, scale)
       geo.translate(4.0, 0, -2.0)
-      store.set('geo.rock.2x', geo)
+      const geo2 = new THREE.BufferGeometry().fromGeometry(geo)
+      store.set('geo.rock.2x', geo2)
     },
     'models/rock_medium.json': function (geo, mats) {
       const scale = 0.5
       geo.scale(scale, scale, scale)
       geo.translate(3.0, 0, -1.0)
-      store.set('geo.rock.medium', geo)
+      const geo2 = new THREE.BufferGeometry().fromGeometry(geo)
+      store.set('geo.rock.medium', geo2)
     },
     'models/rock_small.json': function (geo, mats) {
       const scale = 0.5
       geo.scale(scale, scale, scale)
       geo.translate(2.0, 0, -1.0)
-      store.set('geo.rock.small', geo)
+      const geo2 = new THREE.BufferGeometry().fromGeometry(geo)
+      store.set('geo.rock.small', geo2)
     },
     'models/cactus.json': function (geo, mats) {
       const scale = 0.5
       geo.scale(scale, scale, scale)
       geo.translate(-3.0, 0, 1.0)
-      store.set('geo.cactus', geo)
+      const geo2 = new THREE.BufferGeometry().fromGeometry(geo)
+      store.set('geo.cactus', geo2)
     },
     'models/nature_2x.json': function (geo, mats) {
       const scale = 0.5
       geo.scale(scale, scale, scale)
       geo.translate(-4.0, 0, -2.0)
-      store.set('geo.nature2x', geo)
+      const geo2 = new THREE.BufferGeometry().fromGeometry(geo)
+      store.set('geo.nature2x', geo2)
     },
     'models/ad.json': function (geo, mats) {
       const scale = 0.5
       geo.scale(scale, scale, scale)
       geo.translate(2.0, 0, 1.0)
-      store.set('geo.ad', geo)
+      const geo2 = new THREE.BufferGeometry().fromGeometry(geo)
+      store.set('geo.ad', geo2)
     },
     'models/sign.json': function (geo, mats) {
       const scale = 0.5
       geo.scale(scale, scale, scale)
       geo.translate(1.0, 0, 1.0)
-      store.set('geo.sign', geo)
+      const geo2 = new THREE.BufferGeometry().fromGeometry(geo)
+      store.set('geo.sign', geo2)
     },
     'models/accident.json': function (geo, mats) {
       const scale = 0.5
       geo.scale(scale, scale, scale)
       geo.translate(3.0, 0, 1.0)
-      store.set('geo.accident', geo)
+      const geo2 = new THREE.BufferGeometry().fromGeometry(geo)
+      store.set('geo.accident', geo2)
     },
     'models/motel.json': function (geo, mats) {
       const scale = 0.5
       geo.scale(scale, scale, scale)
       geo.translate(-1.0, 0, -1.0)
-      store.set('geo.motel', geo)
+      const geo2 = new THREE.BufferGeometry().fromGeometry(geo)
+      store.set('geo.motel', geo2)
     },
     'models/cigarette.json': function (geo, mats) {
       const scale = 0.5
       geo.scale(scale, scale, scale)
       geo.translate(0.0, 0, -1.0)
-      store.set('geo.cigarette', geo)
+      const geo2 = new THREE.BufferGeometry().fromGeometry(geo)
+      store.set('geo.cigarette', geo2)
     }
   },
 

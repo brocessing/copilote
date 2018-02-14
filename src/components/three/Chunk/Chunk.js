@@ -61,7 +61,7 @@ function mergeRoads (poolId, roads) {
     tile = undefined
   })
   tiles = undefined
-  mergedRoads[poolId] = geometry
+  mergedRoads[poolId] = new THREE.BufferGeometry().fromGeometry(geometry)
 }
 
 export default class Chunk extends ThreeComponent {

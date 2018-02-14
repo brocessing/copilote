@@ -8,7 +8,7 @@ import ground from 'shaders/ground/ground'
 
 export default class Ground extends ThreeComponent {
   setup () {
-    this.group = new THREE.Mesh(new THREE.PlaneGeometry(20, 20, 20, 20), ground.getMaterial())
+    this.group = new THREE.Mesh(new THREE.PlaneBufferGeometry(20, 20, 20, 20), ground.getMaterial())
     // this.meshes.ground.scale.set(100, 100, 1)
     this.group.rotation.x = -Math.PI / 2
     this.group.position.set(0, 0.01, 0)
