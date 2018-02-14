@@ -32,7 +32,7 @@ else store.set('lang', getDefaultLoc())
 store.set('langIndex', indexLang[store.get('lang')])
 
 // Set the default quality
-store.set('quality', Cookies.get('quality') || 2)
+store.set('quality', Cookies.get('quality') || 1)
 
 // remove <noscript> tags
 let noscripts = document.getElementsByTagName('noscript')
