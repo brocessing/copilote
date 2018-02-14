@@ -15,7 +15,7 @@ french.order('goRight')
   .add('tourner à droite|tourne à droite|à droite|droite|20 droites')
 
 french.order('goStraight')
-  .add('tous droits|vas tout droit|tout droit|tous droit|droit devant|avance|tu dois|toulon')
+  .add('continue|continuer|tous droits|vas tout droit|tout droit|tous droit|droit devant|avance|tu dois|toulon')
 
 french.order('goLeft')
   .add('tourner à gauche|tourne à gauche|à gauche|gauche|à cause')
