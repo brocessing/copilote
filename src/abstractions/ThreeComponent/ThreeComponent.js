@@ -40,6 +40,8 @@ export default class ThreeComponent {
   resize (size) { this.components.forEach(component => component.resize(size)) }
 
   destroy () {
+    if (this.destroyed) return
+    this.destroyed = true
     this.components.forEach(component => component.destroy())
     for (let k in this.meshes) {
       this.meshes[k].parent.remove(this.meshes[k])

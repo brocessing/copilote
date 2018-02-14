@@ -241,8 +241,7 @@ export default class Cop extends Vehicle {
 
     if (this.dead && this.dist > 80) this.onRemoved(this)
     else if (this.dead && this.timeDead > 10000) this.onRemoved(this)
-
-    if (this.timeAlive > 8000 && this.dist > 130) this.onRemoved(this)
+    else if (this.timeAlive > 8000 && this.dist > 130) this.onRemoved(this)
     else if (this.timeAlive > 12000 && this.dist > 80) this.onRemoved(this)
     else if (this.dist > 700) this.onRemoved(this)
   }
