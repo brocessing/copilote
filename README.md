@@ -1,23 +1,7 @@
-<br>
-<h1 align="center">copilote</h1>
-
-<div align="center">
-  <!-- License -->
-  <a href="https://raw.githubusercontent.com/brocessing/bro-start/master/LICENSE">
-    <img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License" />
-  </a>
-</div>
-
+<center>
+<h1>copilote</h1>
+<h4>a speech-to-drive car chase game</h4>
 <br><br>
-<br><br>
-
-WIP
-
+<img src="https://github.com/brocessing/copilote/blob/master/static/share/share_og2.gif?raw=true">
 <br>
-<h1></h1>
-<br>
-
-# :hammer:  License
-MIT.
-
-<br><br>
+</center>
