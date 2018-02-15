@@ -1,0 +1,127 @@
+<!-- 💪 💢 -->
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+  <base href="/">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <script src="vendors/modernizr.min.js"></script>
+  <script src="vendors/detectizr.min.js"></script>
+
+  <title>Copilote</title>
+  <meta name="description" content="A speech-to-drive car chase game  🚙  🚓">
+
+  <!-- Favicon -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="theme-color" content="#ffffff">
+
+  <!-- Facebook -->
+  <meta property="og:site_name" content="Copilote">
+  <meta property="og:title" content="Copilote">
+  <meta property="og:url" content="https://copilote.money/share/share_og2.gif">
+  <meta property="og:description" content="A speech-to-drive car chase game  🚙  🚓">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://copilote.money/share/share_og2.gif">
+  <meta property="og:image:type" content="image/gif">
+  <meta property="og:image:width" content="600">
+  <meta property="og:image:height" content="315">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Copilote">
+  <meta name="twitter:description" content="A speech-to-drive car chase game  🚙  🚓">
+  <meta name="twitter:url" content="https://copilote.money/">
+  <meta name="twitter:image" content="https://copilote.money/share/share_twitter.png">
+  <meta name="twitter:creator" content="@stinkparis">
+
+
+
+  <link rel="stylesheet" href="fonts/stylesheet.css">
+  <style>
+    /* Fallback style */
+    html, body {
+      top: 0; right: 0; bottom: 0; left: 0;
+      width: 100%; height: 100%;
+      margin: 0; padding: 0;
+      overflow: hidden;
+      font-family: 'scrnlggrcl';
+      font-size: 40px;
+      line-height: 150%;
+    }
+    html {
+      position: relative;
+    }
+    body {
+      position: absolute;
+      background: white;
+    }
+    .preloader {
+      z-index: 100;
+      position: fixed;
+      top: 0; right: 0; bottom: 0; left: 0;
+      width: 100%; height: 100%;
+      margin: 0; padding: 0;
+      font-size: 40px;
+      color: white;
+      background: black;
+      text-transform: uppercase;
+    }
+    .preloader-loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .no-js .preloader,
+    .no-js .experience {
+      display: none;
+    }
+    .fallback {
+      color: black;
+      position: absolute;
+      top: 50%; left: 0; right: 0;
+      margin: 0; padding: 0 20px;
+      box-sizing: border-box;
+      width: 100%;
+      text-align: center;
+      transform: translateY(-50%);
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <section class="preloader">
+    <div class="preloader-loading">...</div>
+  </section>
+
+  <main class="experience">
+    <section class="homescreen"></section>
+    <section class="game-gui"></section>
+    <section class="game-three"></section>
+  </main>
+
+  <noscript><div class="fallback">Copilote requires javascript!</div></noscript>
+
+  <script>
+    window.appconfig = {};
+    window.loadjs = function(){function e(e,n){var t,r,i,c=[],o=(e=e.push?e:[e]).length,f=o;for(t=function(e,t){t.length&&c.push(e),--f||n(c)};o--;)r=e[o],(i=s[r])?t(r,i):(u[r]=u[r]||[]).push(t)}function n(e,n){if(e){var t=u[e];if(s[e]=n,t)for(;t.length;)t[0](e,n),t.splice(0,1)}}function t(e,n,r,i){var o,s,u=document,f=r.async,a=(r.numRetries||0)+1,h=r.before||c;i=i||0,/(^css!|\.css$)/.test(e)?(o=!0,(s=u.createElement("link")).rel="stylesheet",s.href=e.replace(/^css!/,"")):((s=u.createElement("script")).src=e,s.async=void 0===f||f),s.onload=s.onerror=s.onbeforeload=function(c){var u=c.type[0];if(o&&"hideFocus"in s)try{s.sheet.cssText.length||(u="e")}catch(e){u="e"}if("e"==u&&(i+=1)<a)return t(e,n,r,i);n(e,u,c.defaultPrevented)},!1!==h(e,s)&&u.head.appendChild(s)}function r(e,n,r){var i,c,o=(e=e.push?e:[e]).length,s=o,u=[];for(i=function(e,t,r){if("e"==t&&u.push(e),"b"==t){if(!r)return;u.push(e)}--o||n(u)},c=0;c<s;c++)t(e[c],i,r)}function i(e,t,i){var s,u;if(t&&t.trim&&(s=t),u=(s?i:t)||{},s){if(s in o)throw"LoadJS";o[s]=!0}r(e,function(e){e.length?(u.error||c)(e):(u.success||c)(),n(s,e)},u)}var c=function(){},o={},s={},u={};return i.ready=function(n,t){return e(n,function(e){e.length?(t.error||c)(e):(t.success||c)()}),i},i.done=function(e){n(e,[])},i.reset=function(){o={},s={},u={}},i.isDefined=function(e){return e in o},i}();
+    (function () {
+      var preloadfiles = ['https://cdn.polyfill.io/v2/polyfill.min.js'];
+      preloadfiles.push('9524e3b35c30e32e1383.css');
+      preloadfiles.push('9524e3b35c30e32e1383.js');
+      window.loadjs(preloadfiles, {
+        success: function () {},
+        error: function () {}
+      });
+    })();
+  </script>
+
+</body>
+</html>
